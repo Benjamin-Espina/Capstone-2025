@@ -1,0 +1,45 @@
+{% extends "_templates/basic_template.html" %}
+{% load static %}
+
+{% block blockhead %}<link rel="stylesheet" href="{% static 'css/index.css' %}">{% endblock %}
+{% block blocktitle %}ServiHos - Testing{% endblock blocktitle %}
+
+{% block contenido %}
+<header>
+    <marca>Servi<span>Hos</span></marca>
+    <a class="button" href="" >Login</a>
+</header>
+
+<main>
+
+    <section>
+        <h1>Testing menu</h1>
+
+        <div class="botones">
+            <a class="card" href="{% url 'iniciar_sesion' %}">Iniciar sesión <br>💁‍♂️</a>
+            <a class="card" href="{% url 'registrar_encargado' %}">Registrar usuarios <br>👨‍✈️</a>
+            <a class="card" href="{% url 'lista_encargados' %}">Listar usuarios <br>🥷</a>
+            <a class="card" href="">Subir usuarios usando CSV <br>❌ No implementado</a>
+
+        </div>
+
+        <div>
+            {% if user.is_authenticated %}
+            <p class="username">Cuenta: <span style="text-transform: capitalize;"> {{ request.user.get_full_name }}</span>!</p>
+            <p>Tipo: {{ request.user.tipo }} </p>
+            <a class="button" href="{% url 'cerrar_sesion' %}">Cerrar sesión</a>
+            {% else %}
+            <p>⚠️No se ha iniciado sesión</p>
+
+            {% endif %}
+        </div>
+
+    </section>
+
+</main>
+
+<footer>
+    <p>ServiHos - testing</p>
+</footer>
+
+{% endblock contenido %}

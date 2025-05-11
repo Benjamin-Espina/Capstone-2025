@@ -1,0 +1,22 @@
+.botones{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+
+    padding: 1rem;
+}
+
+.card{
+    border: 3px solid;
+    border-image: linear-gradient(180deg, #f7d0ff 0%, #c2e3ff 100%);
+    border-image-slice: 100%;
+    border-image-slice: 1;
+    padding: 2rem 3rem;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--var-primary);
+    background: white;
+    border-radius: 10px;
+    filter: drop-shadow(0 0 0.5rem var(--var-secondary));
+}

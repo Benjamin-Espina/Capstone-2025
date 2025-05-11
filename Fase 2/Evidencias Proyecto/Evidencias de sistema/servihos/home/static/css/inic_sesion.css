@@ -1,0 +1,12 @@
+
+.fields, .form-group{
+    display: flex;
+    flex-flow: column;
+    gap: 4px;
+}
+
+.fields>input{
+    border: 1.5px solid var(--var-primary);
+    border-radius: 3px;
+    max-width: 20rem;
+}

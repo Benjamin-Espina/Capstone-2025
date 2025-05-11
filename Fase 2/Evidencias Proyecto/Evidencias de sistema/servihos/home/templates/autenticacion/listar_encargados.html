@@ -1,0 +1,60 @@
+{% extends "_templates/basic_template.html" %}
+{% load static %}
+
+{% block blockhead %}<link rel="stylesheet" href="{% static 'css/registrar.css' %}">{% endblock %}
+{% block blocktitle %}ServiHos - Registrar encargado{% endblock blocktitle %}
+
+{% block contenido %}
+<header>
+    <marca>Servi<span>Hos</span></marca>
+    <a class="button" href="" >Login</a>
+</header>
+
+<main>
+
+    <section>
+        <h1>Listar usuarios</h1>
+
+        {% if usuarios %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre de Usuario</th>
+                    <th>Email</th>
+                    <th>RUT</th>
+                    <th>Tipo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                    <tr>
+                        <td>{{ usuario.username }}</td>
+                        <td>{{ usuario.email }}</td>
+                        <td>{{ usuario.rut }}</td>
+                        <td>{{ usuario.tipo }}</td>
+                        <td>
+                            <form method="post" action="{% url 'eliminar_ecargados' usuario.id %}">
+                                {% csrf_token %}
+                                <button type="submit">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay usuarios registrados.</p>
+    {% endif %}
+       
+        
+
+    </section>
+
+</main>
+
+<footer>
+    <p>ServiHos - testing</p>
+</footer>
+
+{% endblock contenido %}

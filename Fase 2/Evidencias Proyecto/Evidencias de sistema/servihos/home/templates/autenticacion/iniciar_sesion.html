@@ -1,0 +1,54 @@
+{% extends "_templates/basic_template.html" %}
+{% load static %}
+
+{% block blockhead %}<link rel="stylesheet" href="{% static 'css/registrar.css' %}">{% endblock %}
+{% block blocktitle %}ServiHos - Registrar encargado{% endblock blocktitle %}
+
+{% block contenido %}
+<header>
+    <marca>Servi<span>Hos</span></marca>
+    <a class="button" href="" >Login</a>
+</header>
+
+<main>
+
+    <section>
+        <h1>Iniciar sesión</h1>
+            {% if form.errors %}
+                    <div class="error">
+                        <strong>Por favor, corrige los siguientes errores:</strong>
+                        <ul>
+                            {% for error in form.non_field_errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <li>{{ field.label }}: {{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ form.username.label_tag }}
+                    {{ form.username }}
+                </div>
+                <div class="form-group">
+                    {{ form.password.label_tag }}
+                    {{ form.password }}
+                </div>
+                <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+            </form>
+
+    </section>
+
+</main>
+
+<footer>
+    <p>ServiHos - testing</p>
+</footer>
+
+{% endblock contenido %}
