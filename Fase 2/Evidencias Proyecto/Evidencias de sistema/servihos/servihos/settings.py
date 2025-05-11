@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'home',
 ]
 
 MIDDLEWARE = [
@@ -50,6 +51,10 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'servihos.urls'
+
+AUTH_USER_MODEL = 'home.usuarioCustom'
+
+LOGIN_URL = 'iniciar_sesion'
 
 TEMPLATES = [
     {
