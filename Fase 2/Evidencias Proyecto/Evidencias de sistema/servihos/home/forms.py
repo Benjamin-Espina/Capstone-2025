@@ -32,3 +32,12 @@ class customUserCreationForm(UserCreationForm):
             'password1': 'Contraseña',
             'password2': 'Confirmar contraseña',
         }
+
+class subir_CSV_usr_hospederia(forms.Form):
+    csv_file = forms.FileField(
+        label='Seleccionar archivo CSV',
+        widget=forms.FileInput(attrs={
+            'class': 'form-control',
+            'accept': '.csv .CSV  .xls .XLS .xlsx .XLSX',
+        })
+    )
