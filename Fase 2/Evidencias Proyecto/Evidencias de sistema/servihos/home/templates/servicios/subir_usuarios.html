@@ -1,0 +1,63 @@
+{% extends "_templates/basic_template.html" %}
+{% load static %}
+
+{% block blockhead %}<link rel="stylesheet" href="{% static 'css/registrar.css' %}">{% endblock %}
+{% block blocktitle %}ServiHos - Registrar encargado{% endblock blocktitle %}
+
+{% block contenido %}
+<header>
+    <marca>Servi<span>Hos</span></marca>
+    <a class="button" href="" >Login</a>
+</header>
+
+<main>
+
+    <section>
+        <h1>Subir usuarios de hospelería</h1>
+        
+        {% if messages %}
+        <div class="message-container">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }} {# O renderiza los campos manualmente para más control #}
+        <button type="submit" class="btn btn-primary">Subir Archivo</button>
+    </form>
+
+    <div class="mt-4">
+        <h3>Formato del Archivo Esperado:</h3>
+        <p>El archivo (CSV, XLS o XLSX) debe tener una fila de encabezado con los siguientes nombres de columna (respetando mayúsculas/minúsculas):</p>
+        <ul>
+            <li><code>rut_usr_hospederia</code> (Número entero)</li>
+            <li><code>pasaporte_usr_hospederia</code> (Texto)</li>
+            <li><code>primer_nombre_usr_hospederia</code> (Texto)</li>
+            <li><code>segundo_nombre_usr_hospederia</code> (Texto)</li>
+            <li><code>primer_apellido_usr_hospederia</code> (Texto)</li>
+            <li><code>segundo_apellido_usr_hospederia</code> (Texto)</li>
+            <li><code>fecha_nacimiento_usr_hospederia</code> (Fecha en formato <code>YYYY-MM-DD</code>. Excel a veces maneja esto automáticamente.)</li>
+            <li><code>discapacidad_usr_hospederia</code> (Booleano: <code>Verdadero</code>/<code>Falso</code>, <code>Sí</code>/<code>No</code>, <code>True</code>/<code>False</code>, <code>1</code>/<code>0</code>)</li>
+            <li><code>id_tipo_discapacidad</code> (Se crea si no existe en la tabla <code>tipo_discapacidad</code>. Puede estar vacío si <code>discapacidad_usr_hospederia</code> es Falso)</li>
+            <li><code>nacionalidad_usr_hospederia</code> (La nacionalidad como texto)</li>
+            <li><code>id_hospederia</code> (Se crea si no existe en la tabla <code>hospederia</code>)</li>
+            <li><code>mostrar_en_reportes</code> (Booleano: <code>Verdadero</code>/<code>Falso</code>, <code>Sí</code>/<code>No</code>, <code>True</code>/<code>False</code>, <code>1</code>/<code>0</code>)</li>
+        </ul>
+        <p>Si un usuario con el mismo RUT ya existe, sus datos serán actualizados.</p>
+    </div>
+
+    </section>
+
+</main>
+
+<footer>
+    <p>ServiHos - testing</p>
+</footer>
+
+{% endblock contenido %}
