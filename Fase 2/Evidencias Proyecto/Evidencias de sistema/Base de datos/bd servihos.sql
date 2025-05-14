@@ -41,7 +41,6 @@ CREATE TABLE `usuario_encargado` (
   `rut_usuario_encargado` int PRIMARY KEY,
   `primer_nombre_usuario_encargado` varchar(20),
   `primer_apellido_usuario_encargado` varchar(20),
-  `segundo_apellido_usuario_encargado` varchar(20),
   `usuario` varchar(20),
   `contrasena` varchar(60),
   `id_hospederia` int
