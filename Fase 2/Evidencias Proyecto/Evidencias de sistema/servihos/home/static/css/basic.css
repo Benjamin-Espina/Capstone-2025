@@ -24,7 +24,7 @@ body {
 
 .button {
     background-color: var(--var-primary);
-    color: white;
+    color: #A2D4E3;
     font-size: 1rem;
     border-radius: 980px;
     padding: 0.3rem 1rem;
@@ -39,7 +39,7 @@ header, footer{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    background-color: white;
+    background-color: #BFCFD9;
     padding: 15px 20px;
     border-radius: 10px;
     filter: drop-shadow(0 0 0.5rem var(--var-secondary));
@@ -60,7 +60,7 @@ main{
     display: flex;
     flex-direction: column;
 
-    background-color: white;
+    background-color: #F5F7FA;
     padding: 15px 20px;
     border-radius: 10px;
     filter: drop-shadow(0 0 0.5rem var(--var-secondary));
