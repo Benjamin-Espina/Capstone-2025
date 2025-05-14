@@ -7,6 +7,7 @@ urlpatterns = [
     path('lista_encargados/eliminar/<int:usuario_id>/', views.eliminar_ecargados, name='eliminar_ecargados'),
     path("iniciar_sesion", views.iniciar_sesion, name="iniciar_sesion"),
     path('cerrar_sesion/', views.cerrar_sesion, name='cerrar_sesion'),
+    path('subir_usuarios_hospederia/', views.subir_usuarios_hospederia, name='subir_usuarios_hospederia'),
 
 
 ]
