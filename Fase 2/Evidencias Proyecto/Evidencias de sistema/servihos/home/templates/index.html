@@ -5,10 +5,7 @@
 {% block blocktitle %}ServiHos - Testing{% endblock blocktitle %}
 
 {% block contenido %}
-<header>
-    <marca>Servi<span>Hos</span></marca>
-    <a class="button" href="" >Login</a>
-</header>
+
 
 <main>
 
@@ -17,7 +14,7 @@
 
         <div class="botones">
             <a class="card" href="{% url 'iniciar_sesion' %}">Iniciar sesión <br>💁‍♂️</a>
-            <a class="card" href="{% url 'registrar_encargado' %}">Registrar usuarios <br>👨‍✈️</a>
+            <a class="card" href="{% url 'registrar_encargado' %}">Registrar encargado <br>👨‍✈️</a>
             <a class="card" href="{% url 'lista_encargados' %}">Listar usuarios <br>🥷</a>
             <a class="card" href="">Subir usuarios usando CSV <br>❌ No implementado</a>
             <a class="card" href="{% url 'subir_usuarios_hospederia' %}">Subir usuarios hospederas <br>👨‍🏫</a>
@@ -39,8 +36,6 @@
 
 </main>
 
-<footer>
-    <p>ServiHos - testing</p>
-</footer>
+
 
 {% endblock contenido %}
