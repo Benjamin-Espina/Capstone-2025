@@ -1,5 +1,5 @@
 from django import forms
-from .models import usuarioCustom
+from .models import usuarioCustom, usuario_hospederia
 from django.contrib.auth.forms import UserCreationForm
 
 class customUserCreationForm(UserCreationForm):
@@ -38,6 +38,14 @@ class subir_CSV_usr_hospederia(forms.Form):
         label='Seleccionar archivo CSV',
         widget=forms.FileInput(attrs={
             'class': 'form-control',
-            'accept': '.csv .CSV  .xls .XLS .xlsx .XLSX',
+            'accept': '.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel',
         })
     )
+
+class UsuarioHospederiaFormEdit(forms.ModelForm):
+    class Meta:
+        model = usuario_hospederia
+        fields = '__all__'
+        widgets = {
+            'fecha_nacimiento_usr_hospederia': forms.DateInput(attrs={'type': 'date'}),
+        }
