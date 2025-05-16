@@ -1,6 +1,6 @@
 :root {
     --var-primary: #0020d3;
-    --var-secondary: #5566c4;
+    --var-secondary: #2C3E50;
 }
 
 * {
@@ -41,30 +41,39 @@ header, footer{
     flex-direction: row;
     justify-content: space-between;
     background-color: #BFCFD9;
+    align-items: center;
     padding: 15px 20px;
-    border-radius: 10px;
     filter: drop-shadow(0 0 0.5rem var(--var-secondary));
 }
 
-marca{
-    font-size: 1.5rem;
-    font-weight: 700;
-    padding: 0 10px;
-    color: rgb(34, 34, 34);
+img{
+    display: flex;
 }
 
-marca>span{
-    color: var(--var-primary);
+.logo{
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
 }
+
+marca{
+    font-size: 2rem;
+    font-weight: 700;
+    padding: 0 10px;
+    color: #2C3E50;
+}
+
 
 main{
     display: flex;
     flex-direction: column;
 
-    background-color: #F5F7FA;
+    background-color: #C7E0E2;
     padding: 15px 20px;
     border-radius: 10px;
-    filter: drop-shadow(0 0 0.5rem var(--var-secondary));
+ 
 
     flex-grow: 1;
 }
