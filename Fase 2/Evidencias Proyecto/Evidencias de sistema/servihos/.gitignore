@@ -1,0 +1,7 @@
+#Archivos
+db.sqlite3
+
+#Carpetas
+/home/migrations/*
+/home/__pycache__/*
+/servihos/__pycache__/*

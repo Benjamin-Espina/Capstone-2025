@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import login, authenticate, logout
-from .forms import customUserCreationForm, subir_CSV_usr_hospederia
+from .forms import customUserCreationForm, subir_CSV_usr_hospederia, UsuarioHospederiaFormEdit
 from django.contrib import messages
 from django.db import transaction, IntegrityError
 
@@ -45,8 +45,9 @@ def registrar_encargado(request):
       return render(request, 'autenticacion/registrar_encargado.html', {'form': form})
 
 def lista_encargados(request):
-    usuarios = obtener_usuarios.objects.all()
+    usuarios = obtener_usuarios.objects.filter(tipo='encargado')
     return render(request, 'autenticacion/listar_encargados.html', {'usuarios': usuarios})
+
 
 def eliminar_ecargados(request, usuario_id):
     if request.method == 'POST':
@@ -57,7 +58,49 @@ def eliminar_ecargados(request, usuario_id):
     else:
         # Si alguien intenta acceder a la eliminación por GET, puedes redirigirlo o mostrar un error.
         return redirect('lista_encargados')
+    
 
+def listar_hospedados(request):
+    usuarios_hospedados = usuario_hospederia.objects.all()
+    return render(request, 'servicios/listar_hospedados.html', {'usuarios': usuarios_hospedados})
+
+def eliminar_hospedados(request, usuario_id):
+    if request.method == 'POST':
+        usuarios_hospedados_eliminar = get_object_or_404(usuario_hospederia, rut_usr_hospederia=usuario_id)
+        usuarios_hospedados_eliminar.delete()
+        messages.success(request, f'El usuario "{usuarios_hospedados_eliminar.primer_nombre_usr_hospederia}" ha sido eliminado correctamente.')
+        return redirect('listar_hospedados')
+    else:
+        # Si alguien intenta acceder a la eliminación por GET, puedes redirigirlo o mostrar un error.
+        return redirect('listar_hospedados')
+    
+
+def editar_hospedado(request, usuario_id):
+    usuario = get_object_or_404(usuario_hospederia, rut_usr_hospederia=usuario_id)
+
+    if request.method == 'POST':
+        form = UsuarioHospederiaFormEdit(request.POST, instance=usuario)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Usuario actualizado correctamente.")
+            return redirect('listar_hospedados')
+    else:
+        form = UsuarioHospederiaFormEdit(instance=usuario)
+
+    return render(request, 'servicios/editar_hospedados.html', {'form': form, 'usuario': usuario})
+
+def registrar_hospedado(request):  
+    if request.method == 'POST':
+          form = UsuarioHospederiaFormEdit(request.POST)
+          if form.is_valid():
+              user = form.save(commit=False)
+              user.tipo = 'encargado' 
+              user.save()
+              return redirect('index')
+    else:
+        form = UsuarioHospederiaFormEdit()
+
+    return render(request, 'servicios/registrar_hospedado.html', {'form': form})
 
 def iniciar_sesion(request):
     if request.method == 'POST':
