@@ -13,13 +13,16 @@
         <h1>Testing menu</h1>
 
         <div class="botones">
+            {% if not user.is_authenticated %}
             <a class="card" href="{% url 'iniciar_sesion' %}">Iniciar sesión <br>💁‍♂️</a>
+            {% endif %}
+            {% if user.is_authenticated %}
             <a class="card" href="{% url 'registrar_encargado' %}">Registrar encargado <br>👨‍✈️</a>
             <a class="card" href="{% url 'lista_encargados' %}">Listar usuarios <br>🥷</a>
             <a class="card" href="{% url 'subir_usuarios_hospederia' %}">Subir usuarios hospederas (CSV)<br>👨‍🏫</a>
             <a class="card" href="{% url 'listar_hospedados' %}">Listar usuarios en hospedería <br>👨‍🏫</a>
             <a class="card" href="{% url 'registrar_hospedado' %}">Registrar usuario en hospedería <br>👨‍🏫</a>
-
+             {% endif %}
         </div>
 
         <div>
