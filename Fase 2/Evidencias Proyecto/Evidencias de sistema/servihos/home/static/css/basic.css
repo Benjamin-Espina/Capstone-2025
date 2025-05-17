@@ -165,13 +165,3 @@ footer {
   pointer-events: auto;
   max-height: none;
 }
-
-.user-info {
-  transition: margin-top 0.3s ease;
-  margin-top: 0; /* margen sin menú visible */
-}
-
-/* Cuando el menú está visible, margin-top para bajar */
-#menu-botones.show + .user-info {
-  margin-top: 1.5rem;
-}
