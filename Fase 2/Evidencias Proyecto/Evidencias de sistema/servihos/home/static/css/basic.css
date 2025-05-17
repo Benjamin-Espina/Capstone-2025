@@ -34,6 +34,8 @@ body {
 }
 
 
+
+
 header {
     display: flex;
     flex-direction: row;
@@ -54,11 +56,11 @@ footer {
     filter: drop-shadow(0 0 0.5rem var(--var-secondary));
 }
 
-img{
+img {
     display: flex;
 }
 
-.logo{
+.logo {
     display: flex;
     flex-flow: row;
     align-items: center;
@@ -66,7 +68,7 @@ img{
     align-content: center;
 }
 
-marca{
+marca {
     font-size: 2rem;
     font-weight: 700;
     padding: 0 10px;
@@ -74,18 +76,102 @@ marca{
 }
 
 
-main{
+main {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+
+    z-index: 0;
+    position: relative;
 
     background-color: #C7E0E2;
     padding: 15px 20px;
     border-radius: 10px;
- 
 
-    flex-grow: 1;
+    height: 100vh;
+
+    align-self: center;
+    min-width: 80vw;
 }
 
-footer{
+footer {
     padding: 8px 20px;
+}
+
+.card {
+    display: flex;
+    flex-flow: row;
+    border: none;
+    padding: 1rem;
+    font-size: 18px;
+    text-decoration: none;
+    color: #333;
+    background: #f9f9f9;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background 0.2s ease;
+}
+
+.card:hover {
+    background: #e0e0e0;
+}
+
+.sidebar {
+    z-index: 2;
+    position: fixed;
+    min-width: 20vw;
+}
+
+.botones{
+    display: flex;
+    flex-flow: column;
+    gap: 2rem;
+
+    padding: 1rem;
+}
+
+
+.bar1, .bar2, .bar3 {
+  width: 35px;
+  height: 5px;
+  background-color: #333;
+  margin: 6px 0;
+  transition: 0.4s;
+}
+
+/* Rotate first bar */
+.change .bar1 {
+  transform: translate(0, 11px) rotate(-45deg);
+}
+
+/* Fade out the second bar */
+.change .bar2 {opacity: 0;}
+
+/* Rotate last bar */
+.change .bar3 {
+  transform: translate(0, -11px) rotate(45deg);
+}
+
+#menu-botones {
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+#menu-botones.show {
+  transform: scaleY(1);
+  opacity: 1;
+  pointer-events: auto;
+  max-height: none;
+}
+
+.user-info {
+  transition: margin-top 0.3s ease;
+  margin-top: 0; /* margen sin menú visible */
+}
+
+/* Cuando el menú está visible, margin-top para bajar */
+#menu-botones.show + .user-info {
+  margin-top: 1.5rem;
 }
