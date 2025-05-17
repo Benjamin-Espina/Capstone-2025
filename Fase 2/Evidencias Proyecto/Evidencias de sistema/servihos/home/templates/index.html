@@ -1,45 +1,70 @@
-{% extends "_templates/basic_template.html" %}
-{% load static %}
+    {% extends "_templates/basic_template.html" %}
+    {% load static %}
 
-{% block blockhead %}<link rel="stylesheet" href="{% static 'css/index.css' %}">{% endblock %}
-{% block blocktitle %}ServiHos - Testing{% endblock blocktitle %}
+    {% block blockhead %}
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <script src="{% static 'js/index.js' %}"></script>
+    {% endblock %}
+    {% block blocktitle %}ServiHos - Testing{% endblock blocktitle %}
 
-{% block contenido %}
+    {% block contenido %}
 
 
-<main>
+    <main>
 
-    <section>
-        <h1>Testing menu</h1>
-
-        <div class="botones">
+        <section>
+            <!-- Iniciar sesión -->
             {% if not user.is_authenticated %}
+            <h1>Inicie Sesión</h1>
+            <div class="botones">
             <a class="card" href="{% url 'iniciar_sesion' %}">Iniciar sesión <br>💁‍♂️</a>
+            </div>
+            <div>
+                <p>⚠️No se ha iniciado sesión</p>
+            </div>
             {% endif %}
-            {% if user.is_authenticated %}
-            <a class="card" href="{% url 'registrar_encargado' %}">Registrar encargado <br>👨‍✈️</a>
-            <a class="card" href="{% url 'lista_encargados' %}">Listar usuarios <br>🥷</a>
-            <a class="card" href="{% url 'subir_usuarios_hospederia' %}">Subir usuarios hospederas (CSV)<br>👨‍🏫</a>
-            <a class="card" href="{% url 'listar_hospedados' %}">Listar usuarios en hospedería <br>👨‍🏫</a>
-            <a class="card" href="{% url 'registrar_hospedado' %}">Registrar usuario en hospedería <br>👨‍🏫</a>
-             {% endif %}
-        </div>
+            <!-- Fin iniciar sesión -->
 
-        <div>
+            <!-- Segmento del menu que se oculta -->
+            <!-- Menu Icon -->
             {% if user.is_authenticated %}
-            <p class="username">Cuenta: <span style="text-transform: capitalize;"> {{ request.user.get_full_name }}</span>!</p>
-            <p>Tipo: {{ request.user.tipo }} </p>
-            <a class="button" href="{% url 'cerrar_sesion' %}">Cerrar sesión</a>
-            {% else %}
-            <p>⚠️No se ha iniciado sesión</p>
-
+            <div class="container" onclick="myFunction(this)">
+            <div class="bar1"></div>
+            <div class="bar2"></div>
+            <div class="bar3"></div>
+            </div>
             {% endif %}
-        </div>
+            <!-- fin Menu Icon -->
 
-    </section>
+            <section id="menu-botones">
+            <h1>Testing menu</h1>
 
-</main>
+            <div class="botones">
+                <!-- Menú sesión iniciada -->
+                {% if user.is_authenticated %}
+                <a class="card" href="{% url 'registrar_encargado' %}">Registrar encargado <br>👨‍✈️</a>
+                <a class="card" href="{% url 'lista_encargados' %}">Listar usuarios <br>🥷</a>
+                <a class="card" href="{% url 'subir_usuarios_hospederia' %}">Subir usuarios hospederas (CSV)<br>👨‍🏫</a>
+                <a class="card" href="{% url 'listar_hospedados' %}">Listar usuarios en hospedería <br>👨‍🏫</a>
+                <a class="card" href="{% url 'registrar_hospedado' %}">Registrar usuario en hospedería <br>👨‍🏫</a>
+                {% endif %}
+                <!-- Fin Menú sesión iniciada -->
+            </div>
+
+            </section>
+            <!-- Fin del segmento que se oculta -->
+            <div class="user-info"> 
+                {% if user.is_authenticated %}
+                <p class="username">Cuenta: <span style="text-transform: capitalize;"> {{ request.user.get_full_name }}</span>!</p>
+                <p>Tipo: {{ request.user.tipo }} </p>
+                <a class="button" href="{% url 'cerrar_sesion' %}">Cerrar sesión</a>
+                {% endif %}
+            </div>
+
+        </section>
+
+    </main>
 
 
 
-{% endblock contenido %}
+    {% endblock contenido %}
