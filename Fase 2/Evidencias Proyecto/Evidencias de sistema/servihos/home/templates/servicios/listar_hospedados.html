@@ -1,8 +1,13 @@
 {% extends "_templates/basic_template.html" %}
 {% load static %}
 
-{% block blockhead %}<link rel="stylesheet" href="{% static 'css/registrar.css' %}">{% endblock %}
-{% block blocktitle %}ServiHos - Registrar encargado{% endblock blocktitle %}
+{% block blockhead %}
+<link rel="stylesheet" href="{% static 'css/registrar.css' %}">
+<link rel="stylesheet" href="{% static 'css/listar_hospedados.css' %}">
+
+{% endblock %}
+
+{% block blocktitle %}ServiHos - Listar usuarios{% endblock %}
 
 {% block contenido %}
 
@@ -11,55 +16,64 @@
     <section>
         <h1>Listar usuarios</h1>
 
+        <!-- Barra de búsqueda -->
+        <form method="get" action="" class="barra-busqueda">
+            <input type="text" name="busqueda" placeholder="Buscar por RUT o nombre" value="{{ request.GET.busqueda }}">
+            <button type="submit">🔍</button>
+        </form>
+
         {% if usuarios %}
         <table>
             <thead>
                 <tr>
-                    <th>Nombre de Usuario</th>
-                    <th>Email</th>
                     <th>RUT</th>
-                    <th>Tipo</th>
+                    <th>Pasaporte</th>
+                    <th>Primer Nombre</th>
+                    <th>Segundo Nombre</th>
+                    <th>Primer Apellido</th>
+                    <th>Segundo Apellido</th>
+                    <th>Fecha de Nacimiento</th>
+                    <th>Discapacidad</th>
+                    <th>Nacionalidad</th>
+                    <th>Hospedería</th>
+                    <th>Datos para reportes</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 {% for usuario in usuarios %}
-                    <tr>
-                        <td>{{ usuario.rut_usr_hospederia }}</td>
-                        <td>{{ usuario.pasaporte_usr_hospederia }}</td>
-                        <td>{{ usuario.primer_nombre_usr_hospederia }}</td>
-                        <td>{{ usuario.segundo_nombre_usr_hospederia }}</td>
-                        <td>{{ usuario.primer_apellido_usr_hospederia }}</td>
-                        <td>{{ usuario.segundo_apellido_usr_hospederia }}</td>
-                        <td>{{ usuario.fecha_nacimiento_usr_hospederia }}</td>
-                        <td>{{ usuario.id_tipo_discapacidad }}</td>
-                        <td>{{ usuario.nacionalidad_usr_hospederia }}</td>
-                        <td>{{ usuario.id_hospederia }}</td>
-                        <td>{{ usuario.mostrar_en_reportes }}</td>
-                        <td>
-                            <form method="post" action="{% url 'eliminar_hospedados' usuario.rut_usr_hospederia %}">
-                                {% csrf_token %}
-                                <button type="submit">Eliminar</button>
-                            </form>
-                        </td>
-
-                        <td>
-                            <a href="{% url 'editar_hospedado' usuario.rut_usr_hospederia %}">Editar</a>
-                        </td>
-                       
-                    </tr>
+                <tr>
+                    <td>
+                        <a href="{% url 'perfil_usuario' rut_usuario=usuario.rut_usr_hospederia %}">
+                            {{ usuario.rut_usr_hospederia }}
+                        </a>
+                    </td>
+                    <td>{{ usuario.pasaporte_usr_hospederia }}</td>
+                    <td>{{ usuario.primer_nombre_usr_hospederia }}</td>
+                    <td>{{ usuario.segundo_nombre_usr_hospederia }}</td>
+                    <td>{{ usuario.primer_apellido_usr_hospederia }}</td>
+                    <td>{{ usuario.segundo_apellido_usr_hospederia }}</td>
+                    <td>{{ usuario.fecha_nacimiento_usr_hospederia }}</td>
+                    <td>{{ usuario.id_tipo_discapacidad }}</td>
+                    <td>{{ usuario.nacionalidad_usr_hospederia }}</td>
+                    <td>{{ usuario.id_hospederia }}</td>
+                    <td>{{ usuario.mostrar_en_reportes }}</td>
+                    <td>
+                        <form method="post" action="{% url 'eliminar_hospedados' usuario.rut_usr_hospederia %}">
+                            {% csrf_token %}
+                            <button type="submit">Eliminar</button>
+                        </form>
+                        <a href="{% url 'editar_hospedado' usuario.rut_usr_hospederia %}">Editar</a>
+                    </td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
-    {% else %}
+        {% else %}
         <p>No hay usuarios registrados.</p>
-    {% endif %}
-       
-        
-
+        {% endif %}
     </section>
 
 </main>
-
 
 {% endblock contenido %}

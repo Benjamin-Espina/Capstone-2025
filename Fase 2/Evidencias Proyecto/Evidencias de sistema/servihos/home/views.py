@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.db import transaction, IntegrityError
 from datetime import date
 from .models import usuario_hospederia
+from django.db.models import Q
 
 #Importar modelos
 from .models import usuario_hospederia, tipo_discapacidad, hospederia
@@ -63,7 +64,25 @@ def eliminar_ecargados(request, usuario_id):
     
 
 def listar_hospedados(request):
+    busqueda = request.GET.get("busqueda", "").strip()
     usuarios_hospedados = usuario_hospederia.objects.all()
+
+    if busqueda:
+        usuarios_hospedados = usuarios_hospedados.filter(
+            Q(rut_usr_hospederia__icontains=busqueda) |
+            Q(primer_nombre_usr_hospederia__icontains=busqueda) |
+            Q(segundo_nombre_usr_hospederia__icontains=busqueda) |
+            Q(primer_apellido_usr_hospederia__icontains=busqueda) |
+            Q(segundo_apellido_usr_hospederia__icontains=busqueda)
+        )
+
+    context = {
+        'usuarios': usuarios_hospedados,
+        'busqueda': busqueda,
+    }
+
+
+
     return render(request, 'servicios/listar_hospedados.html', {'usuarios': usuarios_hospedados})
 
 def eliminar_hospedados(request, usuario_id):
@@ -227,10 +246,10 @@ def subir_usuarios_hospederia(request):
                             rut_str = rut_str.split('-')[0]
 
                             try:
-                               rut = int(rut_str)
+                                rut = int(rut_str)
                             except (ValueError, TypeError):
-                               errors.append(f"Fila {row_num}: El RUT '{raw_rut}' ('{rut_str}' después de limpieza) no es un número válido.")
-                               continue
+                                errors.append(f"Fila {row_num}: El RUT '{raw_rut}' ('{rut_str}' después de limpieza) no es un número válido.")
+                                continue
                             # --- Fin procesamiento RUT ---
 
 

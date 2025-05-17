@@ -1,0 +1,139 @@
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f6fa;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Contenedor principal */
+main {
+    max-width: 1200px;
+    margin: auto;
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Título principal */
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Barra de búsqueda */
+.barra-busqueda {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.barra-busqueda input[type="text"] {
+    padding: 10px 20px;
+    width: 300px;
+    border-radius: 30px;
+    border: 1px solid #999;
+    outline: none;
+    font-size: 14px;
+    background-color: #f9fbfd;
+}
+
+.barra-busqueda button {
+    margin-left: -35px;
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Tabla de usuarios */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+thead {
+    background-color: #e0e0e0;
+}
+
+th,
+td {
+    padding: 12px 15px;
+    text-align: left;
+    border: 1px solid #ccc;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Botones de acción */
+td form,
+td a {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+td button,
+td a {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    background-color: #b3d9e6;
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+td button:hover,
+td a:hover {
+    background-color: #a0cce0;
+}
+
+/* Responsividad */
+@media screen and (max-width: 768px) {
+    .barra-busqueda input[type="text"] {
+        width: 100%;
+    }
+
+    table,
+    thead,
+    tbody,
+    th,
+    td,
+    tr {
+        display: block;
+    }
+
+    thead {
+        display: none;
+    }
+
+    tr {
+        margin-bottom: 15px;
+    }
+
+    td {
+        padding: 10px;
+        text-align: right;
+        position: relative;
+    }
+
+    td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 50%;
+        padding-left: 15px;
+        font-weight: bold;
+        text-align: left;
+    }
+}
