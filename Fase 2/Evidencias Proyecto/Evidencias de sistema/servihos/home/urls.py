@@ -12,6 +12,7 @@ urlpatterns = [
     path('listar_hospedados/eliminar/<int:usuario_id>/', views.eliminar_hospedados, name='eliminar_hospedados'),
     path('listar_hospedados/editar/<int:usuario_id>/', views.editar_hospedado, name='editar_hospedado'),
     path('registrar_hospedado/', views.registrar_hospedado, name='registrar_hospedado'),
+    path('perfil/<int:rut_usuario>/', views.perfil_usuario, name='perfil_usuario'),
 
 
 ]

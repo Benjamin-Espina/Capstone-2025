@@ -6,6 +6,8 @@ from django.contrib.auth import login, authenticate, logout
 from .forms import customUserCreationForm, subir_CSV_usr_hospederia, UsuarioHospederiaFormEdit
 from django.contrib import messages
 from django.db import transaction, IntegrityError
+from datetime import date
+from .models import usuario_hospederia
 
 #Importar modelos
 from .models import usuario_hospederia, tipo_discapacidad, hospederia
@@ -33,16 +35,16 @@ def index(request):
 @login_required
 @user_passes_test(es_administrador, login_url='iniciar_sesion')
 def registrar_encargado(request):
-      if request.method == 'POST':
-          form = customUserCreationForm(request.POST)
-          if form.is_valid():
-              user = form.save(commit=False)
-              user.tipo = 'encargado' 
-              user.save()
-              return redirect('index')
-      else:
-          form = customUserCreationForm()
-      return render(request, 'autenticacion/registrar_encargado.html', {'form': form})
+    if request.method == 'POST':
+        form = customUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.tipo = 'encargado' 
+            user.save()
+            return redirect('index')
+    else:
+        form = customUserCreationForm()
+    return render(request, 'autenticacion/registrar_encargado.html', {'form': form})
 
 def lista_encargados(request):
     usuarios = obtener_usuarios.objects.filter(tipo='encargado')
@@ -91,12 +93,12 @@ def editar_hospedado(request, usuario_id):
 
 def registrar_hospedado(request):  
     if request.method == 'POST':
-          form = UsuarioHospederiaFormEdit(request.POST)
-          if form.is_valid():
-              user = form.save(commit=False)
-              user.tipo = 'encargado' 
-              user.save()
-              return redirect('index')
+        form = UsuarioHospederiaFormEdit(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.tipo = 'encargado' 
+            user.save()
+            return redirect('index')
     else:
         form = UsuarioHospederiaFormEdit()
 
@@ -120,6 +122,21 @@ def iniciar_sesion(request):
         form = AuthenticationForm()
     return render(request, 'autenticacion/iniciar_sesion.html', {'form': form})
 
+def calcular_edad(fecha_nacimiento):
+    hoy = date.today()
+    return hoy.year - fecha_nacimiento.year - ((hoy.month, hoy.day) < (fecha_nacimiento.month, fecha_nacimiento.day))
+
+def perfil_usuario(request, rut_usuario):
+    usuario = get_object_or_404(usuario_hospederia, rut_usr_hospederia=rut_usuario)
+    edad = calcular_edad(usuario.fecha_nacimiento_usr_hospederia)
+
+    context = {
+        'usuario': usuario,
+        'edad': edad,
+    }
+
+    return render(request, 'servicios/perfil_usuario.html', context)
+
 @login_required
 @user_passes_test(es_administrador, login_url='iniciar_sesion')
 def subir_usuarios_hospederia(request):
@@ -130,8 +147,8 @@ def subir_usuarios_hospederia(request):
             file_extension = file.name.split('.')[-1].lower()
 
             if file_extension not in ['csv', 'xls', 'xlsx']:
-                 messages.error(request, "Tipo de archivo no soportado. Sube un archivo .csv, .xls o .xlsx.")
-                 return render(request, 'servicios/subir_usuarios.html', {'form': form})
+                messages.error(request, "Tipo de archivo no soportado. Sube un archivo .csv, .xls o .xlsx.")
+                return render(request, 'servicios/subir_usuarios.html', {'form': form})
 
             try:
                 file_content = io.BytesIO(file.read())
@@ -140,17 +157,17 @@ def subir_usuarios_hospederia(request):
                     try:
                         df = pd.read_csv(file_content, encoding='utf-8')
                     except Exception:
-                         try:
+                        try:
                             file_content.seek(0)
                             df = pd.read_csv(file_content, encoding='latin-1')
-                         except Exception as e_latin1:
+                        except Exception as e_latin1:
                             messages.error(f"Error al leer el archivo CSV. Asegúrate de que sea un CSV válido y esté codificado en UTF-8 o LATIN-1. Detalles: {e_latin1}")
                             return render(request, 'servicios/subir_usuarios.html', {'form': form})
 
                 elif file_extension in ['xls', 'xlsx']:
-                     try:
+                    try:
                         df = pd.read_excel(file_content)
-                     except Exception as e:
+                    except Exception as e:
                         messages.error(f"Error al leer el archivo Excel. Asegúrate de que sea un archivo .xls o .xlsx válido. Detalles: {e}")
                         return render(request, 'servicios/subir_usuarios.html', {'form': form})
 
@@ -202,8 +219,8 @@ def subir_usuarios_hospederia(request):
                             raw_rut = row.get('rut_usr_hospederia')
 
                             if pd.isna(raw_rut) or str(raw_rut).strip() == '':
-                                 errors.append(f"Fila {row_num}: RUT vacío o inválido.")
-                                 continue
+                                errors.append(f"Fila {row_num}: RUT vacío o inválido.")
+                                continue
 
                             rut_str = str(raw_rut).strip()
                             rut_str = rut_str.replace('.', '')
@@ -256,13 +273,13 @@ def subir_usuarios_hospederia(request):
                                 errors.append(f"Fila {row_num}: Fecha de nacimiento vacía.")
                                 continue
                             try:
-                                 if isinstance(fecha_nacimiento_raw, datetime):
-                                     fecha_nacimiento = fecha_nacimiento_raw.date()
-                                 else:
-                                     # Intentar parsear string asumiendo formato
+                                if isinstance(fecha_nacimiento_raw, datetime):
+                                    fecha_nacimiento = fecha_nacimiento_raw.date()
+                                else:
+                                    # Intentar parsear string asumiendo formato
 
-                                     # Intentar parsear string asumiendo formato YYYY-MM-DD (ajusta si es necesario)
-                                     fecha_nacimiento = datetime.strptime(str(fecha_nacimiento_raw).split(' ')[0], '%Y-%m-%d').date()
+                                    # Intentar parsear string asumiendo formato YYYY-MM-DD (ajusta si es necesario)
+                                    fecha_nacimiento = datetime.strptime(str(fecha_nacimiento_raw).split(' ')[0], '%Y-%m-%d').date()
                             except (ValueError, TypeError):
                                 errors.append(f"Fila {row_num}: Formato de fecha de nacimiento inválido ('{fecha_nacimiento_raw}'). Esperado YYYY-MM-DD.")
                                 continue
@@ -275,25 +292,25 @@ def subir_usuarios_hospederia(request):
                             tipo_discapacidad_obj = None # Default a None
                             # Solo buscamos/creamos si la discapacidad está marcada como True Y se proporciona una descripción
                             if discapacidad:
-                                 tipo_discapacidad_desc = str(row.get('id_tipo_discapacidad', '')).strip()
-                                 if tipo_discapacidad_desc == '':
-                                     # Mantener este error: si hay discapacidad, se debe especificar el tipo
-                                     errors.append(f"Fila {row_num}: Discapacidad marcada como Sí, pero el tipo de discapacidad está vacío.")
-                                     continue # Considera esto un error crítico para la fila
-                                 else:
-                                     try:
-                                         # Usar get_or_create para obtener o crear el TipoDiscapacidad
-                                         # Usamos __iexact para buscar sin importar mayúsculas/minúsculas
-                                         tipo_discapacidad_obj, created_discapacidad = tipo_discapacidad.objects.get_or_create(
-                                             descripcion_tipo_discapacidad__iexact=tipo_discapacidad_desc,
-                                             defaults={'descripcion_tipo_discapacidad': tipo_discapacidad_desc} # Usa la descripción exacta si se crea
-                                         )
-                                         # Opcional: agregar mensaje si se creó un nuevo tipo de discapacidad
-                                         # if created_discapacidad:
-                                         #      messages.info(request, f"Se creó nuevo tipo de discapacidad: '{tipo_discapacidad_desc}'")
-                                     except Exception as e:
-                                          errors.append(f"Fila {row_num}: Error al buscar/crear Tipo Discapacidad '{tipo_discapacidad_desc}'. Detalles: {e}")
-                                          continue # Salta esta fila si falla la creación/búsqueda del FK
+                                tipo_discapacidad_desc = str(row.get('id_tipo_discapacidad', '')).strip()
+                                if tipo_discapacidad_desc == '':
+                                    # Mantener este error: si hay discapacidad, se debe especificar el tipo
+                                    errors.append(f"Fila {row_num}: Discapacidad marcada como Sí, pero el tipo de discapacidad está vacío.")
+                                    continue # Considera esto un error crítico para la fila
+                                else:
+                                    try:
+                                        # Usar get_or_create para obtener o crear el TipoDiscapacidad
+                                        # Usamos __iexact para buscar sin importar mayúsculas/minúsculas
+                                        tipo_discapacidad_obj, created_discapacidad = tipo_discapacidad.objects.get_or_create(
+                                            descripcion_tipo_discapacidad__iexact=tipo_discapacidad_desc,
+                                            defaults={'descripcion_tipo_discapacidad': tipo_discapacidad_desc} # Usa la descripción exacta si se crea
+                                        )
+                                        # Opcional: agregar mensaje si se creó un nuevo tipo de discapacidad
+                                        # if created_discapacidad:
+                                        #      messages.info(request, f"Se creó nuevo tipo de discapacidad: '{tipo_discapacidad_desc}'")
+                                    except Exception as e:
+                                        errors.append(f"Fila {row_num}: Error al buscar/crear Tipo Discapacidad '{tipo_discapacidad_desc}'. Detalles: {e}")
+                                        continue # Salta esta fila si falla la creación/búsqueda del FK
 
                             # --- Buscar o Crear Hospederia (ForeignKey) ---
                             hospederia_obj = None # Default a None
@@ -316,8 +333,8 @@ def subir_usuarios_hospederia(request):
                                     # if created_hospederia:
                                     #      messages.info(request, f"Se creó nueva hospedería: '{hospederia_nombre}'")
                                 except Exception as e:
-                                     errors.append(f"Fila {row_num}: Error al buscar/crear Hospedería '{hospederia_nombre}'. Detalles: {e}")
-                                     continue # Salta esta fila si falla la creación/búsqueda del FK
+                                    errors.append(f"Fila {row_num}: Error al buscar/crear Hospedería '{hospederia_nombre}'. Detalles: {e}")
+                                    continue # Salta esta fila si falla la creación/búsqueda del FK
 
 
                             if nacionalidad == '':
@@ -348,39 +365,39 @@ def subir_usuarios_hospederia(request):
                                 updated_count += 1
 
                         except IntegrityError as e:
-                             errors.append(f"Fila {row_num}: Error de integridad de datos (posible duplicado con RUT {rut} u otro error de base de datos). Detalles: {e}")
+                            errors.append(f"Fila {row_num}: Error de integridad de datos (posible duplicado con RUT {rut} u otro error de base de datos). Detalles: {e}")
                         except Exception as e:
-                             # Capturar cualquier otro error inesperado durante el procesamiento de la fila
-                             errors.append(f"Fila {row_num}: Error inesperado al procesar la fila con RUT {rut}. Detalles: {e}")
+                            # Capturar cualquier otro error inesperado durante el procesamiento de la fila
+                            errors.append(f"Fila {row_num}: Error inesperado al procesar la fila con RUT {rut}. Detalles: {e}")
 
 
                     # Si hay errores registrados, lanzar una excepción para activar el rollback de la transacción
                     if errors:
-                         raise Exception("Errores encontrados durante la importación. Revirtiendo cambios.")
+                        raise Exception("Errores encontrados durante la importación. Revirtiendo cambios.")
 
 
                 # --- Mostrar resultados si la transacción fue exitosa ---
                 if created_count > 0 or updated_count > 0:
                     success_message = f"Proceso de importación finalizado exitosamente: {created_count} usuarios creados"
                     if updated_count > 0:
-                         success_message += f" y {updated_count} usuarios actualizados"
+                        success_message += f" y {updated_count} usuarios actualizados"
                     success_message += "."
                     messages.success(request, success_message)
                 elif not errors: # Si no hubo errores y no se creó/actualizó nada
-                     messages.info(request, "No se procesó ningún usuario (archivo vacío o sin datos válidos/nuevos).")
+                    messages.info(request, "No se procesó ningún usuario (archivo vacío o sin datos válidos/nuevos).")
 
 
             except Exception as e:
-                 # Capturar errores generales (ej: lectura de archivo) o la excepción lanzada para el rollback
-                 messages.error(request, f"Ocurrió un error durante la importación. Detalles: {e}")
-                 # Si hubo errores de fila que causaron el rollback, mostrarlos también
-                 if errors:
-                      messages.error(request, f"Se encontraron los siguientes errores de fila que causaron la reversión:")
-                      # Mostrar solo los primeros errores para evitar una lista enorme
-                      for error in errors[:10]:
-                           messages.warning(request, error)
-                      if len(errors) > 10:
-                           messages.warning(request, f"...y {len(errors) - 10} errores más. Consulta los logs del servidor para ver todos los errores.")
+                # Capturar errores generales (ej: lectura de archivo) o la excepción lanzada para el rollback
+                messages.error(request, f"Ocurrió un error durante la importación. Detalles: {e}")
+                # Si hubo errores de fila que causaron el rollback, mostrarlos también
+                if errors:
+                    messages.error(request, f"Se encontraron los siguientes errores de fila que causaron la reversión:")
+                    # Mostrar solo los primeros errores para evitar una lista enorme
+                    for error in errors[:10]:
+                        messages.warning(request, error)
+                    if len(errors) > 10:
+                        messages.warning(request, f"...y {len(errors) - 10} errores más. Consulta los logs del servidor para ver todos los errores.")
 
 
             # Después de procesar (ya sea éxito o error con mensajes), mostrar la misma página
@@ -391,3 +408,5 @@ def subir_usuarios_hospederia(request):
         form = subir_CSV_usr_hospederia()
 
     return render(request, 'servicios/subir_usuarios.html', {'form': form})
+
+

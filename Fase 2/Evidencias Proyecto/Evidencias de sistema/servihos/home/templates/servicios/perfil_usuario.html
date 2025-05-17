@@ -1,0 +1,80 @@
+{% extends "_templates/basic_template.html" %}
+{% load static %}
+
+{% block blockhead %}
+<link rel="stylesheet" href="{% static 'css/perfil_usuario.css' %}">
+{% endblock %}
+
+{% block blocktitle %}ServiHos - Perfil del Usuario{% endblock %}
+
+{% block contenido %}
+
+<main>
+    <section class="perfil-container">
+        <div class="info-grupo">
+            <div>
+                <p><strong>Nombre:</strong>
+                    {{ usuario.primer_nombre_usr_hospederia }}
+                    {{ usuario.segundo_nombre_usr_hospederia }}
+                    {{ usuario.primer_apellido_usr_hospederia }}
+                    {{ usuario.segundo_apellido_usr_hospederia }}
+                </p>
+                <p><strong>Fecha de nacimiento:</strong> {{ usuario.fecha_nacimiento_usr_hospederia }}</p>
+                <p><strong>Edad:</strong> {{ edad }} años</p>
+                <p><strong>RUT:</strong> {{ usuario.rut_usr_hospederia }}</p>
+                <p><strong>Hospedería:</strong> {{ usuario.id_hospederia.nombre_hospederia }}</p>
+            </div>
+
+            <div>
+                <p><strong>Fecha de registro:</strong> (pendiente)</p>
+                <p><strong>Fecha de ingreso:</strong> (pendiente)</p>
+                <p><strong>Fecha de salida:</strong> (pendiente)</p>
+                <button class="boton" disabled>Registrar entrada/salida</button>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="seccion-servicios">
+            <div class="servicio-item">
+                <label>Alimentación:</label>
+                <select disabled>
+                    <option>Seleccionar</option>
+                </select>
+                <span>Cantidad: 8</span>
+            </div>
+            <div class="servicio-item">
+                <label>Higiene:</label>
+                <select disabled>
+                    <option>Seleccionar</option>
+                </select>
+                <span>Cantidad: 8</span>
+            </div>
+            <div class="servicio-item">
+                <label>Ropería:</label>
+                <select disabled>
+                    <option>Seleccionar</option>
+                </select>
+                <span>Cantidad: 2</span>
+            </div>
+            <div class="servicio-item">
+                <label>Pernoctación:</label>
+                <select disabled>
+                    <option>Seleccionar</option>
+                </select>
+                <span>Cantidad: 10</span>
+            </div>
+            <div class="servicio-item">
+                <label>Asistencia Ambulatoria:</label>
+                <select disabled>
+                    <option>Seleccionar</option>
+                </select>
+                <span>Cantidad: 3</span>
+            </div>
+
+            <button class="boton" disabled>Registrar Servicios</button>
+        </div>
+    </section>
+</main>
+
+{% endblock %}

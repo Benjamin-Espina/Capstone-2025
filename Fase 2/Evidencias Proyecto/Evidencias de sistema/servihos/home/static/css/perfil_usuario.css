@@ -1,0 +1,70 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f6fa;
+    margin: 0;
+    padding: 20px;
+}
+
+.perfil-container {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 800px;
+    margin: auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.info-grupo {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.info-grupo div {
+    flex: 1 1 45%;
+    margin-bottom: 10px;
+}
+
+.info-grupo p {
+    margin: 5px 0;
+    font-size: 15px;
+}
+
+.seccion-servicios {
+    margin-top: 30px;
+}
+
+.servicio-item {
+    margin-bottom: 12px;
+}
+
+.servicio-item label {
+    width: 200px;
+    display: inline-block;
+    font-weight: bold;
+}
+
+.servicio-item select {
+    width: 160px;
+    padding: 4px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.servicio-item span {
+    margin-left: 15px;
+    font-weight: bold;
+}
+
+button.boton {
+    background-color: #b3d9e6;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 5px;
+    margin-top: 15px;
+    font-size: 14px;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
