@@ -1,0 +1,51 @@
+{% block menu %}
+    <section class="sidebar">
+                <!-- Iniciar sesión -->
+                {% if not user.is_authenticated %}
+                <h1>Inicie Sesión</h1>
+                <div class="botones">
+                <a class="card" href="{% url 'iniciar_sesion' %}">Iniciar sesión <br>💁‍♂️</a>
+                </div>
+                <div>
+                    <p>⚠️No se ha iniciado sesión</p>
+                </div>
+                {% endif %}
+                <!-- Fin iniciar sesión -->
+
+                <!-- Segmento del menu que se oculta -->
+                <!-- Menu Icon -->
+                {% if user.is_authenticated %}
+                <div class="container" onclick="myFunction(this)">
+                <div class="bar1"></div>
+                <div class="bar2"></div>
+                <div class="bar3"></div>
+                </div>
+                {% endif %}
+                <!-- fin Menu Icon -->
+
+                <section id="menu-botones">
+                <h1>Testing menu</h1>
+
+                <div class="botones">
+                    <!-- Menú sesión iniciada -->
+                    {% if user.is_authenticated %}
+                    <a class="card" href="{% url 'registrar_encargado' %}">Registrar encargado 👨‍✈️</a>
+                    <a class="card" href="{% url 'lista_encargados' %}">Listar usuarios 🥷</a>
+                    <a class="card" href="{% url 'subir_usuarios_hospederia' %}">Subir usuarios hospederas (CSV) 👨‍🏫</a>
+                    <a class="card" href="{% url 'listar_hospedados' %}">Listar usuarios en hospedería 👨‍🏫</a>
+                    <a class="card" href="{% url 'registrar_hospedado' %}">Registrar usuario en hospedería 👨‍🏫</a>
+                    {% endif %}
+                    <!-- Fin Menú sesión iniciada -->
+                </div>
+                <div class="user-info"> 
+                    {% if user.is_authenticated %}
+                    <p class="username">Cuenta: <span style="text-transform: capitalize;"> {{ request.user.get_full_name }}</span>!</p>
+                    <p>Tipo: {{ request.user.tipo }} </p>
+                    <a class="button" href="{% url 'cerrar_sesion' %}">Cerrar sesión</a>
+                    {% endif %}
+                </div>
+                </section>
+                <!-- Fin del segmento que se oculta -->
+                
+    </section>
+ {% endblock %}

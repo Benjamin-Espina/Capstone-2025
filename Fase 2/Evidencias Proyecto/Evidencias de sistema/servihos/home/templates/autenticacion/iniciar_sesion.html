@@ -1,13 +1,13 @@
 {% extends "_templates/basic_template.html" %}
 {% load static %}
 
-{% block blockhead %}<link rel="stylesheet" href="{% static 'css/registrar.css' %}">{% endblock %}
+{% block blockhead %}<link rel="stylesheet" href="{% static 'css/inic_sesion.css' %}">{% endblock %}
 {% block blocktitle %}ServiHos - Registrar encargado{% endblock blocktitle %}
 
-{% block contenido %}
-<main>
 
-    <section>
+{% block contenido %}
+<main class="login-main">
+    <section class="login-section">
         <h1>Iniciar sesión</h1>
             {% if form.errors %}
                     <div class="error">
@@ -35,6 +35,7 @@
                     {{ form.password.label_tag }}
                     {{ form.password }}
                 </div>
+                <br>
                 <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
             </form>
 
