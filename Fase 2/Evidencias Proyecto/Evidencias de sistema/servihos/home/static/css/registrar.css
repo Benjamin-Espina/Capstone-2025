@@ -12,7 +12,7 @@
 }
 
 .register-main {
-  height: 100vh; /* ocupar toda la ventana */
+  height: fit-content; /* ocupar toda la ventana */
   display: flex;
   justify-content: center; /* centrar horizontal */
   align-items: center;     /* centrar vertical */

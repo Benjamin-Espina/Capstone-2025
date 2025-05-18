@@ -1,5 +1,5 @@
 :root {
-    --var-primary: #0020d3;
+    --var-primary: #A2D4E3;
     --var-secondary: #2C3E50;
 }
 
@@ -23,7 +23,7 @@ body {
 
 .button {
     background-color: var(--var-primary);
-    color: #A2D4E3;
+    color: #232323;
     font-size: 1rem;
     border-radius: 980px;
     padding: 0.3rem 1rem;
