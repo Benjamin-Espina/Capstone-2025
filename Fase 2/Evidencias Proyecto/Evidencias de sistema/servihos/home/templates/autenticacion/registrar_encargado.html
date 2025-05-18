@@ -1,14 +1,20 @@
 {% extends "_templates/basic_template.html" %}
 {% load static %}
 
-{% block blockhead %}<link rel="stylesheet" href="{% static 'css/registrar.css' %}">{% endblock %}
+{% block blockhead %}
+<link rel="stylesheet" href="{% static 'css/registrar.css' %}">
+<script src="{% static 'js/index.js' %}"></script>
+{% endblock %}
+
 {% block blocktitle %}ServiHos - Registrar encargado{% endblock blocktitle %}
 
+{% block menu %}
+    {% include "_templates/menu_template.html" %}
+{% endblock %}
+
 {% block contenido %}
-
-<main>
-
-    <section>
+<main class="register-main">
+    <section class="register-section">
         <h1>Testing menu</h1>
 
         <form method="post">
