@@ -10,3 +10,20 @@
     border-radius: 3px;
     max-width: 20rem;
 }
+
+.register-main {
+  height: fit-content; /* ocupar toda la ventana */
+  display: flex;
+  justify-content: center; /* centrar horizontal */
+  align-items: center;     /* centrar vertical */
+  background-color: #C7E0E2; /* o lo que desees */
+  padding: 15px 20px;
+}
+.register-section {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  max-width: 400px;
+  width: 100%;
+}
