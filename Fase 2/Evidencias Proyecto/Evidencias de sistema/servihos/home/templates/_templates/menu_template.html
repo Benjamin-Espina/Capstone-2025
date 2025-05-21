@@ -41,10 +41,9 @@
         </div>
         <div class="user-info">
             {% if user.is_authenticated %}
-            <p class="username">Cuenta: <span style="text-transform: capitalize;"> {{ request.user.get_full_name
-                    }}</span>!</p>
-            <p>Tipo: {{ request.user.tipo }} </p>
-            <a class="button" href="{% url 'cerrar_sesion' %}">Cerrar sesión</a>
+            <p class="username">Cuenta: <span style="text-transform: capitalize;"> {{ request.user.get_full_name }}</span>!</p>
+                    <p>Tipo: {{ request.user.tipo }} </p>
+                    <a class="button" href="{% url 'cerrar_sesion' %}">Cerrar sesión</a>
             {% endif %}
         </div>
     </section>
