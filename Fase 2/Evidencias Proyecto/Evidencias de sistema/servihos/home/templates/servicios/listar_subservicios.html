@@ -1,0 +1,55 @@
+{% extends "_templates/basic_template.html" %}
+{% load static %}
+
+{% block blockhead %}
+<link rel="stylesheet" href="{% static 'css/listar_subservicios.css' %}">
+{% endblock %}
+
+{% block blocktitle %}Subservicios Registrados{% endblock %}
+
+{% block contenido %}
+<main>
+    <div class="contenedor-subservicios">
+
+        <h2>Subservicios Registrados</h2>
+
+        {% if subservicios %}
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Subservicio</th>
+                    <th>Servicio</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sub in subservicios %}
+                <tr>
+                    <td data-label="ID">{{ sub.id }}</td>
+                    <td data-label="Subservicio">{{ sub.nombre_subservicio }}</td>
+                    <td data-label="Servicio">{{ sub.servicio.nombre_servicio }}</td>
+                    <td data-label="Acción">
+                        <form method="post" action="{% url 'eliminar_subservicio' sub.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit"
+                                onclick="return confirm('¿Estás seguro que deseas eliminar este subservicio?');">
+                                Eliminar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No hay subservicios registrados.</p>
+        {% endif %}
+
+        <div class="crear-subservicio-boton">
+            <a href="{% url 'crear_subservicio' %}">Agregar un nuevo subservicio</a>
+        </div>
+
+    </div>
+</main>
+{% endblock %}

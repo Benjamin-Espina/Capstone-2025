@@ -1,0 +1,47 @@
+{% extends "_templates/basic_template.html" %}
+{% load static %}
+
+{% block blockhead %}
+<link rel="stylesheet" href="{% static 'css/crear_servicio.css' %}">
+{% endblock %}
+
+{% block blocktitle %}Registrar Subservicio{% endblock %}
+
+{% block contenido %}
+<main class="crear-servicio-container">
+    <h2>Registrar un nuevo subservicio</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {# Bloque de errores generales del formulario (como duplicados) #}
+        {% if form.non_field_errors %}
+        <div class="error">
+            {% for error in form.non_field_errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="form-group">
+            <label for="id_nombre_subservicio">Nombre del subservicio</label>
+            {{ form.nombre_subservicio }}
+            {% if form.nombre_subservicio.errors %}
+                <div class="error">{{ form.nombre_subservicio.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_servicio">Servicio asociado</label>
+            {{ form.servicio }}
+            {% if form.servicio.errors %}
+                <div class="error">{{ form.servicio.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-actions">
+            <button type="submit">Guardar</button>
+        </div>
+    </form>
+</main>
+{% endblock %}
