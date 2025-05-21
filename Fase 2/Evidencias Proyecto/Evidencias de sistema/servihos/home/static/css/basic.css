@@ -1,12 +1,17 @@
+/* ====== VARIABLES GLOBALES ====== */
 :root {
     --var-primary: #A2D4E3;
     --var-secondary: #2C3E50;
 }
+/* ====== FIN VARIABLES GLOBALES ====== */
 
+/* ====== CONFIGURACIÓN GLOBAL ====== */
 * {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
+/* ====== FIN CONFIGURACIÓN GLOBAL ====== */
 
+/* ====== ESTILO GENERAL DEL CUERPO ====== */
 body {
     box-sizing: border-box;
     color-scheme: light;
@@ -20,7 +25,17 @@ body {
     gap: 1rem;
     flex-wrap: nowrap;
 }
+/* ====== FIN ESTILO GENERAL DEL CUERPO ====== */
 
+/* ====== CONTENEDOR DE BOTONES ====== */
+.botones{
+    display: flex;
+    flex-flow: column;
+    gap: 2rem;
+
+    padding: 1rem;
+}
+/* ====== ESTILO DE BOTONES ====== */
 .button {
     background-color: var(--var-primary);
     color: #232323;
@@ -32,10 +47,11 @@ body {
     text-decoration: none;
     width: fit-content;
 }
+/* ====== FIN ESTILO DE BOTONES ====== */
 
+/* ====== FIN CONTENEDOR DE BOTONES ====== */
 
-
-
+/* ====== ENCABEZADO Y PIE DE PÁGINA ====== */
 header {
     display: flex;
     flex-direction: row;
@@ -45,7 +61,7 @@ header {
     padding: 15px 20px;
     filter: drop-shadow(0 0 0.5rem var(--var-secondary));
 }
-
+/* Ajuste adicional del footer */
 footer {
     display: flex;
     flex-direction: row;
@@ -54,12 +70,19 @@ footer {
     align-items: center;
     padding: 15px 20px;
     filter: drop-shadow(0 0 0.5rem var(--var-secondary));
+    padding: 8px 20px;
 }
+/* Fin Ajuste adicional del footer */
 
+/* ====== FIN ENCABEZADO Y PIE DE PÁGINA ====== */
+
+/* ====== IMÁGENES ====== */
 img {
     display: flex;
 }
+/* ====== FIN IMÁGENES ====== */
 
+/* ====== CONTENEDOR DE LOGO ====== */
 .logo {
     display: flex;
     flex-flow: row;
@@ -67,15 +90,18 @@ img {
     justify-content: center;
     align-content: center;
 }
+/* ====== FIN CONTENEDOR DE LOGO ====== */
 
+/* ====== ELEMENTO DE MARCA ====== */
 marca {
     font-size: 2rem;
     font-weight: 700;
     padding: 0 10px;
     color: #2C3E50;
 }
+/* ====== FIN ELEMENTO DE MARCA ====== */
 
-
+/* ====== CONTENEDOR PRINCIPAL ====== */
 main {
     flex: 1;
     min-width: 0;
@@ -96,11 +122,9 @@ main {
     min-width: 80vw;
     */
 }
+/* ====== FIN CONTENEDOR PRINCIPAL ====== */
 
-footer {
-    padding: 8px 20px;
-}
-
+/* ====== TARJETAS DE CONTENIDO ====== */
 .card {
     display: flex;
     flex-flow: row;
@@ -114,17 +138,23 @@ footer {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: background 0.2s ease;
 }
-
+/* Efecto al pasar el mouse por encima */
 .card:hover {
     background: #e0e0e0;
 }
+/* Fin Efecto al pasar el mouse por encima */
 
+/* ====== FIN TARJETAS DE CONTENIDO ====== */
+
+/* ====== DISEÑO GENERAL DE PÁGINA ====== */
 .layout {
   display: flex;
   flex-direction: row;
   min-height: 100vh;
 }
+/* ====== FIN DISEÑO GENERAL DE PÁGINA ====== */
 
+/* ====== BARRA LATERAL ====== */
 .sidebar {
     /*z-index: left 0;
     position: absolute;
@@ -134,16 +164,9 @@ footer {
     background-color: #e0f0f0;
     padding: 1rem;
 }
+/* ====== FIN BARRA LATERAL ====== */
 
-.botones{
-    display: flex;
-    flex-flow: column;
-    gap: 2rem;
-
-    padding: 1rem;
-}
-
-
+/* ====== BARRAS DEL MENÚ HAMBURGUESA ====== */
 .bar1, .bar2, .bar3 {
   width: 35px;
   height: 5px;
@@ -151,20 +174,23 @@ footer {
   margin: 6px 0;
   transition: 0.4s;
 }
+/* ====== FIN BARRAS DEL MENÚ HAMBURGUESA ====== */
 
-/* Rotate first bar */
+/* ANIMACIONES AL ACTIVAR EL MENÚ (CON CLASE .change) */
+
+/* Rota la primera barra */
 .change .bar1 {
   transform: translate(0, 11px) rotate(-45deg);
 }
-
-/* Fade out the second bar */
+/* Oculta la segunda barra */
 .change .bar2 {opacity: 0;}
-
-/* Rotate last bar */
+/* Rota la tercera barra */
 .change .bar3 {
   transform: translate(0, -11px) rotate(45deg);
 }
+/* FIN ANIMACIONES AL ACTIVAR EL MENÚ (CON CLASE .change) */
 
+/* ====== MENÚ DESPLEGABLE (HAMBURGUESA) OCULTO POR DEFECTO ====== */
 #menu-botones {
   transform: scaleY(0);
   transform-origin: top;
@@ -172,11 +198,15 @@ footer {
   opacity: 0;
   pointer-events: none;
 }
+/* ====== FIN MENÚ DESPLEGABLE ====== */
 
+
+/* ====== MENÚ DESPLEGABLE VISIBLE AL AGREGAR .show ====== */
 #menu-botones.show {
   transform: scaleY(1);
   opacity: 1;
   pointer-events: auto;
   max-height: none;
 }
-    
+
+/* ====== FIN MENÚ DESPLEGABLE VISIBLE ====== */

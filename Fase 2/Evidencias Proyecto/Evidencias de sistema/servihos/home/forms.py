@@ -2,6 +2,7 @@ from django import forms
 from .models import usuarioCustom, usuario_hospederia
 from django.contrib.auth.forms import UserCreationForm
 
+
 class customUserCreationForm(UserCreationForm):
     rut = forms.IntegerField(
         label='Rut',
