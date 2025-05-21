@@ -1,5 +1,5 @@
-
+/* Contenedor del botón de menú  */
 .container {
-  display: inline-block;
-  cursor: pointer;
+  display: inline-block; /* Permite que el contenedor se ajuste al tamaño de su contenido */
+  cursor: pointer;       /* Cambia el cursor a una mano al pasar sobre el elemento, indicando que es interactivo */
 }
