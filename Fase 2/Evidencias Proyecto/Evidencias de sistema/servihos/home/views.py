@@ -9,6 +9,10 @@ from django.db import transaction, IntegrityError
 from datetime import date
 from .models import usuario_hospederia
 from django.db.models import Q
+from .forms import ServicioForm
+from .models import Servicio
+from .forms import SubServicioForm
+from .models import SubServicio
 
 #Importar modelos
 from .models import usuario_hospederia, tipo_discapacidad, hospederia
@@ -155,6 +159,50 @@ def perfil_usuario(request, rut_usuario):
     }
 
     return render(request, 'servicios/perfil_usuario.html', context)
+
+def crear_servicio(request):
+    if request.method == 'POST':
+        form = ServicioForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('crear_servicio')  # o redirige a una lista si la tienes
+    else:
+        form = ServicioForm()
+    return render(request, 'servicios/crear_servicio.html', {'form': form})
+
+def listar_servicios(request):
+    servicios = Servicio.objects.all()
+    return render(request, 'servicios/listar_servicios.html', {'servicios': servicios})
+
+def eliminar_servicio(request, servicio_id):
+    servicio = get_object_or_404(Servicio, id=servicio_id)
+    if request.method == 'POST':
+        servicio.delete()
+        messages.success(request, 'Servicio eliminado correctamente.')
+        return redirect('listar_servicios')
+    return redirect('listar_servicios')
+
+def crear_subservicio(request):
+    if request.method == 'POST':
+        form = SubServicioForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_subservicios')  # o a donde tú necesites
+    else:
+        form = SubServicioForm()
+    return render(request, 'servicios/crear_subservicio.html', {'form': form})
+
+def listar_subservicios(request):
+    subservicios = SubServicio.objects.select_related('servicio').all()
+    return render(request, 'servicios/listar_subservicios.html', {'subservicios': subservicios})
+
+def eliminar_subservicio(request, subservicio_id):
+    sub = get_object_or_404(SubServicio, id=subservicio_id)
+    if request.method == 'POST':
+        sub.delete()
+        messages.success(request, f"Subservicio '{sub.nombre_subservicio}' eliminado correctamente.")
+    return redirect('listar_subservicios')
+
 
 @login_required
 @user_passes_test(es_administrador, login_url='iniciar_sesion')

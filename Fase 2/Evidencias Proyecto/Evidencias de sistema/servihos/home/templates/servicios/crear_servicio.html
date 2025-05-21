@@ -1,0 +1,27 @@
+{% extends "_templates/basic_template.html" %}
+{% load static %}
+
+{% block blockhead %}
+<link rel="stylesheet" href="{% static 'css/crear_servicio.css' %}">
+{% endblock %}
+
+{% block blocktitle %}Registrar un nuevo servicio{% endblock %}
+
+{% block contenido %}
+<main class="crear-servicio-container">
+    <h2>Registrar un nuevo servicio</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="id_nombre_servicio">Nombre del servicio</label>
+            {{ form.nombre_servicio }}
+        </div>
+
+        <div class="form-actions">
+            <button type="submit">Guardar</button>
+        </div>
+    </form>
+</main>
+{% endblock %}

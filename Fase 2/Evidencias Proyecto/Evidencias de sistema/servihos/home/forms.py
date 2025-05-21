@@ -1,7 +1,8 @@
 from django import forms
 from .models import usuarioCustom, usuario_hospederia
 from django.contrib.auth.forms import UserCreationForm
-
+from .models import Servicio
+from .models import SubServicio
 
 class customUserCreationForm(UserCreationForm):
     rut = forms.IntegerField(
@@ -50,3 +51,45 @@ class UsuarioHospederiaFormEdit(forms.ModelForm):
         widgets = {
             'fecha_nacimiento_usr_hospederia': forms.DateInput(attrs={'type': 'date'}),
         }
+
+
+class ServicioForm(forms.ModelForm):
+    class Meta:
+        model = Servicio
+        fields = ['nombre_servicio']
+        labels = {
+            'nombre_servicio': 'Nombre del servicio',
+        }
+
+    def clean_nombre_servicio(self):
+        nombre = self.cleaned_data['nombre_servicio'].strip().lower()
+        if Servicio.objects.filter(nombre_servicio__iexact=nombre).exists():
+            raise forms.ValidationError("Este servicio ya está registrado.")
+        return self.cleaned_data['nombre_servicio']
+    
+
+class SubServicioForm(forms.ModelForm):
+    class Meta:
+        model = SubServicio
+        fields = ['nombre_subservicio', 'servicio']
+        labels = {
+            'nombre_subservicio': 'Nombre del subservicio',
+            'servicio': 'Servicio asociado'
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        nombre = cleaned_data.get('nombre_subservicio')
+        servicio = cleaned_data.get('servicio')
+
+        if nombre and servicio:
+            existe = SubServicio.objects.filter(
+                servicio=servicio,
+                nombre_subservicio__iexact=nombre.strip()
+            ).exists()
+            if existe:
+                raise forms.ValidationError(
+                    f"Ya existe un subservicio llamado '{nombre}' para el servicio '{servicio}'."
+                )
+        return cleaned_data
+
