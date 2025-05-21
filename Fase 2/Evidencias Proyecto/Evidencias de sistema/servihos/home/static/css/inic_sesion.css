@@ -1,16 +1,20 @@
-
+/* ====== GRUPOS DE CAMPOS DE FORMULARIO ====== */
 .fields, .form-group{
     display: flex;
     flex-flow: column;
     gap: 4px;
 }
+/* ====== FIN GRUPOS DE CAMPOS DE FORMULARIO ====== */
 
+/* ====== ESTILO DE INPUTS DENTRO DE .fields ====== */
 .fields>input{
     border: 1.5px solid var(--var-primary);
     border-radius: 3px;
     max-width: 20rem;
 }
+/* ====== FIN ESTILO DE INPUTS DENTRO DE .fields ====== */
 
+/* ====== CONTENEDOR PRINCIPAL DE LA VISTA DE LOGIN ====== */
 .login-main {
   height: 100vh; /* ocupar toda la ventana */
   display: flex;
@@ -19,6 +23,9 @@
   background-color: #C7E0E2; /* o lo que desees */
   padding: 15px 20px;
 }
+/* ====== FIN CONTENEDOR PRINCIPAL DE LA VISTA DE LOGIN ====== */
+
+/* ====== SECCIÓN DEL FORMULARIO DE LOGIN ====== */
 .login-section {
   background: white;
   padding: 2rem;
@@ -27,3 +34,4 @@
   max-width: 400px;
   width: 100%;
 }
+/* ====== FIN SECCIÓN DEL FORMULARIO DE LOGIN ====== */
