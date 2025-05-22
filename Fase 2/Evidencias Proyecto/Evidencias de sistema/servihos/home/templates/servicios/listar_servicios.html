@@ -1,0 +1,53 @@
+{% extends "_templates/basic_template.html" %}
+{% load static %}
+
+{% block blockhead %}
+<link rel="stylesheet" href="{% static 'css/listar_servicios.css' %}">
+{% endblock %}
+
+{% block blocktitle %}Servicios Registrados{% endblock %}
+
+{% block contenido %}
+<main>
+    <div class="contenedor-servicios">
+
+        <h2>Servicios Registrados</h2>
+
+        {% if servicios %}
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Servicio</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for servicio in servicios %}
+                <tr>
+                    <td data-label="ID">{{ servicio.id }}</td>
+                    <td data-label="Servicio">{{ servicio.nombre_servicio }}</td>
+                    <td data-label="Acción">
+                        <form method="post" action="{% url 'eliminar_servicio' servicio.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit"
+                                onclick="return confirm('¿Estás seguro que deseas eliminar este servicio?');">
+                                Eliminar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No hay servicios registrados.</p>
+        {% endif %}
+
+        <div class="crear-servicio-boton">
+            <a href="{% url 'crear_servicio' %}">Agregar un nuevo servicio</a>
+        </div>
+
+    </div>
+</main>
+{% endblock %}

@@ -59,3 +59,16 @@ class usuario_hospederia(models.Model):
         return self.primer_nombre_usr_hospederia
 
 
+class Servicio(models.Model):
+    nombre_servicio = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.nombre_servicio
+
+class SubServicio(models.Model):
+    nombre_subservicio = models.CharField(max_length=100)
+    servicio = models.ForeignKey(Servicio, on_delete=models.CASCADE, related_name='subservicios')
+
+    def __str__(self):
+        return f"{self.nombre_subservicio} ({self.servicio.nombre_servicio})"
+
