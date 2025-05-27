@@ -3,19 +3,16 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import login, authenticate, logout
-from .forms import customUserCreationForm, subir_CSV_usr_hospederia, UsuarioHospederiaFormEdit
 from django.contrib import messages
 from django.db import transaction, IntegrityError
 from datetime import date
-from .models import usuario_hospederia
 from django.db.models import Q
-from .forms import ServicioForm
-from .models import Servicio
-from .forms import SubServicioForm
-from .models import SubServicio
 
 #Importar modelos
-from .models import usuario_hospederia, tipo_discapacidad, hospederia
+from .models import usuario_hospederia, tipo_discapacidad, hospederia, Servicio, SubServicio, RegistroControlHorario
+
+#Importar formularios
+from .forms import ServicioForm, SubServicioForm, customUserCreationForm, subir_CSV_usr_hospederia, UsuarioHospederiaFormEdit
 
 #Importar ependencies externas
 import pandas as pd
@@ -476,4 +473,73 @@ def subir_usuarios_hospederia(request):
 
     return render(request, 'servicios/subir_usuarios.html', {'form': form})
 
+@login_required
+def registrar_control_horario(request, rut_usuario, tipo_evento):
+    if request.method == 'POST':
+        usuario = get_object_or_404(usuario_hospederia, rut_usr_hospederia=rut_usuario)
+        
+        # Validación básica para evitar registros duplicados rápidos o ilógicos
+        ultimo_registro = RegistroControlHorario.objects.filter(usuario=usuario).order_by('-fecha_hora').first()
 
+        if ultimo_registro and ultimo_registro.tipo_evento == tipo_evento:
+            messages.warning(request, f"El usuario ya tiene un registro de {tipo_evento} reciente.")
+            return redirect('perfil_usuario', rut_usuario=rut_usuario)
+
+
+        RegistroControlHorario.objects.create(
+            usuario=usuario,
+            tipo_evento=tipo_evento,
+            # fecha_hora se autocompleta por auto_now_add=True
+        )
+        messages.success(request, f"Registro de {tipo_evento} para {usuario.primer_nombre_usr_hospederia} guardado exitosamente.")
+        return redirect('perfil_usuario', rut_usuario=rut_usuario)
+    messages.error(request, "Método de solicitud no permitido.")
+    return redirect('perfil_usuario', rut_usuario=rut_usuario)
+
+@login_required
+def listar_registros_control_horario(request):
+    # Obtener todos los registros de control horario, ordenados por fecha y hora descendente
+    registros = RegistroControlHorario.objects.all().order_by('-fecha_hora')
+
+    busqueda_rut = request.GET.get("rut_busqueda", "").strip()
+    busqueda_nombre = request.GET.get("nombre_busqueda", "").strip()
+    tipo_evento_filtro = request.GET.get("tipo_evento_filtro", "").strip()
+    fecha_desde_str = request.GET.get("fecha_desde", "").strip()
+    fecha_hasta_str = request.GET.get("fecha_hasta", "").strip()
+
+    if busqueda_rut:
+        registros = registros.filter(usuario__rut_usr_hospederia__icontains=busqueda_rut)
+    
+    if busqueda_nombre:
+        # Se asume que buscará en primer nombre o primer apellido
+        registros = registros.filter(
+            Q(usuario__primer_nombre_usr_hospederia__icontains=busqueda_nombre) |
+            Q(usuario__primer_apellido_usr_hospederia__icontains=busqueda_nombre)
+        )
+
+    if tipo_evento_filtro and tipo_evento_filtro != 'todos':
+        registros = registros.filter(tipo_evento=tipo_evento_filtro)
+
+    if fecha_desde_str:
+        try:
+            fecha_desde = datetime.strptime(fecha_desde_str, '%Y-%m-%d').date()
+            registros = registros.filter(fecha_hora__date__gte=fecha_desde)
+        except ValueError:
+            messages.error(request, "Formato de fecha 'Desde' inválido. Use AAAA-MM-DD.")
+    
+    if fecha_hasta_str:
+        try:
+            fecha_hasta = datetime.strptime(fecha_hasta_str, '%Y-%m-%d').date()
+            registros = registros.filter(fecha_hora__date__lte=fecha_hasta)
+        except ValueError:
+            messages.error(request, "Formato de fecha 'Hasta' inválido. Use AAAA-MM-DD.")
+
+    context = {
+        'registros': registros,
+        'busqueda_rut': busqueda_rut,
+        'busqueda_nombre': busqueda_nombre,
+        'tipo_evento_filtro': tipo_evento_filtro,
+        'fecha_desde': fecha_desde_str,
+        'fecha_hasta': fecha_hasta_str,
+    }
+    return render(request, 'servicios/listar_registros_control_horario.html', context)

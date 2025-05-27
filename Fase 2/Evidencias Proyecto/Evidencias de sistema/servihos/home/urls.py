@@ -22,5 +22,6 @@ urlpatterns = [
     path('listar_subservicios/', views.listar_subservicios, name='listar_subservicios'),
     path('eliminar_subservicio/<int:subservicio_id>/', views.eliminar_subservicio, name='eliminar_subservicio'),
     path('listar_subservicios/', views.listar_subservicios, name='listar_subservicios'),
-
+    path('hospedados/registrar_control_horario/<int:rut_usuario>/<str:tipo_evento>/', views.registrar_control_horario, name='registrar_control_horario'),
+    path('registros_salida_entrada/', views.listar_registros_control_horario, name='listar_registros_control_horario'), 
 ]

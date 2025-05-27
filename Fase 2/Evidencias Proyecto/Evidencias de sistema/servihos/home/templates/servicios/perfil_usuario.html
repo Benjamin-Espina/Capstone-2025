@@ -29,7 +29,18 @@
                 <p><strong>Fecha de registro:</strong> (pendiente)</p>
                 <p><strong>Fecha de ingreso:</strong> (pendiente)</p>
                 <p><strong>Fecha de salida:</strong> (pendiente)</p>
-                <button class="boton" disabled>Registrar entrada/salida</button>
+
+
+                <form action="{% url 'registrar_control_horario' rut_usuario=usuario.rut_usr_hospederia tipo_evento='entrada' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success btn-lg btn-block">Registrar Entrada</button>
+                </form>
+
+                <form action="{% url 'registrar_control_horario' rut_usuario=usuario.rut_usr_hospederia tipo_evento='salida' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-lg btn-block">Registrar Salida</button>
+                </form>
+
             </div>
         </div>
 
