@@ -70,3 +70,4 @@ class UsuarioHospederiaAdmin(admin.ModelAdmin):
 
 # Registra tu modelo con la clase ModelAdmin personalizada
 admin.site.register(usuario_hospederia, UsuarioHospederiaAdmin)
+admin.site.register(RegistroControlHorario)

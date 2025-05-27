@@ -72,3 +72,38 @@ class SubServicio(models.Model):
     def __str__(self):
         return f"{self.nombre_subservicio} ({self.servicio.nombre_servicio})"
 
+class RegistroControlHorario(models.Model):
+    usuario = models.ForeignKey(
+        'usuario_hospederia',
+        on_delete=models.CASCADE,
+        related_name='registros_control_horario'
+    )
+
+    fecha_hora = models.DateTimeField(
+        auto_now_add=True, # ¡Cambio aquí!
+        blank=False,
+        help_text="Fecha y hora exactas del registro (entrada o salida)."
+    )
+
+    TIPO_EVENTO_CHOICES = [
+        ('entrada', 'Entrada'),
+        ('salida', 'Salida'),
+    ]
+    tipo_evento = models.CharField(
+        max_length=10,
+        choices=TIPO_EVENTO_CHOICES,
+        blank=False,
+        help_text="Indica si es un registro de entrada o salida."
+    )
+
+    notas = models.TextField(
+        blank=True,
+        null=True,
+        help_text="Añade notas adicionales en caso de ser necesario."
+    )
+
+    class Meta:
+        ordering = ['fecha_hora']
+
+    def __str__(self):
+        return f"{self.get_tipo_evento_display()} de {self.usuario.primer_nombre_usr_hospederia} (RUT: {self.usuario.rut_usr_hospederia}) - {self.fecha_hora.strftime('%d-%m-%Y %H:%M')}"
