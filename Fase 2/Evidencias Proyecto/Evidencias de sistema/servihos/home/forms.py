@@ -5,9 +5,9 @@ from .models import Servicio
 from .models import SubServicio
 
 class customUserCreationForm(UserCreationForm):
-    rut = forms.IntegerField(
+    rut = forms.CharField(
         label='Rut',
-        widget=forms.NumberInput(attrs={'class': 'form-control'})
+        widget=forms.TextInput(attrs={'class': 'form-control'})
     )
     first_name = forms.CharField(
         label='Nombre',
