@@ -29,13 +29,18 @@
         <div class="botones">
             <!-- Menú sesión iniciada -->
             {% if user.is_authenticated %}
+
             <a class="card" href="{% url 'registrar_encargado' %}">Registrar encargado </a>
             <a class="card" href="{% url 'lista_encargados' %}">Listar usuarios </a>
             <a class="card" href="{% url 'listar_servicios' %}">Servicios</a>
             <a class="card" href="{% url 'listar_subservicios' %}" class="menu-button">Subservicios</a>
             <a class="card" href="{% url 'subir_usuarios_hospederia' %}">Subir usuarios hospederas (CSV) </a>
+
+            {% elif user.tipo == 'encargado' %}
+
             <a class="card" href="{% url 'listar_hospedados' %}">Listar usuarios en hospedería </a>
             <a class="card" href="{% url 'registrar_hospedado' %}">Registrar usuario en hospedería </a>
+            
             {% endif %}
             <!-- Fin Menú sesión iniciada -->
         </div>
