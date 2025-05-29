@@ -1,8 +1,36 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
+from django.core.validators import MinLengthValidator
+import re
+
+def validate_rut(value):
+    rut = str(value).upper()
+    if not re.match(r'^\d{7,8}-[0-9K]$', rut):
+        raise ValidationError("El RUT debe tener el formato 12345678-9 o 12345678-K (con guion).")
+
+    body, dv = rut.split('-')
+    reverse_digits = map(int, reversed(body))
+    factors = [2, 3, 4, 5, 6, 7] * 2
+    s = sum(d * f for d, f in zip(reverse_digits, factors))
+    res = 11 - (s % 11)
+    if res == 11:
+        expected_dv = '0'
+    elif res == 10:
+        expected_dv = 'K'
+    else:
+        expected_dv = str(res)
+
+    if dv != expected_dv:
+        raise ValidationError("RUT inválido, dígito verificador incorrecto.")
 
 class usuarioCustom(AbstractUser):
-    rut = models.IntegerField (blank=False, unique=True)
+    rut = models.CharField(
+        max_length=10,
+        unique=True,
+        validators=[validate_rut, MinLengthValidator(8)],
+        blank=False
+    )
 
     REQUIRED_FIELDS = ['rut']
 
