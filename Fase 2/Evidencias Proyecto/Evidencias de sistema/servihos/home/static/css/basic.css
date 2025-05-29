@@ -160,7 +160,7 @@ main {
     position: absolute;
     min-width: 20vw;*/
     position: relative; /* ✅ CAMBIADO */
-    width: 250px;
+    width: 180px;
     background-color: #e0f0f0;
     padding: 1rem;
 }

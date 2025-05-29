@@ -28,7 +28,7 @@
 
         <div class="botones">
             <!-- Menú sesión iniciada -->
-            {% if user.is_authenticated %}
+            {% if user.is_authenticated and user.tipo == 'administrador' %}
 
             <a class="card" href="{% url 'registrar_encargado' %}">Registrar encargado </a>
             <a class="card" href="{% url 'lista_encargados' %}">Listar usuarios </a>
