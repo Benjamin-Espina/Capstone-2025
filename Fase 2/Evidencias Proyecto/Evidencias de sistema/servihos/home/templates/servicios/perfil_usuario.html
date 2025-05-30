@@ -24,9 +24,7 @@
                 <p><strong>Fecha de ingreso:</strong> 30/02/1978</p>
                 <p><strong>Fecha de salida:</strong> 30/02/1978</p>
 
-                <form action="{% url 'listar_registros_control_horario' %}" method="get">
-                    <button type="submit" class="boton-accion">Registrar entrada/ <br>Salida</button>
-                </form>
+                <a href="{% url 'registro_usuario_hospederia' usuario.rut_usr_hospederia %}">Editar</a>
             </div>
         </div>
 
