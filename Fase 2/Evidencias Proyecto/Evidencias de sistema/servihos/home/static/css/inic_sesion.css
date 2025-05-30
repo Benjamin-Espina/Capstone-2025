@@ -1,37 +1,66 @@
 /* ====== GRUPOS DE CAMPOS DE FORMULARIO ====== */
-.fields, .form-group{
+.fields,
+.form-group {
     display: flex;
-    flex-flow: column;
+    flex-direction: column;
     gap: 4px;
 }
-/* ====== FIN GRUPOS DE CAMPOS DE FORMULARIO ====== */
 
 /* ====== ESTILO DE INPUTS DENTRO DE .fields ====== */
-.fields>input{
-    border: 1.5px solid var(--var-primary);
+.fields > input {
+    border: 1.5px solid var(--var-primary, #007bff); /* Fallback color */
     border-radius: 3px;
-    max-width: 20rem;
+    padding: 10px;
+    font-size: 1rem;
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
 }
-/* ====== FIN ESTILO DE INPUTS DENTRO DE .fields ====== */
 
 /* ====== CONTENEDOR PRINCIPAL DE LA VISTA DE LOGIN ====== */
 .login-main {
-  height: 100vh; /* ocupar toda la ventana */
-  display: flex;
-  justify-content: center; /* centrar horizontal */
-  align-items: center;     /* centrar vertical */
-  background-color: #C7E0E2; /* o lo que desees */
-  padding: 15px 20px;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #C7E0E2;
+    padding: 15px 20px;
+    box-sizing: border-box;
 }
-/* ====== FIN CONTENEDOR PRINCIPAL DE LA VISTA DE LOGIN ====== */
 
 /* ====== SECCIÓN DEL FORMULARIO DE LOGIN ====== */
 .login-section {
-  background: white;
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  max-width: 400px;
-  width: 100%;
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    box-sizing: border-box;
 }
-/* ====== FIN SECCIÓN DEL FORMULARIO DE LOGIN ====== */
+
+/* ====== MEDIA QUERIES PARA RESPONSIVIDAD ====== */
+@media (max-width: 768px) {
+    .login-section {
+        padding: 1.5rem;
+        max-width: 90%;
+    }
+
+    .fields > input {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-main {
+        padding: 10px;
+    }
+
+    .login-section {
+        padding: 1.2rem;
+    }
+
+    .fields > input {
+        font-size: 0.9rem;
+    }
+}

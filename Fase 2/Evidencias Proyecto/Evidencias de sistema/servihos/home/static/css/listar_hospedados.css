@@ -26,25 +26,29 @@ h1 {
 .barra-busqueda {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
     margin-bottom: 20px;
 }
 
 .barra-busqueda input[type="text"] {
     padding: 10px 20px;
-    width: 300px;
+    width: 100%;
+    max-width: 300px;
     border-radius: 30px;
     border: 1px solid #999;
     outline: none;
     font-size: 14px;
     background-color: #f9fbfd;
+    box-sizing: border-box;
 }
 
 .barra-busqueda button {
-    margin-left: -35px;
     background: none;
     border: none;
     font-size: 16px;
     cursor: pointer;
+    color: #555;
 }
 
 /* Tabla de usuarios */
@@ -98,42 +102,3 @@ td a:hover {
     background-color: #a0cce0;
 }
 
-/* Responsividad */
-@media screen and (max-width: 768px) {
-    .barra-busqueda input[type="text"] {
-        width: 100%;
-    }
-
-    table,
-    thead,
-    tbody,
-    th,
-    td,
-    tr {
-        display: block;
-    }
-
-    thead {
-        display: none;
-    }
-
-    tr {
-        margin-bottom: 15px;
-    }
-
-    td {
-        padding: 10px;
-        text-align: right;
-        position: relative;
-    }
-
-    td::before {
-        content: attr(data-label);
-        position: absolute;
-        left: 10px;
-        width: 50%;
-        padding-left: 15px;
-        font-weight: bold;
-        text-align: left;
-    }
-}
