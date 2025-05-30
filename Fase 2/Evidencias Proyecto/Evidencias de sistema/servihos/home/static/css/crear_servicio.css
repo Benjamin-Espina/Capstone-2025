@@ -6,6 +6,7 @@
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.06);
     text-align: center;
+    box-sizing: border-box;
 }
 
 .crear-servicio-container h2 {
@@ -50,6 +51,8 @@ button[type="submit"] {
     font-size: 1em;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 button[type="submit"]:hover {
@@ -57,12 +60,33 @@ button[type="submit"]:hover {
     border-color: #5589a5;
 }
 
+/* ====== MEDIA QUERIES PARA RESPONSIVIDAD ====== */
+@media (max-width: 768px) {
+    .crear-servicio-container {
+        margin: 40px auto;
+        padding: 25px 16px;
+        max-width: 90%;
+    }
+
+    .crear-servicio-container h2 {
+        font-size: 1.4em;
+    }
+}
+
 @media (max-width: 480px) {
     .crear-servicio-container {
-        width: 90%;
+        padding: 20px 14px;
+    }
+
+    .form-group label {
+        font-size: 0.95em;
+    }
+
+    .form-group input[type="text"] {
+        font-size: 0.95em;
     }
 
     button[type="submit"] {
-        width: 100%;
+        font-size: 0.95em;
     }
 }

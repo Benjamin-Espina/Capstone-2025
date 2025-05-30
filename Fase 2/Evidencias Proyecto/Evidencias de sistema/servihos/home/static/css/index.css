@@ -1,5 +1,29 @@
-/* Contenedor del botón de menú  */
-.container {
-  display: inline-block; /* Permite que el contenedor se ajuste al tamaño de su contenido */
-  cursor: pointer;       /* Cambia el cursor a una mano al pasar sobre el elemento, indicando que es interactivo */
+/* Contenedor del botón de menú */
+.menu-toggle-container {
+  display: inline-block;
+  cursor: pointer;
+  padding: 10px;
 }
+
+/* Las tres líneas del ícono de hamburguesa */
+.menu-toggle-container .bar {
+  width: 25px;
+  height: 3px;
+  background-color: #333;
+  margin: 4px 0;
+  transition: 0.4s;
+}
+
+/* Opcional: animación para cuando está activo */
+.menu-toggle-container.active .bar:nth-child(1) {
+  transform: rotate(-45deg) translate(-5px, 6px);
+}
+
+.menu-toggle-container.active .bar:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-toggle-container.active .bar:nth-child(3) {
+  transform: rotate(45deg) translate(-5px, -6px);
+}
+
