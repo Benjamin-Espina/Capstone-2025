@@ -1,0 +1,77 @@
+{% extends "_templates/basic_template.html" %}
+{% load static %}
+
+{% block blockhead %}
+<link rel="stylesheet" href="{% static 'css/perfil_usuario.css' %}">
+{% endblock %}
+
+{% block blocktitle %}ServiHos - Registrar entrada/salida{% endblock %}
+
+{% block contenido %}
+<main>
+    <section class="perfil-container">
+        <h1>Registrar Horario</h1>
+        <div class="info-grupo" style="display: flex; flex-flow: column !important;">
+            <h3>Próximo registro teórico</h3> <br>
+            <p><strong>Entrada:</strong> {{ preview_entrada|date:"d/m/Y H:i" }}</p>
+            <p><strong>Salida:</strong> {{ preview_salida|date:"d/m/Y H:i" }}</p>
+            {% if error_msg %}
+                <div class="alert alert-danger">{{ error_msg }}</div>
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                <h4>Servicios y Subservicios utilizados:</h4>
+                {% for servicio in servicios %}
+                    <div>
+                        <strong>{{ servicio.nombre_servicio }}</strong>
+                        <ul style="list-style: none;">
+                            {% for sub in servicio.subservicios.all %}
+                                <li>
+                                    <label>
+                                        <input type="checkbox" name="subservicios" value="{{ sub.id }}">
+                                        {{ sub.nombre_subservicio }}
+                                    </label>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary" {% if existe_registro_hoy %}disabled{% endif %}>
+                    Registrar horario
+                </button>
+            </form>
+        </div>
+        <div class="info-grupo" style="display: flex; flex-flow: column !important;">
+            <h2>Registros de horario</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha de Entrada</th>
+                        <th>Fecha de Salida</th>
+                        <th>Subservicios utilizados</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for registro in registros %}
+                    <tr>
+                        <td>{{ registro.hora_entrada|date:"d/m/Y H:i" }}</td>
+                        <td>{{ registro.hora_salida|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            {% for reg_sub in registro.registro_subservicios.all %}
+                                {{ reg_sub.subservicio.nombre_subservicio }}{% if not forloop.last %}, {% endif %}
+                            {% empty %}
+                                Ninguno
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3">No hay registros de horario.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+{% endblock %}
