@@ -1,8 +1,8 @@
 /* Contenedor general vertical */
 .contenedor-servicios {
-    display: block;
     width: 100%;
     padding: 20px;
+    box-sizing: border-box;
 }
 
 /* Título */
@@ -16,7 +16,6 @@
 table {
     width: 100%;
     border-collapse: collapse;
-    margin: 0 auto;
     margin-bottom: 30px;
 }
 
@@ -53,6 +52,7 @@ button[type="submit"]:hover {
 /* Botón de agregar servicio */
 .crear-servicio-boton {
     text-align: center;
+    margin-top: 20px;
 }
 
 .crear-servicio-boton a {
@@ -72,9 +72,8 @@ button[type="submit"]:hover {
     border-color: #5589a5;
 }
 
-/* 📱 Responsivo para pantallas pequeñas */
-@media (max-width: 768px) {
-
+/* 📱 Responsividad para pantallas pequeñas */
+@media screen and (max-width: 768px) {
     table,
     thead,
     tbody,
@@ -91,28 +90,38 @@ button[type="submit"]:hover {
 
     table tr {
         margin-bottom: 15px;
-        border-bottom: 1px solid #ccc;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        overflow: hidden;
     }
 
     table td {
         text-align: right;
         padding-left: 50%;
         position: relative;
+        border: none;
+        border-bottom: 1px solid #eee;
     }
 
     table td::before {
         content: attr(data-label);
         position: absolute;
-        left: 10px;
-        width: 45%;
-        padding-right: 10px;
-        text-align: left;
+        left: 15px;
+        top: 10px;
         font-weight: bold;
+        text-align: left;
+        white-space: nowrap;
+        color: #444;
+    }
+
+    table td:last-child {
+        border-bottom: none;
     }
 
     .crear-servicio-boton a {
         width: 90%;
-        display: inline-block;
-        font-size: 1em;
+        display: block;
+        margin: auto;
     }
 }
