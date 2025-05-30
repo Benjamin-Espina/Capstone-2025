@@ -7,9 +7,10 @@ from django.contrib import messages
 from django.db import transaction, IntegrityError
 from datetime import date
 from django.db.models import Q
+from django.utils import timezone
 
 #Importar modelos
-from .models import usuario_hospederia, tipo_discapacidad, hospederia, Servicio, SubServicio, RegistroControlHorario
+from .models import usuario_hospederia, tipo_discapacidad, hospederia, Servicio, SubServicio, registroHorarioHospederia, fun_HorarioEntrada, fun_HorarioSalida, RegistroSubServicio
 
 #Importar formularios
 from .forms import ServicioForm, SubServicioForm, customUserCreationForm, subir_CSV_usr_hospederia, UsuarioHospederiaFormEdit
@@ -473,6 +474,8 @@ def subir_usuarios_hospederia(request):
 
     return render(request, 'servicios/subir_usuarios.html', {'form': form})
 
+
+"""
 @login_required
 def registrar_control_horario(request, rut_usuario, tipo_evento):
     if request.method == 'POST':
@@ -495,11 +498,15 @@ def registrar_control_horario(request, rut_usuario, tipo_evento):
         return redirect('perfil_usuario', rut_usuario=rut_usuario)
     messages.error(request, "Método de solicitud no permitido.")
     return redirect('perfil_usuario', rut_usuario=rut_usuario)
+"""
+
+
+
 
 @login_required
 def listar_registros_control_horario(request):
     # Obtener todos los registros de control horario, ordenados por fecha y hora descendente
-    registros = RegistroControlHorario.objects.all().order_by('-fecha_hora')
+    registros = registroHorarioHospederia.objects.all().order_by('-fecha_hora')
 
     busqueda_rut = request.GET.get("rut_busqueda", "").strip()
     busqueda_nombre = request.GET.get("nombre_busqueda", "").strip()
@@ -543,3 +550,40 @@ def listar_registros_control_horario(request):
         'fecha_hasta': fecha_hasta_str,
     }
     return render(request, 'servicios/listar_registros_control_horario.html', context)
+
+@login_required
+def registro_usuario_hospederia(request, usuario_id):
+    usuario_hospedado = get_object_or_404(usuario_hospederia, rut_usr_hospederia=usuario_id)
+    registros = registroHorarioHospederia.objects.filter(usuario=usuario_hospedado).order_by('-hora_entrada')
+    servicios = Servicio.objects.prefetch_related('subservicios').all()
+
+    preview_entrada = fun_HorarioEntrada()
+    preview_salida = fun_HorarioSalida()
+    existe_registro_hoy = registroHorarioHospederia.objects.filter(
+        usuario=usuario_hospedado,
+        hora_entrada__date=preview_entrada.date()
+    ).exists()
+    error_msg = None
+
+    if request.method == 'POST':
+        if existe_registro_hoy:
+            error_msg = "Ya existe un registro de horario para este día."
+        else:
+            # 1. Crear el registro de horario
+            registro = registroHorarioHospederia.objects.create(usuario=usuario_hospedado)
+            # 2. Guardar los subservicios seleccionados
+            subservicios_ids = request.POST.getlist('subservicios')
+            for sub_id in subservicios_ids:
+                subservicio = SubServicio.objects.get(id=sub_id)
+                RegistroSubServicio.objects.create(registro=registro, subservicio=subservicio)
+            return redirect('registro_usuario_hospederia', usuario_id=usuario_id)
+
+    return render(request, 'servicios/registro_usuario_hospederia.html', {
+        'usuario_hospederia': usuario_hospedado,
+        'registros': registros,
+        'preview_entrada': preview_entrada,
+        'preview_salida': preview_salida,
+        'error_msg': error_msg,
+        'existe_registro_hoy': existe_registro_hoy,
+        'servicios': servicios,
+    })

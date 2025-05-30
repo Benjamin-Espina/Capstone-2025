@@ -2,8 +2,10 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.core.validators import MinLengthValidator
+import datetime
 import re
 
+#Validacion de rut
 def validate_rut(value):
     rut = str(value).upper()
     if not re.match(r'^\d{7,8}-[0-9K]$', rut):
@@ -24,6 +26,7 @@ def validate_rut(value):
     if dv != expected_dv:
         raise ValidationError("RUT inválido, dígito verificador incorrecto.")
 
+#Usuario personalizado del usuario por default de Django
 class usuarioCustom(AbstractUser):
     rut = models.CharField(
         max_length=10,
@@ -70,7 +73,12 @@ class hospederia(models.Model):
         return self.nombre_hospederia    
 
 class usuario_hospederia(models.Model):
-    rut_usr_hospederia = models.IntegerField(primary_key=True,blank=False, unique=True)
+    rut_usr_hospederia = models.CharField(
+        primary_key=True,
+        max_length=10,
+        validators=[validate_rut, MinLengthValidator(8)],
+        blank=False, 
+        unique=True)
     pasaporte_usr_hospederia = models.CharField(max_length=25, blank=False)
     primer_nombre_usr_hospederia = models.CharField(max_length=25, blank=False)
     segundo_nombre_usr_hospederia = models.CharField(max_length=25, blank=False)
@@ -94,44 +102,45 @@ class Servicio(models.Model):
         return self.nombre_servicio
 
 class SubServicio(models.Model):
-    nombre_subservicio = models.CharField(max_length=100)
     servicio = models.ForeignKey(Servicio, on_delete=models.CASCADE, related_name='subservicios')
+    nombre_subservicio = models.CharField(max_length=100)
 
     def __str__(self):
         return f"{self.nombre_subservicio} ({self.servicio.nombre_servicio})"
 
-class RegistroControlHorario(models.Model):
+
+#Funciones para calcular los horarios de entrada/salida
+def fun_HorarioEntrada():
+    ahora = datetime.datetime.now()
+    return ahora.replace(hour=18, minute=0, second=0)
+
+def fun_HorarioSalida():
+    manana = datetime.date.today() + datetime.timedelta(days=1)
+    return datetime.datetime.combine(manana, datetime.time(hour=8, minute=30, second=0))
+
+
+class registroHorarioHospederia(models.Model):
     usuario = models.ForeignKey(
         'usuario_hospederia',
         on_delete=models.CASCADE,
-        related_name='registros_control_horario'
+        related_name='registro_horario_hospederia'
     )
-
-    fecha_hora = models.DateTimeField(
-        auto_now_add=True, # ¡Cambio aquí!
-        blank=False,
-        help_text="Fecha y hora exactas del registro (entrada o salida)."
-    )
-
-    TIPO_EVENTO_CHOICES = [
-        ('entrada', 'Entrada'),
-        ('salida', 'Salida'),
-    ]
-    tipo_evento = models.CharField(
-        max_length=10,
-        choices=TIPO_EVENTO_CHOICES,
-        blank=False,
-        help_text="Indica si es un registro de entrada o salida."
-    )
-
-    notas = models.TextField(
+    
+    hora_entrada = models.DateTimeField(
+        default=  fun_HorarioEntrada,
         blank=True,
-        null=True,
-        help_text="Añade notas adicionales en caso de ser necesario."
-    )
-
-    class Meta:
-        ordering = ['fecha_hora']
+        null=True)
+    
+    hora_salida = models.DateTimeField(
+        default= fun_HorarioSalida,
+        blank=True,
+        null=True)
 
     def __str__(self):
-        return f"{self.get_tipo_evento_display()} de {self.usuario.primer_nombre_usr_hospederia} (RUT: {self.usuario.rut_usr_hospederia}) - {self.fecha_hora.strftime('%d-%m-%Y %H:%M')}"
+        return f"{self.usuario.primer_nombre_usr_hospederia} {self.usuario.primer_apellido_usr_hospederia} - {self.hora_entrada} - {self.hora_salida}"
+    
+
+class RegistroSubServicio(models.Model):
+    registro = models.ForeignKey('registroHorarioHospederia', on_delete=models.CASCADE, related_name='registro_subservicios')
+    subservicio = models.ForeignKey('SubServicio', on_delete=models.CASCADE)
+    
