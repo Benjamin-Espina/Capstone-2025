@@ -39,17 +39,3 @@
     box-sizing: border-box;
 }
 /* ====== FIN CONTENEDOR DEL FORMULARIO DE REGISTRO ====== */
-
-/* ====== MEDIA QUERY PARA PANTALLAS PEQUEÑAS ====== */
-@media (max-width: 480px) {
-    .register-section {
-        padding: 1.2rem;
-    }
-
-    .fields > input {
-        font-size: 16px;
-    }
-}
-html, body {
-    height: 100%;
-}

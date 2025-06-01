@@ -32,14 +32,14 @@
                 <tr>
                     <th>RUT</th>
                     <th>Pasaporte</th>
-                    <th>Primer Nombre</th>
-                    <th>Segundo Nombre</th>
+                    <th>Nombre Completo</th>
+                   <!--  <th>Segundo Nombre</th>
                     <th>Primer Apellido</th>
-                    <th>Segundo Apellido</th>
+                    <th>Segundo Apellido</th> -->
                     <th>Fecha de Nacimiento</th>
                     <th>Discapacidad</th>
                     <th>Nacionalidad</th>
-                    <th>Hospedería</th>
+                     <!--  <th>Hospedería</th> -->
                     <th>Datos para reportes</th>
                     <th>Acciones</th>
                 </tr>
@@ -53,20 +53,22 @@
                         </a>
                     </td>
                     <td>{{ usuario.pasaporte_usr_hospederia }}</td>
-                    <td>{{ usuario.primer_nombre_usr_hospederia }}</td>
-                    <td>{{ usuario.segundo_nombre_usr_hospederia }}</td>
-                    <td>{{ usuario.primer_apellido_usr_hospederia }}</td>
-                    <td>{{ usuario.segundo_apellido_usr_hospederia }}</td>
+                    <td>{{ usuario.primer_nombre_usr_hospederia }} {{ usuario.segundo_nombre_usr_hospederia }} {{ usuario.primer_apellido_usr_hospederia }} {{ usuario.segundo_apellido_usr_hospederia }}</td>
+                    <!-- <td>{{ usuario.segundo_nombre_usr_hospederia }}</td>
+                         <td>{{ usuario.primer_apellido_usr_hospederia }}</td>
+                         <td>{{ usuario.segundo_apellido_usr_hospederia }}</td> -->
                     <td>{{ usuario.fecha_nacimiento_usr_hospederia }}</td>
                     <td>{{ usuario.id_tipo_discapacidad }}</td>
                     <td>{{ usuario.nacionalidad_usr_hospederia }}</td>
-                    <td>{{ usuario.id_hospederia }}</td>
+                    <!-- <td>{{ usuario.id_hospederia }}</td> -->
                     <td>{{ usuario.mostrar_en_reportes }}</td>
                     <td>
                         <form method="post" action="{% url 'eliminar_hospedados' usuario.rut_usr_hospederia %}">
                             {% csrf_token %}
                             <button type="submit">Eliminar</button>
                         </form>
+                        <br>
+                        <br>
                         <a href="{% url 'editar_hospedado' usuario.rut_usr_hospederia %}">Editar</a>
                     </td>
                 </tr>

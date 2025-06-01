@@ -7,14 +7,26 @@ body {
 }
 
 /* Contenedor principal */
-main {
+/* main {
     max-width: 1200px;
     margin: auto;
     background-color: #ffffff;
     padding: 25px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+} */
+
+main {
+    max-width: 1200px;
+    margin: 40px auto;
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
 }
+
+
 
 /* Título principal */
 h1 {
