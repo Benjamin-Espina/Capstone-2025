@@ -1,0 +1,53 @@
+{% extends "_templates/basic_template.html" %}
+{% load static %}
+
+{% block blockhead %}
+<link rel="stylesheet" href="{% static 'css/historial_registros.css' %}">
+{% endblock %}
+
+{% block blocktitle %}Historial de ingreso{% endblock %}
+
+{% block contenido %}
+<main>
+    <section class="perfil-container">
+        <h2>Historial de ingreso de {{ usuario.primer_nombre_usr_hospederia }} {{ usuario.primer_apellido_usr_hospederia }}</h2>
+
+        <table class="tabla-historial">
+            <thead>
+                <tr>
+                    <th>Fecha de ingreso</th>
+                    <th>Fecha de salida</th>
+                    <th>Alimentación</th>
+                    <th>Higiene</th>
+                    <th>Ropería</th>
+                    <th>Pernoctación</th>
+                    <th>Asistencia Ambulatoria</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for registro in historial %}
+                <tr>
+                    <td>{{ registro.hora_entrada|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        {% if registro.hora_salida %}
+                            {{ registro.hora_salida|date:"d/m/Y H:i" }}
+                        {% else %}
+                            Sin salida
+                        {% endif %}
+                    </td>
+                    <td>-</td> <!-- Aquí irá Alimentación -->
+                    <td>-</td> <!-- Aquí irá Higiene -->
+                    <td>-</td> <!-- Aquí irá Ropería -->
+                    <td>-</td> <!-- Aquí irá Pernoctación -->
+                    <td>-</td> <!-- Aquí irá Asistencia Ambulatoria -->
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7">No hay registros disponibles.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</main>
+{% endblock %}

@@ -151,9 +151,13 @@ def perfil_usuario(request, rut_usuario):
     usuario = get_object_or_404(usuario_hospederia, rut_usr_hospederia=rut_usuario)
     edad = calcular_edad(usuario.fecha_nacimiento_usr_hospederia)
 
+    # Buscar el último registro de horario si existe
+    ultimo_registro = registroHorarioHospederia.objects.filter(usuario=usuario).order_by('-hora_entrada').first()
+
     context = {
         'usuario': usuario,
         'edad': edad,
+        'ultimo_registro': ultimo_registro,
     }
 
     return render(request, 'servicios/perfil_usuario.html', context)
@@ -200,6 +204,17 @@ def eliminar_subservicio(request, subservicio_id):
         sub.delete()
         messages.success(request, f"Subservicio '{sub.nombre_subservicio}' eliminado correctamente.")
     return redirect('listar_subservicios')
+
+
+def historial_registros_usuario(request, rut_usuario):
+    usuario = get_object_or_404(usuario_hospederia, rut_usr_hospederia=rut_usuario)
+    historial = registroHorarioHospederia.objects.filter(usuario=usuario).order_by('-hora_entrada')
+
+    context = {
+        'usuario': usuario,
+        'historial': historial
+    }
+    return render(request, 'servicios/historial_registros.html', context)
 
 
 @login_required

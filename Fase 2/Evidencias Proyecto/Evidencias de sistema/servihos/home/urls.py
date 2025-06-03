@@ -24,5 +24,7 @@ urlpatterns = [
     path('listar_subservicios/', views.listar_subservicios, name='listar_subservicios'),   # path('hospedados/registrar_control_horario/<int:rut_usuario>/<str:tipo_evento>/', views.registrar_control_horario, name='registrar_control_horario'),
     path('registros_salida_entrada/', views.listar_registros_control_horario, name='listar_registros_control_horario'), 
     path('registro_usuario_hospederia/<str:usuario_id>/', views.registro_usuario_hospederia, name='registro_usuario_hospederia'),
-
+    path('hospedados/historial_registros/<int:rut_usuario>/', views.historial_registros_usuario, name='historial_registros_usuario'),
+    path('historial_registros/<int:rut_usuario>/', views.historial_registros_usuario, name='historial_registros_usuario'),
 ]
+    
