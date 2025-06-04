@@ -1,0 +1,136 @@
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f6fa;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Contenedor principal */
+/* main {
+    max-width: 1200px;
+    margin: auto;
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+} */
+
+main {
+    max-width: 1200px;
+    margin: 10px auto 20px auto; /* 🔽 Reducido el margen superior */
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+}
+
+/* Título principal */
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+
+/* Tabla de usuarios */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+thead {
+    background-color: #e0e0e0;
+}
+
+th,
+td {
+    padding: 12px 15px;
+    text-align: left;
+    border: 1px solid #ccc;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Botones de acción */
+td form,
+td a {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+td button,
+td a {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    background-color: #b3d9e6;
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+td button:hover,
+td a:hover {
+    background-color: #a0cce0;
+}
+
+@media (max-width: 1024px) {
+    .layout.contenido-principal {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .sidebar {
+        width: 90%;
+        max-width: 400px;
+        margin-bottom: 20px;
+    }
+
+    main {
+        width: 95%;
+        padding: 15px;
+        margin: 0 auto;
+    }
+
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    thead, tbody, th, td, tr {
+        white-space: nowrap;
+    }
+
+    .barra-busqueda {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .barra-busqueda input[type="text"] {
+        width: 90%;
+    }
+
+    .barra-busqueda button {
+        font-size: 20px;
+        margin-top: 5px;
+    }
+
+    td button, td a {
+        display: block;
+        width: 100%;
+        margin-bottom: 5px;
+        text-align: center;
+    }
+}
