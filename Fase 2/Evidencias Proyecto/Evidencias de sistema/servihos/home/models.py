@@ -107,6 +107,22 @@ class SubServicio(models.Model):
 
     def __str__(self):
         return f"{self.nombre_subservicio} ({self.servicio.nombre_servicio})"
+    
+class RegistroSubServicio(models.Model):
+    registro = models.ForeignKey('registroHorarioHospederia', on_delete=models.CASCADE, related_name='registro_subservicios')
+    subservicio = models.ForeignKey('SubServicio', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.subservicio} para {self.registro}"
+    
+# Servicios sin subservicios (Higiene, Ropería, etc.)
+class RegistroServicioSimple(models.Model):
+    registro = models.ForeignKey('registroHorarioHospederia', on_delete=models.CASCADE, related_name='registro_servicios_simples')
+    servicio = models.ForeignKey('Servicio', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.servicio.nombre_servicio} usado en {self.registro}"
+    
 
 
 #Funciones para calcular los horarios de entrada/salida
@@ -140,7 +156,3 @@ class registroHorarioHospederia(models.Model):
         return f"{self.usuario.primer_nombre_usr_hospederia} {self.usuario.primer_apellido_usr_hospederia} - {self.hora_entrada} - {self.hora_salida}"
     
 
-class RegistroSubServicio(models.Model):
-    registro = models.ForeignKey('registroHorarioHospederia', on_delete=models.CASCADE, related_name='registro_subservicios')
-    subservicio = models.ForeignKey('SubServicio', on_delete=models.CASCADE)
-    

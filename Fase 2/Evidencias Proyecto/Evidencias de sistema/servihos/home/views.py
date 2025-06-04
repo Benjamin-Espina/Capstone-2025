@@ -216,6 +216,58 @@ def historial_registros_usuario(request, rut_usuario):
     }
     return render(request, 'servicios/historial_registros.html', context)
 
+from .models import RegistroSubServicio, RegistroServicioSimple, Servicio, SubServicio
+
+def registro_usuario_hospederia(request, rut_usuario):
+    usuario = get_object_or_404(usuario_hospederia, rut_usr_hospederia=rut_usuario)
+
+    # Calcular entrada/salida teórica
+    preview_entrada = fun_HorarioEntrada()
+    preview_salida = fun_HorarioSalida()
+
+    # Verifica si ya hay registro hoy
+    existe_registro_hoy = registroHorarioHospederia.objects.filter(
+        usuario=usuario,
+        hora_entrada__date=timezone.localdate()
+    ).exists()
+
+    if request.method == 'POST' and not existe_registro_hoy:
+        registro = registroHorarioHospederia.objects.create(usuario=usuario)
+
+        # Manejo de subservicios con select
+        for servicio in Servicio.objects.all():
+            value = request.POST.get(f'servicio_{servicio.id}')
+            if value:
+                if value == 'ambos':
+                    for sub in servicio.subservicios.all():
+                        RegistroSubServicio.objects.create(registro=registro, subservicio=sub)
+                elif value != 'ninguno':
+                    sub = get_object_or_404(SubServicio, id=value)
+                    RegistroSubServicio.objects.create(registro=registro, subservicio=sub)
+
+        # Manejo de servicios simples con checkbox
+        servicios_simples_ids = request.POST.getlist('servicio_simple')
+        for id_servicio in servicios_simples_ids:
+            servicio_obj = get_object_or_404(Servicio, id=id_servicio)
+            RegistroServicioSimple.objects.create(registro=registro, servicio=servicio_obj)
+
+        return redirect('perfil_usuario', rut_usuario=usuario.rut_usr_hospederia)
+
+    # Cargar historial
+    registros = registroHorarioHospederia.objects.filter(usuario=usuario).order_by('-hora_entrada')
+
+    servicios = Servicio.objects.prefetch_related('subservicios').all()
+
+    return render(request, 'servicios/registro_usuario_hospederia.html', {
+        'usuario': usuario,
+        'preview_entrada': preview_entrada,
+        'preview_salida': preview_salida,
+        'existe_registro_hoy': existe_registro_hoy,
+        'registros': registros,
+        'servicios': servicios,
+    })
+
+
 
 @login_required
 @user_passes_test(es_administrador, login_url='iniciar_sesion')
