@@ -1,41 +1,143 @@
-/* ====== GRUPOS DE CAMPOS EN FORMULARIOS ====== */
-.fields, .form-group {
+/* ====== CONTENEDOR PRINCIPAL DE PERFIL ====== */
+.perfil-container {
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    box-sizing: border-box;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* ====== GRUPOS DE INFORMACIÓN ====== */
+.info-grupo {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 16px;
+    margin-bottom: 30px;
 }
-/* ====== FIN GRUPOS DE CAMPOS EN FORMULARIOS ====== */
 
-/* ====== ESTILOS DE LOS INPUTS DENTRO DE .fields ====== */
-.fields > input {
-    border: 1.5px solid var(--var-primary, #007bff); /* fallback color */
-    border-radius: 3px;
-    max-width: 100%;
-    padding: 8px;
+/* ====== FORMULARIO ====== */
+form {
+    width: 100%;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
-/* ====== FIN ESTILOS DE LOS INPUTS DENTRO DE .fields ====== */
 
-/* ====== CONTENEDOR PRINCIPAL DE LA VISTA DE REGISTRO ====== */
+/* ====== INPUTS Y CHECKBOXES ====== */
+input[type="checkbox"] {
+    transform: scale(1.1);
+    margin-right: 8px;
+}
+
+form input,
+form select,
+form textarea {
+    padding: 8px;
+    border: 1.5px solid var(--var-primary, #007bff);
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+/* ====== BOTÓN DE ENVÍO ====== */
+form button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+form button:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+}
+
+form button:hover:not(:disabled) {
+    background-color: #0056b3;
+}
+
+/* ====== LISTAS DE SUBSERVICIOS ====== */
+ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+/* ====== TABLA DE REGISTROS ====== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow-x: auto;
+}
+
+table th,
+table td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: left;
+    vertical-align: top;
+    word-break: break-word;
+}
+
+thead {
+    background-color: #f5f5f5;
+    font-weight: bold;
+}
+
+/* ====== MEDIA QUERY PARA RESPONSIVIDAD ====== */
+@media (max-width: 600px) {
+    .perfil-container {
+        padding: 15px;
+    }
+
+    table,
+    thead,
+    tbody,
+    th,
+    td,
+    tr {
+        display: block;
+    }
+
+    thead {
+        display: none;
+    }
+
+    tr {
+        margin-bottom: 15px;
+        border-bottom: 2px solid #ccc;
+    }
+
+    td {
+        position: relative;
+        padding-left: 50%;
+    }
+
+    td::before {
+        position: absolute;
+        left: 10px;
+        width: 45%;
+        white-space: nowrap;
+        font-weight: bold;
+        content: attr(data-label);
+    }
+}
+
 .register-main {
     min-height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: center;
-    background-color: #C7E0E2;
-    padding: 20px;
+    align-items: flex-start; /* 🔼 Posiciona hacia arriba */
+    padding-top: 40px; /* 🔼 Margen superior */
+    padding-bottom: 20px;
     box-sizing: border-box;
 }
-/* ====== FIN CONTENEDOR PRINCIPAL DE LA VISTA DE REGISTRO ====== */
-
-/* ====== CONTENEDOR DEL FORMULARIO DE REGISTRO ====== */
-.register-section {
-    background: white;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
-    width: 100%;
-    box-sizing: border-box;
-}
-/* ====== FIN CONTENEDOR DEL FORMULARIO DE REGISTRO ====== */

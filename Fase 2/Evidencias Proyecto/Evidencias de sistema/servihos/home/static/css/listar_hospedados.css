@@ -114,3 +114,53 @@ td a:hover {
     background-color: #a0cce0;
 }
 
+@media (max-width: 1024px) {
+    .layout.contenido-principal {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .sidebar {
+        width: 90%;
+        max-width: 400px;
+        margin-bottom: 20px;
+    }
+
+    main {
+        width: 95%;
+        padding: 15px;
+        margin: 0 auto;
+    }
+
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    thead, tbody, th, td, tr {
+        white-space: nowrap;
+    }
+
+    .barra-busqueda {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .barra-busqueda input[type="text"] {
+        width: 90%;
+    }
+
+    .barra-busqueda button {
+        font-size: 20px;
+        margin-top: 5px;
+    }
+
+    td button, td a {
+        display: block;
+        width: 100%;
+        margin-bottom: 5px;
+        text-align: center;
+    }
+}

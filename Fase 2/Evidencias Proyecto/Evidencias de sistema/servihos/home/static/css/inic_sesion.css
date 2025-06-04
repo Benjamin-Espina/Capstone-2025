@@ -1,66 +1,74 @@
-/* ====== GRUPOS DE CAMPOS DE FORMULARIO ====== */
-.fields,
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-/* ====== ESTILO DE INPUTS DENTRO DE .fields ====== */
-.fields > input {
-    border: 1.5px solid var(--var-primary, #007bff); /* Fallback color */
-    border-radius: 3px;
-    padding: 10px;
-    font-size: 1rem;
-    max-width: 100%;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-/* ====== CONTENEDOR PRINCIPAL DE LA VISTA DE LOGIN ====== */
-.login-main {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #C7E0E2;
-    padding: 15px 20px;
-    box-sizing: border-box;
-}
-
-/* ====== SECCIÓN DEL FORMULARIO DE LOGIN ====== */
 .login-section {
     background: white;
     padding: 2rem;
     border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    /* Elimina esta línea si existe */
+    border: none; /* ✅ asegúrate de esto */
+    /* Cambia el shadow si no quieres ningún borde externo */
+    box-shadow: none;  /* ✅ elimina sombra si no quieres borde visible */
     max-width: 400px;
     width: 100%;
     box-sizing: border-box;
 }
 
-/* ====== MEDIA QUERIES PARA RESPONSIVIDAD ====== */
-@media (max-width: 768px) {
-    .login-section {
-        padding: 1.5rem;
-        max-width: 90%;
-    }
-
-    .fields > input {
-        font-size: 0.95rem;
-    }
+.login-main {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* ✅ Lo sube en lugar de centrarlo verticalmente */
+    padding-top: 60px;       /* ✅ Espacio desde arriba */
+    background-color: #f5f7fa; /* Asegura el fondo general si lo deseas */
 }
 
-@media (max-width: 480px) {
-    .login-main {
-        padding: 10px;
-    }
+/* Agrandar textos e inputs */
+.login-section h1 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
 
-    .login-section {
-        padding: 1.2rem;
-    }
+.fields > input,
+.form-group input {
+    font-size: 1.1rem;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1.5px solid #a0ccdb;
+}
 
-    .fields > input {
-        font-size: 0.9rem;
-    }
+/* Botón más grande y llamativo */
+.login-button {
+    background-color: #b3d9e6;
+    border: none;
+    padding: 14px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    width: 100%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 1rem;
+}
+
+.login-button:hover {
+    background-color: #94c9d7;
+}
+
+.fields {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.fields > label {
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.fields > input {
+    border: 1.5px solid #a0ccdb;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 1.1rem;
+    width: 100%;
+    box-sizing: border-box;
 }
