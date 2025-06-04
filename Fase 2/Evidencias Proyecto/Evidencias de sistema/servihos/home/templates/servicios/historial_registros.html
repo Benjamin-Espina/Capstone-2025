@@ -25,53 +25,23 @@
                 </tr>
             </thead>
             <tbody>
-                {% for registro in historial %}
-                {% comment %} Variables para control {% endcomment %}
-                {% with alimentacion="" ambulatoria="" higiene="No" roperia="No" pernoctacion="No" %}
-                    {% for reg_sub in registro.registro_subservicios.all %}
-                        {% with servicio=reg_sub.subservicio.servicio.nombre_servicio|lower subnombre=reg_sub.subservicio.nombre_subservicio %}
-                            {% if servicio == "alimentación" %}
-                                {% if alimentacion %}
-                                    {% with alimentacion=alimentacion|add:", "|add:subnombre %}
-                                    {% endwith %}
-                                {% else %}
-                                    {% with alimentacion=subnombre %}
-                                    {% endwith %}
-                                {% endif %}
-                            {% elif servicio == "asistencia ambulatoria" %}
-                                {% if ambulatoria %}
-                                    {% with ambulatoria=ambulatoria|add:", "|add:subnombre %}
-                                    {% endwith %}
-                                {% else %}
-                                    {% with ambulatoria=subnombre %}
-                                    {% endwith %}
-                                {% endif %}
-                            {% elif servicio == "higiene" %}
-                                {% with higiene="Sí" %}{% endwith %}
-                            {% elif servicio == "ropería" %}
-                                {% with roperia="Sí" %}{% endwith %}
-                            {% elif servicio == "pernoctación" %}
-                                {% with pernoctacion="Sí" %}{% endwith %}
-                            {% endif %}
-                        {% endwith %}
-                    {% endfor %}
+                {% for item in historial_con_servicios %}
+                <tr>
+                    <td>{{ item.registro.hora_entrada|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        {% if item.registro.hora_salida %}
+                            {{ item.registro.hora_salida|date:"d/m/Y H:i" }}
+                        {% else %}
+                            Sin salida
+                        {% endif %}
+                    </td>
+                    <td>{{ item.servicios.Alimentación|default:"Ninguno" }}</td>
+                    <td>{{ item.servicios.Higiene|default:"No" }}</td>
+                    <td>{{ item.servicios.Ropería|default:"No" }}</td>
+                    <td>{{ item.servicios.Pernoctación|default:"No" }}</td>
+                    <td>{{ item.servicios["Asistencia Ambulatoria"]|default:"Ninguno" }}</td>
 
-                    <tr>
-                        <td>{{ registro.hora_entrada|date:"d/m/Y H:i" }}</td>
-                        <td>
-                            {% if registro.hora_salida %}
-                                {{ registro.hora_salida|date:"d/m/Y H:i" }}
-                            {% else %}
-                                Sin salida
-                            {% endif %}
-                        </td>
-                        <td>{{ alimentacion|default:"Ninguno" }}</td>
-                        <td>{{ higiene }}</td>
-                        <td>{{ roperia }}</td>
-                        <td>{{ pernoctacion }}</td>
-                        <td>{{ ambulatoria|default:"Ninguno" }}</td>
-                    </tr>
-                {% endwith %}
+                </tr>
                 {% empty %}
                 <tr>
                     <td colspan="7">No hay registros disponibles.</td>

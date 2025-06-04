@@ -10,7 +10,9 @@ from django.db.models import Q
 from django.utils import timezone
 
 #Importar modelos
-from .models import usuario_hospederia, tipo_discapacidad, hospederia, Servicio, SubServicio, registroHorarioHospederia, fun_HorarioEntrada, fun_HorarioSalida, RegistroSubServicio
+from .models import (usuario_hospederia, tipo_discapacidad, hospederia, Servicio, SubServicio, 
+                     registroHorarioHospederia, fun_HorarioEntrada, fun_HorarioSalida, 
+                     RegistroSubServicio, RegistroServicioSimple)
 
 #Importar formularios
 from .forms import ServicioForm, SubServicioForm, customUserCreationForm, subir_CSV_usr_hospederia, UsuarioHospederiaFormEdit
@@ -210,9 +212,46 @@ def historial_registros_usuario(request, rut_usuario):
     usuario = get_object_or_404(usuario_hospederia, rut_usr_hospederia=rut_usuario)
     historial = registroHorarioHospederia.objects.filter(usuario=usuario).order_by('-hora_entrada')
 
+    historial_con_servicios = []
+
+    for registro in historial:
+        subservicios = RegistroSubServicio.objects.filter(registro=registro).select_related('subservicio__servicio')
+        servicios_simples = RegistroServicioSimple.objects.filter(registro=registro).select_related('servicio')
+
+        servicios_dict = {}
+
+        # Procesar subservicios agrupados por nombre del servicio (ej: "Alimentación")
+        for sub in subservicios:
+            nombre_servicio = sub.subservicio.servicio.nombre_servicio
+            if nombre_servicio not in servicios_dict:
+                servicios_dict[nombre_servicio] = []
+            servicios_dict[nombre_servicio].append(sub.subservicio.nombre_subservicio)
+
+        # Mostrar valores legibles
+        for k in servicios_dict:
+            lista = servicios_dict[k]
+            if sorted(lista) == sorted(['Desayuno', 'Cena']):
+                servicios_dict[k] = 'Ambos'
+            elif len(lista) == 0:
+                servicios_dict[k] = 'Ninguno'
+            else:
+                servicios_dict[k] = ', '.join(lista)
+
+        # Agregar servicios simples con Sí/No
+        todos_servicios_simples = Servicio.objects.filter(subservicios__isnull=True).distinct()
+        for servicio_simple in todos_servicios_simples:
+            nombre_serv = servicio_simple.nombre_servicio
+            esta_seleccionado = servicios_simples.filter(servicio=servicio_simple).exists()
+            servicios_dict[nombre_serv] = "Sí" if esta_seleccionado else "No"
+
+        historial_con_servicios.append({
+            'registro': registro,
+            'servicios': servicios_dict
+        })
+
     context = {
         'usuario': usuario,
-        'historial': historial
+        'historial_con_servicios': historial_con_servicios
     }
     return render(request, 'servicios/historial_registros.html', context)
 
