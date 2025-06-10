@@ -1,0 +1,86 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f6fa;
+    margin: 0;
+    padding: 20px;
+}
+
+.perfil-container {
+    background-color: #ffffff;
+    padding: 25px 40px;
+    border-radius: 10px;
+    max-width: 600px;
+    margin: auto;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h1, h3 {
+    text-align: left;
+    color: #333;
+}
+
+.grupo-fechas {
+    margin-bottom: 30px;
+}
+
+.grupo-fechas label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+input[type="datetime-local"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.grupo-servicios {
+    margin-top: 20px;
+}
+
+.servicio-block {
+    margin-bottom: 20px;
+}
+
+.servicio-block label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.select-servicio {
+    width: 100%;
+    padding: 6px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.botones {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.btn-limpiar,
+.btn-registrar {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    margin: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-limpiar {
+    background-color: #e0e0e0;
+}
+
+.btn-registrar {
+    background-color: #a0ccdb;
+}
+
+.btn-registrar:hover {
+    background-color: #88c3d5;
+}

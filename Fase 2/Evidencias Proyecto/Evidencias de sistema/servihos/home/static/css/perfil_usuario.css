@@ -64,3 +64,25 @@ body {
 .servicio-item label {
     font-weight: normal;
 }
+
+/* Estilos para el botón "Ver historial de ingreso" */
+.ver-historial {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.boton-historial {
+    display: inline-block;
+    background-color: #b3d9e6;
+    padding: 10px 20px;
+    border: 1px solid #000000;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    color: #000;
+    transition: background-color 0.3s ease;
+}
+
+.boton-historial:hover {
+    background-color: #8dc2d6;
+}

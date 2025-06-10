@@ -3,6 +3,7 @@ from .models import usuarioCustom, usuario_hospederia
 from django.contrib.auth.forms import UserCreationForm
 from .models import Servicio
 from .models import SubServicio
+from .models import HistorialServicioUsuario
 
 class customUserCreationForm(UserCreationForm):
     rut = forms.CharField(
@@ -92,4 +93,24 @@ class SubServicioForm(forms.ModelForm):
                     f"Ya existe un subservicio llamado '{nombre}' para el servicio '{servicio}'."
                 )
         return cleaned_data
+
+class HistorialServicioUsuarioForm(forms.Form):
+    fecha = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    servicios_simples = forms.ModelMultipleChoiceField(
+        queryset=Servicio.objects.filter(subservicios__isnull=True),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+        label="Servicios Simples"
+    )
+    # Un campo por cada servicio con subservicios
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        servicios_con_subs = Servicio.objects.filter(subservicios__isnull=False).distinct()
+        for servicio in servicios_con_subs:
+            self.fields[f'subservicios_{servicio.id}'] = forms.ModelMultipleChoiceField(
+                queryset=SubServicio.objects.filter(servicio=servicio),
+                required=False,
+                widget=forms.CheckboxSelectMultiple,
+                label=f"Subservicios de {servicio.nombre_servicio}"
+            )
 

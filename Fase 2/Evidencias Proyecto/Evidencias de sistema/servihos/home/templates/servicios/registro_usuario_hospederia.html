@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block blockhead %}
-<link rel="stylesheet" href="{% static 'css/perfil_usuario.css' %}">
+<link rel="stylesheet" href="{% static 'css/registro_usuario_hospederia.css' %}">
 {% endblock %}
 
 {% block blocktitle %}ServiHos - Registrar entrada/salida{% endblock %}
@@ -17,37 +17,40 @@
             <h3>Próximo registro teórico</h3>
             <p><strong>Entrada:</strong> {{ preview_entrada|date:"d/m/Y H:i" }}</p>
             <p><strong>Salida:</strong> {{ preview_salida|date:"d/m/Y H:i" }}</p>
-
-            {% if error_msg %}
-                <div class="alert alert-danger">{{ error_msg }}</div>
-            {% endif %}
-
-            <!-- Formulario -->
-            <form method="post">
-                {% csrf_token %}
-                <h4>Servicios y Subservicios utilizados:</h4>
-
-                {% for servicio in servicios %}
-                    <div>
-                        <strong>{{ servicio.nombre_servicio }}</strong>
-                        <ul>
-                            {% for sub in servicio.subservicios.all %}
-                                <li>
-                                    <label>
-                                        <input type="checkbox" name="subservicios" value="{{ sub.id }}">
-                                        {{ sub.nombre_subservicio }}
-                                    </label>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                {% endfor %}
-
-                <button type="submit" class="btn btn-primary" {% if existe_registro_hoy %}disabled{% endif %}>
-                    Registrar horario
-                </button>
-            </form>
         </div>
+
+        {% if error_msg %}
+        <div class="alert alert-danger">{{ error_msg }}</div>
+        {% endif %}
+
+        <!-- Formulario -->
+        <form method="post">
+            {% csrf_token %}
+            <h4>Servicios y Subservicios utilizados:</h4>
+
+            {% for servicio in servicios %}
+                <div>
+                    <strong>{{ servicio.nombre_servicio }}</strong>
+                    <ul>
+                        {% for sub in servicio.subservicios.all %}
+                            <li>
+                                <label>
+                                    <input type="checkbox" name="subservicios" value="{{ sub.id }}">
+                                    {{ sub.nombre_subservicio }}
+                                </label>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+
+            <div class="botones">
+                <button type="reset" class="btn-limpiar">Limpiar campos</button>
+                <button type="submit" class="btn-registrar" {% if existe_registro_hoy %}disabled{% endif %}>
+                    Completar Ingreso
+                </button>
+            </div>
+        </form>
 
         <!-- Tabla de registros -->
         <div class="info-grupo">
@@ -83,6 +86,7 @@
                 </table>
             </div>
         </div>
+
     </section>
 </main>
 {% endblock %}
