@@ -9,6 +9,7 @@
 
 {% block blocktitle %}ServiHos - Listar usuarios{% endblock %}
 
+<div class="contenido-app">
 {% block menu %}
     {% include "_templates/menu_template.html" %}
 {% endblock %}
@@ -21,10 +22,13 @@
         <h1>Listar usuarios</h1>
 
         <!-- Barra de búsqueda -->
-        <form method="get" action="" class="barra-busqueda">
-            <input type="text" name="busqueda" placeholder="Buscar por RUT o nombre" value="{{ request.GET.busqueda }}">
-            <button type="submit">🔍</button>
+        <form method="get" action="" class="barra-busqueda" style="gap: 0;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <input type="text" name="busqueda" placeholder="Buscar por RUT o nombre" value="{{ request.GET.busqueda }}">
+                <button type="submit">🔍</button>
+            </div>
         </form>
+
 
         {% if usuarios %}
         <table>
@@ -48,7 +52,7 @@
                 {% for usuario in usuarios %}
                 <tr>
                     <td>
-                        <a href="{% url 'perfil_usuario' rut_usuario=usuario.rut_usr_hospederia %}">
+                        <a href="{% url 'perfil_usuario' rut_usuario=usuario.rut_usr_hospederia %}" class="rut-button">
                             {{ usuario.rut_usr_hospederia }}
                         </a>
                     </td>
@@ -65,11 +69,11 @@
                     <td>
                         <form method="post" action="{% url 'eliminar_hospedados' usuario.rut_usr_hospederia %}">
                             {% csrf_token %}
-                            <button type="submit">Eliminar</button>
+                            <button type="submit" class="eliminar_boton">Eliminar</button>
                         </form>
                         <br>
                         <br>
-                        <a href="{% url 'editar_hospedado' usuario.rut_usr_hospederia %}">Editar</a>
+                        <a href="{% url 'editar_hospedado' usuario.rut_usr_hospederia %}" class="editar_boton">Editar</a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -83,3 +87,4 @@
 </main>
 
 {% endblock contenido %}
+</div>

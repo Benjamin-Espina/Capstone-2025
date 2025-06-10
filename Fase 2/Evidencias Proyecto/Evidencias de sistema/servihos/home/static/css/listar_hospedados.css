@@ -6,16 +6,6 @@ body {
     padding: 20px;
 }
 
-/* Contenedor principal */
-/* main {
-    max-width: 1200px;
-    margin: auto;
-    background-color: #ffffff;
-    padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-} */
-
 main {
     max-width: 1200px;
     margin: 40px auto;
@@ -23,10 +13,8 @@ main {
     padding: 25px;
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    overflow-x: auto;
+    overflow-x: hidden;
 }
-
-
 
 /* Título principal */
 h1 {
@@ -34,53 +22,81 @@ h1 {
     margin-bottom: 20px;
 }
 
-/* Barra de búsqueda */
+/* 🔍 Barra de búsqueda con ícono dentro */
 .barra-busqueda {
     display: flex;
     justify-content: center;
-    flex-wrap: wrap;
+    align-items: center;
     gap: 10px;
     margin-bottom: 20px;
+    flex-wrap: nowrap;
+    position: relative;
 }
 
 .barra-busqueda input[type="text"] {
-    padding: 10px 20px;
-    width: 100%;
-    max-width: 300px;
+    padding: 10px 20px 10px 35px;
+    width: 300px;
     border-radius: 30px;
     border: 1px solid #999;
     outline: none;
     font-size: 14px;
     background-color: #f9fbfd;
     box-sizing: border-box;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23999" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 14h-.79l-.28-.27a6.471 6.471 0 001.48-5.34C15.17 5.6 12.57 3 9.5 3S3.83 5.6 3.83 8.67c0 3.07 2.6 5.67 5.67 5.67 1.61 0 3.07-.69 4.1-1.8l.27.28v.79l4.25 4.25c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5s4.5 2.01 4.5 4.5S11.99 14 9.5 14z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: 10px center;
+    background-size: 16px 16px;
 }
 
+/* 🔵 Botón Buscar */
 .barra-busqueda button {
-    background: none;
+    background-color: transparent !important;
     border: none;
     font-size: 16px;
+    padding: 10px 14px;
+    border-radius: 50%;
     cursor: pointer;
-    color: #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: none;
+    transition: none;
+}
+
+.barra-busqueda button:hover,
+.barra-busqueda button:focus,
+.barra-busqueda button:active {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    outline: none;
 }
 
 /* Tabla de usuarios */
 table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: collapse; /* 🔥 Necesario para bordes internos visibles */
     margin-top: 20px;
     font-size: 14px;
-}
-
-thead {
-    background-color: #e0e0e0;
+    table-layout: fixed;
+    border: 1px solid #333; /* Borde exterior */
 }
 
 th,
 td {
     padding: 12px 15px;
     text-align: left;
-    border: 1px solid #ccc;
+    border: 1px solid #333 !important; /* ✅ Este es el borde interno */
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
+
+thead {
+    background-color: #C7E0E2;
+    border-bottom: 1px solid #333;
+}
+
+
 
 tbody tr:nth-child(even) {
     background-color: #f9f9f9;
@@ -114,6 +130,7 @@ td a:hover {
     background-color: #a0cce0;
 }
 
+/* Responsive */
 @media (max-width: 1024px) {
     .layout.contenido-principal {
         flex-direction: column;
@@ -130,21 +147,23 @@ td a:hover {
         width: 95%;
         padding: 15px;
         margin: 0 auto;
+        overflow-x: auto;
     }
 
     table {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
+        min-width: 1000px;
     }
 
-    thead, tbody, th, td, tr {
-        white-space: nowrap;
+    td button,
+    td a {
+        display: block;
+        width: 100%;
+        margin-bottom: 5px;
+        text-align: center;
     }
 
     .barra-busqueda {
         flex-direction: column;
-        align-items: center;
         gap: 10px;
     }
 
@@ -153,14 +172,83 @@ td a:hover {
     }
 
     .barra-busqueda button {
-        font-size: 20px;
-        margin-top: 5px;
-    }
-
-    td button, td a {
-        display: block;
-        width: 100%;
-        margin-bottom: 5px;
-        text-align: center;
+        width: 90%;
+        border-radius: 20px;
     }
 }
+
+.rut-button {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 8px;
+    background-color: transparent;
+    text-decoration: none;
+    text-align: center;
+    color: #000;
+    border: none;
+    font-weight: 500;
+    transition: none;
+}
+
+.rut-button:hover {
+    background-color: transparent;
+    color: #000;
+    text-decoration: underline;
+}
+
+td .rut-button {
+    margin: auto;
+}
+
+.eliminar_boton,
+.editar_boton {
+    width: 100%;              /* ocupa todo el ancho del <td> sin desbordarse */
+    max-width: 130px;         /* evita que sea demasiado ancho */
+    padding: 6px 10px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 20px;
+    text-align: center;
+    cursor: pointer;
+    display: inline-block;
+    box-sizing: border-box;   /* incluye padding en el ancho total */
+}
+
+/* Botón eliminar */
+.eliminar_boton {
+    background-color: transparent;
+    border: 2px solid red;
+    color: red;
+}
+
+.eliminar_boton:hover {
+    background-color: red !important;
+    color: black !important;
+}
+
+/* Botón editar */
+.editar_boton {
+    background-color: transparent;
+    border: 2px solid #b3d9e6;
+    color: black;
+}
+
+/* Contenedor para menú y contenido principal */
+body > .contenido-app {
+    display: flex;
+    align-items: stretch;
+    min-height: 100vh; /* Altura completa de la ventana */
+}
+
+/* Menú lateral */
+aside {
+    flex: 0 0 260px; /* Ancho fijo */
+}
+
+/* Contenido principal */
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+

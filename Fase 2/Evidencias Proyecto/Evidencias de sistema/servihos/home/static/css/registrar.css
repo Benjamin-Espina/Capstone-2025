@@ -142,3 +142,15 @@ thead {
     box-sizing: border-box;
 }
 
+.checkbox-inline {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+.checkbox-inline label {
+    margin: 0;
+}
+
+
