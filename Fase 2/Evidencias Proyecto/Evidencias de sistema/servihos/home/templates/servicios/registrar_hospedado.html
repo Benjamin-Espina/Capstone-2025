@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="{% static 'css/registrar.css' %}">
 <script src="{% static 'js/index.js' %}"></script>
 {% endblock %}
+
 {% block blocktitle %}ServiHos - Registrar encargado{% endblock blocktitle %}
 
 {% block menu %}
@@ -12,33 +13,75 @@
 {% endblock %}
 
 {% block contenido %}
-
-<main class="register-main">
+<main class="register-main">        
     <section class="register-section">
-        <h1>Testing menu</h1>
+        <h1>Registrar usuario</h1>
 
-        <form method="post">
+        <form method="post" class="styled-form">
             {% csrf_token %}
-            {% for field in form %}
-            <div class="form-group">
-                <div class="fields">
-                    {{ field.label_tag }}
-                    {{ field }}
-                </div>
-                <br>
-                {% if field.errors %}
-                    <div class="error">{{ field.errors }}</div>
-                {% endif %}
+            
+            <div class="form-group" id="rut">
+                {{ form.rut_usr_hospederia.label_tag|cut:"usr" }}
+                {{ form.rut_usr_hospederia }}
             </div>
-        {% endfor %}
-        <button class="button" type="submit" class="btn btn-primary">Registrar</button>
-    </form>
 
-        </div>
+            <div class="form-group" id="pasaporte">
+                {{ form.pasaporte_usr_hospederia.label_tag|cut:"usr" }}
+                {{ form.pasaporte_usr_hospederia }}
+            </div>
 
+            <div class="form-group" id="primer-nombre">
+                {{ form.primer_nombre_usr_hospederia.label_tag|cut:"usr" }}
+                {{ form.primer_nombre_usr_hospederia }}
+            </div>
+
+            <div class="form-group" id="segundo-nombre">
+                {{ form.segundo_nombre_usr_hospederia.label_tag|cut:"usr" }}
+                {{ form.segundo_nombre_usr_hospederia }}
+            </div>
+
+            <div class="form-group" id="primer-apellido">
+                {{ form.primer_apellido_usr_hospederia.label_tag|cut:"usr" }}
+                {{ form.primer_apellido_usr_hospederia }}
+            </div>
+
+            <div class="form-group" id="segundo-apellido">
+                {{ form.segundo_apellido_usr_hospederia.label_tag|cut:"usr" }}
+                {{ form.segundo_apellido_usr_hospederia }}
+            </div>
+
+            <div class="form-group" id="fecha-nacimiento">
+                {{ form.fecha_nacimiento_usr_hospederia.label_tag|cut:"usr" }}
+                {{ form.fecha_nacimiento_usr_hospederia }}
+            </div>
+
+            <div class="form-group checkbox-row" id="discapacidad">
+                {{ form.discapacidad_usr_hospederia }}
+                <label for="{{ form.discapacidad_usr_hospederia.id_for_label }}">{{ form.discapacidad_usr_hospederia.label|cut:"usr" }}</label>
+            </div>
+
+            <div class="form-group" id="tipo-discapacidad">
+                {{ form.id_tipo_discapacidad.label_tag }}
+                {{ form.id_tipo_discapacidad }}
+            </div>
+
+            <div class="form-group" id="nacionalidad">
+                {{ form.nacionalidad_usr_hospederia.label_tag|cut:"usr" }}
+                {{ form.nacionalidad_usr_hospederia }}
+            </div>
+
+            <div class="form-group" id="id-hospederia">
+                {{ form.id_hospederia.label_tag }}
+                {{ form.id_hospederia }}
+            </div>
+
+            <div class="form-group checkbox-row" id="mostrar-reportes">
+                {{ form.mostrar_en_reportes }}
+                <label for="{{ form.mostrar_en_reportes.id_for_label }}">{{ form.mostrar_en_reportes.label }}</label>
+            </div>
+
+            <button class="button" type="submit">Registrar</button>
+        </form>
     </section>
-
 </main>
-
-
 {% endblock contenido %}

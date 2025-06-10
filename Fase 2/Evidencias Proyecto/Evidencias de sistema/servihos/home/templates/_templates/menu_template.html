@@ -11,21 +11,12 @@
     </div>
     {% endif %}
     <!-- Fin iniciar sesión -->
-
     <!-- Segmento del menu que se oculta -->
-    <!-- Menu Icon -->
-    {% if user.is_authenticated %}
-    <div class="container" onclick="myFunction(this)">
-        <div class="bar1"></div>
-        <div class="bar2"></div>
-        <div class="bar3"></div>
-    </div>
-    {% endif %}
-    <!-- fin Menu Icon -->
 
     <section id="menu-botones">
-        <h1>Testing menu</h1>
-
+        {% if user.is_authenticated %}
+            <h1 class="username"><span style="text-transform: capitalize;"> {{ request.user.get_full_name }}</span>!</h1>
+        {% endif %}
         <div class="botones">
             <!-- Menú sesión iniciada -->
             {% if user.is_authenticated and user.tipo == 'administrador' %}
@@ -46,9 +37,7 @@
         </div>
         <div class="user-info">
             {% if user.is_authenticated %}
-            <p class="username">Cuenta: <span style="text-transform: capitalize;"> {{ request.user.get_full_name }}</span>!</p>
-                    <p>Tipo: {{ request.user.tipo }} </p>
-                    <a class="button" href="{% url 'cerrar_sesion' %}">Cerrar sesión</a>
+                <a class="button" href="{% url 'cerrar_sesion' %}">Cerrar sesión</a>
             {% endif %}
         </div>
     </section>

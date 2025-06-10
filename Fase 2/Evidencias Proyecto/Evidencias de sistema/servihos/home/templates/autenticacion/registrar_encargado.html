@@ -15,30 +15,22 @@
 {% block contenido %}
 <main class="register-main">
     <section class="register-section">
-        <h1>Testing menu</h1>
+        <h1>Registrar Encargado</h1>
 
         <form method="post">
             {% csrf_token %}
             {% for field in form %}
-            <div class="form-group">
-                <div class="fields">
-                    {{ field.label_tag }}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                     {{ field }}
+                    {% if field.errors %}
+                        <div class="error">{{ field.errors }}</div>
+                    {% endif %}
                 </div>
-                <br>
-                {% if field.errors %}
-                    <div class="error">{{ field.errors }}</div>
-                {% endif %}
-            </div>
-        {% endfor %}
-        <button class="button" type="submit" class="btn btn-primary">Registrar</button>
-    </form>
-       
-        </div>
+            {% endfor %}
+            <button type="submit" class="register-button">Registrar</button>
+        </form>
 
     </section>
-
 </main>
-
-
 {% endblock contenido %}
