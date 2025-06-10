@@ -131,26 +131,3 @@ thead {
         content: attr(data-label);
     }
 }
-
-.register-main {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* 🔼 Posiciona hacia arriba */
-    padding-top: 40px; /* 🔼 Margen superior */
-    padding-bottom: 20px;
-    box-sizing: border-box;
-}
-
-.checkbox-inline {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 10px;
-}
-
-.checkbox-inline label {
-    margin: 0;
-}
-
-

@@ -2,8 +2,8 @@
 {% load static %}
 
 {% block blockhead %}
-<link rel="stylesheet" href="{% static 'css/registrar.css' %}">
-<script src="{% static 'js/index.js' %}"></script>
+<link rel="stylesheet" href="{% static 'css/listar_encargado.css' %}">
+
 {% endblock %}
 {% block blocktitle %}ServiHos - Registrar encargado{% endblock blocktitle %}
 
@@ -14,10 +14,11 @@
 {% block contenido %}
 <main>
 
-    <section>
-        <h1>Listar usuarios</h1>
+    <section class="contenido-lateral-encargado">
+        <h1>Listar Encargados</h1>
 
         {% if usuarios %}
+
         <table>
             <thead>
                 <tr>

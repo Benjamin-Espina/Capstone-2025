@@ -1,37 +1,49 @@
 {% load static %}
 <!DOCTYPE html>
+<html lang="es">
 <head>
-    {% block blockhead %}    {% endblock %}
+    {% block blockhead %}{% endblock %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <link rel="stylesheet" href="{% static 'css/basic.css' %}">
+    <link rel="stylesheet" href="{% static 'css/menu.css' %}">
+    <script src="{% static 'js/index.js' %}"></script>
     <link rel="icon" href="{% static 'img/logo.png' %}" type="image/png">
-    <title>{% block blocktitle %}{% endblock %}</title>
+    
+    <title>{% block blocktitle %}ServiHos{% endblock %}</title>
 </head>
 <body>
 
-    <header>
+    <!-- CABECERA -->
+    <header class="header-bar">
         <div class="logo">
             <a href="{% url 'index' %}">
-            <img src="{% static 'img/logo.png' %}" alt="Logo de ServiHos" style="height: 50px;" >
+                <img src="{% static 'img/logo.png' %}" alt="Logo de ServiHos" style="height: 50px;">
             </a>
             <a href="{% url 'index' %}">
-            <marca>ServiHos</marca>
+                <marca>ServiHos</marca>
             </a>
         </div>
-    </header>
-    
-    <div class="layout">
-        {% block menu %}
-        {% endblock %}
-        <main>
-            {% block main %}
-            {% endblock %}
-            {% block contenido %}
-            {% endblock %}
-        </main>
-    </div>
 
+        <div class="header-center">
+            <h2 class="rol">{{ request.user.tipo|capfirst }}</h2>
+        </div>
+    </header>
+
+    <!-- CONTENEDOR PRINCIPAL (ambos: menú y contenido) -->
+    <div class="layout contenido-principal">
+
+        <!-- MENÚ DENTRO DEL CONTENEDOR -->
+        {% block menu %}{% endblock %}
+
+        <!-- CONTENIDO A LA DERECHA DEL MENÚ -->
+        <div class="contenido-lateral">
+            {% block main %}{% endblock %}
+            {% block contenido %}{% endblock %}
+        </div>
+
+    </div>
 
 </body>
 </html>

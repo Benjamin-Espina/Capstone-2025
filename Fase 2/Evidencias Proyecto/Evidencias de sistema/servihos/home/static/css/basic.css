@@ -21,35 +21,10 @@ body {
     background-attachment: fixed;
     background-size: cover;
     display: flex;
-    flex-flow: column;
+    flex-direction: column;
     gap: 1rem;
-    flex-wrap: nowrap;
 }
 /* ====== FIN ESTILO GENERAL DEL CUERPO ====== */
-
-/* ====== CONTENEDOR DE BOTONES ====== */
-.botones{
-    display: flex;
-    flex-flow: column;
-    gap: 2rem;
-
-    padding: 1rem;
-}
-/* ====== ESTILO DE BOTONES ====== */
-.button {
-    background-color: var(--var-primary);
-    color: #232323;
-    font-size: 1rem;
-    border-radius: 980px;
-    padding: 0.3rem 1rem;
-    border: none;
-    display: block;
-    text-decoration: none;
-    width: fit-content;
-}
-/* ====== FIN ESTILO DE BOTONES ====== */
-
-/* ====== FIN CONTENEDOR DE BOTONES ====== */
 
 /* ====== ENCABEZADO Y PIE DE PÁGINA ====== */
 header {
@@ -61,19 +36,42 @@ header {
     padding: 15px 20px;
     filter: drop-shadow(0 0 0.5rem var(--var-secondary));
 }
-/* Ajuste adicional del footer */
+/* ====== CENTRADO DE TEXTO DEL ROL EN HEADER ====== */
+.header-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #BFCFD9;
+    padding: 15px 20px;
+    filter: drop-shadow(0 0 0.5rem var(--var-secondary));
+}
+
+/* El contenedor del rol centrado */
+.header-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Estilo del rol */
+.rol {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    text-transform: capitalize;
+    color: #2C3E50;
+}
+
 footer {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     background-color: #BFCFD9;
     align-items: center;
-    padding: 15px 20px;
-    filter: drop-shadow(0 0 0.5rem var(--var-secondary));
     padding: 8px 20px;
+    filter: drop-shadow(0 0 0.5rem var(--var-secondary));
 }
-/* Fin Ajuste adicional del footer */
-
 /* ====== FIN ENCABEZADO Y PIE DE PÁGINA ====== */
 
 /* ====== IMÁGENES ====== */
@@ -85,7 +83,7 @@ img {
 /* ====== CONTENEDOR DE LOGO ====== */
 .logo {
     display: flex;
-    flex-flow: row;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
     align-content: center;
@@ -101,112 +99,46 @@ marca {
 }
 /* ====== FIN ELEMENTO DE MARCA ====== */
 
-/* ====== CONTENEDOR PRINCIPAL ====== */
-main {
+/* ====== CONTENEDOR PRINCIPAL (contenido a la derecha del menú) ====== */
+.contenido-principal {
     flex: 1;
-    min-width: 0;
-
-    display: flex;
-    flex-direction: row;
-
-    z-index: 0;
-    position: relative;
-
-    background-color: #C7E0E2;
-    padding: 15px 20px;
+    background-color: #cfe7e9;
     border-radius: 10px;
-    /*
-    height: 100vh;
-
-    align-self: center;
-    min-width: 80vw;
-    */
+    padding: 20px;
 }
+
 /* ====== FIN CONTENEDOR PRINCIPAL ====== */
-
-/* ====== TARJETAS DE CONTENIDO ====== */
-.card {
-    display: flex;
-    flex-flow: row;
-    border: none;
-    padding: 1rem;
-    font-size: 18px;
-    text-decoration: none;
-    color: #333;
-    background: #f9f9f9;
-    border-radius: 6px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: background 0.2s ease;
-}
-/* Efecto al pasar el mouse por encima */
-.card:hover {
-    background: #e0e0e0;
-}
-/* Fin Efecto al pasar el mouse por encima */
-
-/* ====== FIN TARJETAS DE CONTENIDO ====== */
 
 /* ====== DISEÑO GENERAL DE PÁGINA ====== */
 .layout {
-  display: flex;
-  flex-direction: row;
-  min-height: 100vh;
+    display: flex;
+    flex-direction: row;
+    min-height: 100vh;
+    gap: 10px; 
+    padding: 10px;
 }
+
 /* ====== FIN DISEÑO GENERAL DE PÁGINA ====== */
+.layout.contenido-principal {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    padding: 20px;
+    background-color: #F5F7FA;
+    border-radius: 10px;
+}
 
-/* ====== BARRA LATERAL ====== */
+/* menú lateral */
 .sidebar {
-    /*z-index: left 0;
-    position: absolute;
-    min-width: 20vw;*/
-    position: relative; /* ✅ CAMBIADO */
-    width: 180px;
-    background-color: #e0f0f0;
-    padding: 1rem;
-}
-/* ====== FIN BARRA LATERAL ====== */
-
-/* ====== BARRAS DEL MENÚ HAMBURGUESA ====== */
-.bar1, .bar2, .bar3 {
-  width: 35px;
-  height: 5px;
-  background-color: #333;
-  margin: 6px 0;
-  transition: 0.4s;
-}
-/* ====== FIN BARRAS DEL MENÚ HAMBURGUESA ====== */
-
-/* ANIMACIONES AL ACTIVAR EL MENÚ (CON CLASE .change) */
-
-/* Rota la primera barra */
-.change .bar1 {
-  transform: translate(0, 11px) rotate(-45deg);
-}
-/* Oculta la segunda barra */
-.change .bar2 {opacity: 0;}
-/* Rota la tercera barra */
-.change .bar3 {
-  transform: translate(0, -11px) rotate(45deg);
-}
-/* FIN ANIMACIONES AL ACTIVAR EL MENÚ (CON CLASE .change) */
-
-/* ====== MENÚ DESPLEGABLE (HAMBURGUESA) OCULTO POR DEFECTO ====== */
-#menu-botones {
-  transform: scaleY(0);
-  transform-origin: top;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  opacity: 0;
-  pointer-events: none;
-}
-/* ====== FIN MENÚ DESPLEGABLE ====== */
-
-
-/* ====== MENÚ DESPLEGABLE VISIBLE AL AGREGAR .show ====== */
-#menu-botones.show {
-  transform: scaleY(1);
-  opacity: 1;
-  pointer-events: auto;
-  max-height: none;
+    flex: 0 0 250px; /* ancho fijo */
 }
 
-/* ====== FIN MENÚ DESPLEGABLE VISIBLE ====== */
+/* contenido a la derecha del menú */
+.contenido-lateral {
+    flex: 1;
+    display: flex;
+    justify-content: center; /* centra horizontalmente */
+    align-items: center;     /* centra verticalmente */
+    text-align: center;
+    min-height: 300px; /* o lo que necesites */
+}
