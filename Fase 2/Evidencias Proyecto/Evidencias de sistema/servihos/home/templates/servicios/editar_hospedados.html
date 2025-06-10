@@ -14,12 +14,75 @@
 
     <section>
         <h1>Editar Hospedados</h1>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Guardar cambios</button>
-        </form>
-        <a href="{% url 'listar_hospedados' %}">← Volver a la lista</a>
+        <form method="post" class="styled-form">
+    {% csrf_token %}
+
+    <div class="form-group" id="rut">
+        {{ form.rut_usr_hospederia.label_tag|cut:"usr" }}
+        {{ form.rut_usr_hospederia }}
+    </div>
+
+    <div class="form-group" id="pasaporte">
+        {{ form.pasaporte_usr_hospederia.label_tag|cut:"usr" }}
+        {{ form.pasaporte_usr_hospederia }}
+    </div>
+
+    <div class="form-group" id="primer-nombre">
+        {{ form.primer_nombre_usr_hospederia.label_tag|cut:"usr" }}
+        {{ form.primer_nombre_usr_hospederia }}
+    </div>
+
+    <div class="form-group" id="segundo-nombre">
+        {{ form.segundo_nombre_usr_hospederia.label_tag|cut:"usr" }}
+        {{ form.segundo_nombre_usr_hospederia }}
+    </div>
+
+    <div class="form-group" id="primer-apellido">
+        {{ form.primer_apellido_usr_hospederia.label_tag|cut:"usr" }}
+        {{ form.primer_apellido_usr_hospederia }}
+    </div>
+
+    <div class="form-group" id="segundo-apellido">
+        {{ form.segundo_apellido_usr_hospederia.label_tag|cut:"usr" }}
+        {{ form.segundo_apellido_usr_hospederia }}
+    </div>
+
+    <div class="form-group" id="fecha-nacimiento">
+        {{ form.fecha_nacimiento_usr_hospederia.label_tag|cut:"usr" }}
+        {{ form.fecha_nacimiento_usr_hospederia }}
+    </div>
+
+    <div class="form-group checkbox-row" id="discapacidad">
+        {{ form.discapacidad_usr_hospederia }}
+        <label for="{{ form.discapacidad_usr_hospederia.id_for_label }}">{{ form.discapacidad_usr_hospederia.label|cut:"usr" }}</label>
+    </div>
+
+    <div class="form-group" id="tipo-discapacidad">
+        {{ form.id_tipo_discapacidad.label_tag }}
+        {{ form.id_tipo_discapacidad }}
+    </div>
+
+    <div class="form-group" id="nacionalidad">
+        {{ form.nacionalidad_usr_hospederia.label_tag|cut:"usr" }}
+        {{ form.nacionalidad_usr_hospederia }}
+    </div>
+
+    <div class="form-group" id="id-hospederia">
+        {{ form.id_hospederia.label_tag }}
+        {{ form.id_hospederia }}
+    </div>
+
+    <div class="form-group checkbox-row" id="mostrar-reportes">
+        {{ form.mostrar_en_reportes }}
+        <label for="{{ form.mostrar_en_reportes.id_for_label }}">{{ form.mostrar_en_reportes.label }}</label>
+    </div>
+
+     <button type="submit" class="guardar-cambios">Guardar cambios</button>
+
+</form>
+
+        <a href="{% url 'listar_hospedados' %}" class="enlace-volver">← Volver a la lista</a>
+
 
     </section>
 
