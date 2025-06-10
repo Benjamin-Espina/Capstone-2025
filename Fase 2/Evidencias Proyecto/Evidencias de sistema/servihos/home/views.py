@@ -6,14 +6,15 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.db import transaction, IntegrityError
 from datetime import date
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.utils import timezone
 
 #Importar modelos
-from .models import usuario_hospederia, tipo_discapacidad, hospederia, Servicio, SubServicio, registroHorarioHospederia, fun_HorarioEntrada, fun_HorarioSalida, RegistroSubServicio
+from .models import (usuario_hospederia, tipo_discapacidad, hospederia, Servicio, SubServicio, 
+                     registroHorarioHospederia, fun_HorarioEntrada, fun_HorarioSalida, HistorialServicioUsuario)
 
 #Importar formularios
-from .forms import ServicioForm, SubServicioForm, customUserCreationForm, subir_CSV_usr_hospederia, UsuarioHospederiaFormEdit
+from .forms import ServicioForm, SubServicioForm, customUserCreationForm, subir_CSV_usr_hospederia, UsuarioHospederiaFormEdit, HistorialServicioUsuarioForm
 
 #Importar ependencies externas
 import pandas as pd
@@ -151,9 +152,13 @@ def perfil_usuario(request, rut_usuario):
     usuario = get_object_or_404(usuario_hospederia, rut_usr_hospederia=rut_usuario)
     edad = calcular_edad(usuario.fecha_nacimiento_usr_hospederia)
 
+    # Buscar el último registro de horario si existe
+    ultimo_registro = registroHorarioHospederia.objects.filter(usuario=usuario).order_by('-hora_entrada').first()
+
     context = {
         'usuario': usuario,
         'edad': edad,
+        'ultimo_registro': ultimo_registro,
     }
 
     return render(request, 'servicios/perfil_usuario.html', context)
@@ -200,6 +205,120 @@ def eliminar_subservicio(request, subservicio_id):
         sub.delete()
         messages.success(request, f"Subservicio '{sub.nombre_subservicio}' eliminado correctamente.")
     return redirect('listar_subservicios')
+
+#Mostral el historial de registros de un usuario
+def historial_registros_usuario(request, rut_usuario):
+    usuario = get_object_or_404(usuario_hospederia, rut_usr_hospederia=rut_usuario)
+
+    # Filtro por fecha
+    fecha_desde = request.GET.get('fecha_desde', '').strip()
+    fecha_hasta = request.GET.get('fecha_hasta', '').strip()
+    historial_qs = HistorialServicioUsuario.objects.filter(usuario=usuario)
+    if fecha_desde:
+        try:
+            fecha_desde_dt = datetime.strptime(fecha_desde, '%Y-%m-%d').date()
+            historial_qs = historial_qs.filter(fecha__gte=fecha_desde_dt)
+        except ValueError:
+            messages.error(request, "Formato de fecha 'Desde' inválido. Use AAAA-MM-DD.")
+    if fecha_hasta:
+        try:
+            fecha_hasta_dt = datetime.strptime(fecha_hasta, '%Y-%m-%d').date()
+            historial_qs = historial_qs.filter(fecha__lte=fecha_hasta_dt)
+        except ValueError:
+            messages.error(request, "Formato de fecha 'Hasta' inválido. Use AAAA-MM-DD.")
+
+    historial_qs = historial_qs.order_by('-fecha')
+
+    # Para la tabla: agrupamos por fecha
+    fechas = sorted(set(historial_qs.values_list('fecha', flat=True)), reverse=True)
+    servicios = list(Servicio.objects.all())
+    subservicios = list(SubServicio.objects.select_related('servicio').all())
+
+    historial_con_servicios = []
+    for fecha in fechas:
+        servicios_dict = {}
+        # Servicios simples (sin subservicios)
+        for servicio in servicios:
+            if not servicio.subservicios.exists():
+                count = historial_qs.filter(fecha=fecha, servicio=servicio, subservicio=None).count()
+                servicios_dict[servicio.nombre_servicio] = count
+        # Subservicios
+        for sub in subservicios:
+            count = historial_qs.filter(fecha=fecha, subservicio=sub, servicio=None).count()
+            key = f"{sub.servicio.nombre_servicio} - {sub.nombre_subservicio}"
+            servicios_dict[key] = count
+        historial_con_servicios.append({
+            'fecha': fecha,
+            'servicios': servicios_dict
+        })
+
+    # Conteo total por servicio y subservicio
+    conteo_servicios = {}
+    for servicio in servicios:
+        if not servicio.subservicios.exists():
+            conteo_servicios[servicio.nombre_servicio] = historial_qs.filter(servicio=servicio, subservicio=None).count()
+    for sub in subservicios:
+        key = f"{sub.servicio.nombre_servicio} - {sub.nombre_subservicio}"
+        conteo_servicios[key] = historial_qs.filter(subservicio=sub, servicio=None).count()
+
+    context = {
+        'usuario': usuario,
+        'historial_con_servicios': historial_con_servicios,
+        'conteo_servicios': conteo_servicios,
+        'fecha_desde': fecha_desde,
+        'fecha_hasta': fecha_hasta,
+    }
+    return render(request, 'servicios/historial_registros.html', context)
+
+from .models import RegistroSubServicio, RegistroServicioSimple, Servicio, SubServicio, HistorialServicioUsuario
+
+def registro_usuario_hospederia(request, rut_usuario):
+    usuario = get_object_or_404(usuario_hospederia, rut_usr_hospederia=rut_usuario)
+    preview_entrada = fun_HorarioEntrada()
+    preview_salida = fun_HorarioSalida()
+    hoy = timezone.localdate()
+    existe_registro_hoy = registroHorarioHospederia.objects.filter(
+        usuario=usuario,
+        hora_entrada__date=hoy
+    ).exists()
+
+    if request.method == 'POST':
+        form = HistorialServicioUsuarioForm(request.POST)
+        if form.is_valid():
+            fecha = form.cleaned_data['fecha']
+            # Servicios simples
+            for servicio in form.cleaned_data['servicios_simples']:
+                HistorialServicioUsuario.objects.get_or_create(
+                    usuario=usuario,
+                    fecha=fecha,
+                    servicio=servicio,
+                    subservicio=None
+                )
+            # Subservicios
+            for field_name in form.fields:
+                if field_name.startswith('subservicios_'):
+                    for subservicio in form.cleaned_data[field_name]:
+                        HistorialServicioUsuario.objects.get_or_create(
+                            usuario=usuario,
+                            fecha=fecha,
+                            servicio=None,
+                            subservicio=subservicio
+                        )
+            messages.success(request, 'Servicios registrados correctamente.')
+            return redirect('perfil_usuario', rut_usuario=usuario.rut_usr_hospederia)
+    else:
+        form = HistorialServicioUsuarioForm(initial={'fecha': hoy})
+
+    servicios = Servicio.objects.prefetch_related('subservicios').all()
+    return render(request, 'servicios/registro_usuario_hospederia.html', {
+        'usuario': usuario,
+        'preview_entrada': preview_entrada,
+        'preview_salida': preview_salida,
+        'existe_registro_hoy': existe_registro_hoy,
+        'servicios': servicios,
+        'form': form,
+    })
+
 
 
 @login_required
@@ -475,34 +594,6 @@ def subir_usuarios_hospederia(request):
     return render(request, 'servicios/subir_usuarios.html', {'form': form})
 
 
-"""
-@login_required
-def registrar_control_horario(request, rut_usuario, tipo_evento):
-    if request.method == 'POST':
-        usuario = get_object_or_404(usuario_hospederia, rut_usr_hospederia=rut_usuario)
-        
-        # Validación básica para evitar registros duplicados rápidos o ilógicos
-        ultimo_registro = RegistroControlHorario.objects.filter(usuario=usuario).order_by('-fecha_hora').first()
-
-        if ultimo_registro and ultimo_registro.tipo_evento == tipo_evento:
-            messages.warning(request, f"El usuario ya tiene un registro de {tipo_evento} reciente.")
-            return redirect('perfil_usuario', rut_usuario=rut_usuario)
-
-
-        RegistroControlHorario.objects.create(
-            usuario=usuario,
-            tipo_evento=tipo_evento,
-            # fecha_hora se autocompleta por auto_now_add=True
-        )
-        messages.success(request, f"Registro de {tipo_evento} para {usuario.primer_nombre_usr_hospederia} guardado exitosamente.")
-        return redirect('perfil_usuario', rut_usuario=rut_usuario)
-    messages.error(request, "Método de solicitud no permitido.")
-    return redirect('perfil_usuario', rut_usuario=rut_usuario)
-"""
-
-
-
-
 @login_required
 def listar_registros_control_horario(request):
     # Obtener todos los registros de control horario, ordenados por fecha y hora descendente
@@ -550,40 +641,3 @@ def listar_registros_control_horario(request):
         'fecha_hasta': fecha_hasta_str,
     }
     return render(request, 'servicios/listar_registros_control_horario.html', context)
-
-@login_required
-def registro_usuario_hospederia(request, usuario_id):
-    usuario_hospedado = get_object_or_404(usuario_hospederia, rut_usr_hospederia=usuario_id)
-    registros = registroHorarioHospederia.objects.filter(usuario=usuario_hospedado).order_by('-hora_entrada')
-    servicios = Servicio.objects.prefetch_related('subservicios').all()
-
-    preview_entrada = fun_HorarioEntrada()
-    preview_salida = fun_HorarioSalida()
-    existe_registro_hoy = registroHorarioHospederia.objects.filter(
-        usuario=usuario_hospedado,
-        hora_entrada__date=preview_entrada.date()
-    ).exists()
-    error_msg = None
-
-    if request.method == 'POST':
-        if existe_registro_hoy:
-            error_msg = "Ya existe un registro de horario para este día."
-        else:
-            # 1. Crear el registro de horario
-            registro = registroHorarioHospederia.objects.create(usuario=usuario_hospedado)
-            # 2. Guardar los subservicios seleccionados
-            subservicios_ids = request.POST.getlist('subservicios')
-            for sub_id in subservicios_ids:
-                subservicio = SubServicio.objects.get(id=sub_id)
-                RegistroSubServicio.objects.create(registro=registro, subservicio=subservicio)
-            return redirect('registro_usuario_hospederia', usuario_id=usuario_id)
-
-    return render(request, 'servicios/registro_usuario_hospederia.html', {
-        'usuario_hospederia': usuario_hospedado,
-        'registros': registros,
-        'preview_entrada': preview_entrada,
-        'preview_salida': preview_salida,
-        'error_msg': error_msg,
-        'existe_registro_hoy': existe_registro_hoy,
-        'servicios': servicios,
-    })

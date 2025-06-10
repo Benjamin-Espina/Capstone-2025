@@ -20,9 +20,23 @@
             </div>
 
             <div class="datos-derecha">
-                <p><strong>Fecha de registro:</strong> 30/02/1978</p>
-                <p><strong>Fecha de ingreso:</strong> 30/02/1978</p>
-                <p><strong>Fecha de salida:</strong> 30/02/1978</p>
+                <p><strong>Fecha de registro:</strong> (pendiente o futura implementación)</p>
+
+                <p><strong>Fecha de ingreso:</strong>
+                    {% if ultimo_registro %}
+                        {{ ultimo_registro.hora_entrada|date:"d/m/Y H:i" }}
+                    {% else %}
+                        Sin registros
+                    {% endif %}
+                </p>
+
+                <p><strong>Fecha de salida:</strong>
+                    {% if ultimo_registro %}
+                        {{ ultimo_registro.hora_salida|date:"d/m/Y H:i" }}
+                    {% else %}
+                        Sin registros
+                    {% endif %}
+                </p>
 
                 <a href="{% url 'registro_usuario_hospederia' usuario.rut_usr_hospederia %}">Editar</a>
             </div>
@@ -49,6 +63,13 @@
                 <label>Asistencia Ambulatoria:</label>
                 <span>Cantidad: 3</span>
             </div>
+        </div>
+
+        <!-- BOTÓN: Ver historial de ingreso -->
+        <div class="ver-historial">
+            <a class="boton-historial" href="{% url 'historial_registros_usuario' usuario.rut_usr_hospederia %}">
+                Ver historial de ingreso
+            </a>
         </div>
     </section>
 </main>
