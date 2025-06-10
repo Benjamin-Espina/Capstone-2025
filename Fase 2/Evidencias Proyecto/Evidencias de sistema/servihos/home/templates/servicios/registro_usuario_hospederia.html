@@ -26,33 +26,7 @@
         <!-- Formulario -->
         <form method="post">
             {% csrf_token %}
-            <h4>Seleccione los servicios a utilizar</h4>
-
-            <div class="grupo-servicios">
-                {% for servicio in servicios %}
-                <div class="servicio-block">
-                    <label><strong>{{ servicio.nombre_servicio }}:</strong></label>
-
-                    {% if servicio.subservicios.exists %}
-                    <!-- Select para subservicios -->
-                    <select name="servicio_{{ servicio.id }}" class="select-servicio">
-                        <option value="ninguno">Ninguno</option>
-                        {% if servicio.subservicios.count > 1 %}
-                        <option value="ambos">Ambos</option>
-                        {% endif %}
-                        {% for sub in servicio.subservicios.all %}
-                        <option value="{{ sub.id }}">{{ sub.nombre_subservicio }}</option>
-                        {% endfor %}
-                    </select>
-                    {% else %}
-                    <!-- Checkbox para servicios simples -->
-                    <input type="checkbox" name="servicio_simple" value="{{ servicio.id }}">
-                    {% endif %}
-                </div>
-                {% endfor %}
-            </div>
-
-            <!-- BOTONES -->
+            {{ form.as_p }}
             <div class="botones">
                 <button type="reset" class="btn-limpiar">Limpiar campos</button>
                 <button type="submit" class="btn-registrar" {% if existe_registro_hoy %}disabled{% endif %}>
@@ -60,50 +34,6 @@
                 </button>
             </div>
         </form>
-
-        <!-- Historial -->
-        <div class="info-grupo historial-ingreso">
-            <h2>Historial de ingreso</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Fecha de Ingreso</th>
-                        <th>Fecha de Salida</th>
-                        <th>Servicios utilizados</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for registro in registros %}
-                    <tr>
-                        <td>{{ registro.hora_entrada|date:"d/m/Y H:i" }}</td>
-                        <td>{{ registro.hora_salida|date:"d/m/Y H:i" }}</td>
-                        <td>
-                            <!-- Subservicios -->
-                            {% for reg_sub in registro.registro_subservicios.all %}
-                                {{ reg_sub.subservicio.nombre_subservicio }}{% if not forloop.last %}, {% endif %}
-                            {% endfor %}
-
-                            <!-- Servicios simples como Sí -->
-                            {% for reg_simple in registro.registro_servicios_simples.all %}
-                                <br><strong>{{ reg_simple.servicio.nombre_servicio }}:</strong> Sí
-                            {% endfor %}
-
-                            <!-- Mostrar 'No' si no se usaron -->
-                            {% for servicio in servicios %}
-                                {% if not servicio.subservicios.exists and not registro.registro_servicios_simples.all|dictsort:"servicio.id"|yesno:"True,False" %}
-                                    <br><strong>{{ servicio.nombre_servicio }}:</strong> No
-                                {% endif %}
-                            {% endfor %}
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="3">No hay registros de horario.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
     </section>
 </main>
 {% endblock %}

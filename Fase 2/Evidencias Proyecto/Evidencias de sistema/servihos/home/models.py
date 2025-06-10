@@ -156,3 +156,36 @@ class registroHorarioHospederia(models.Model):
         return f"{self.usuario.primer_nombre_usr_hospederia} {self.usuario.primer_apellido_usr_hospederia} - {self.hora_entrada} - {self.hora_salida}"
     
 
+class HistorialServicioUsuario(models.Model):
+    usuario = models.ForeignKey('usuario_hospederia', on_delete=models.CASCADE, related_name='historial_servicios')
+    fecha = models.DateField()
+    # Solo uno de estos dos debe estar lleno por registro
+    servicio = models.ForeignKey('Servicio', on_delete=models.CASCADE, null=True, blank=True)
+    subservicio = models.ForeignKey('SubServicio', on_delete=models.CASCADE, null=True, blank=True)
+
+    def clean(self):
+        # Asegura que solo uno esté lleno
+        if (self.servicio and self.subservicio) or (not self.servicio and not self.subservicio):
+            raise ValidationError('Debe especificar solo un servicio o un subservicio, no ambos ni ninguno.')
+
+    def __str__(self):
+        if self.subservicio:
+            return f"{self.usuario} - {self.subservicio} ({self.fecha})"
+        elif self.servicio:
+            return f"{self.usuario} - {self.servicio} ({self.fecha})"
+        return f"{self.usuario} - Sin servicio ({self.fecha})"
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['usuario', 'fecha', 'servicio'],
+                name='unique_usuario_fecha_servicio',
+                condition=models.Q(servicio__isnull=False)
+            ),
+            models.UniqueConstraint(
+                fields=['usuario', 'fecha', 'subservicio'],
+                name='unique_usuario_fecha_subservicio',
+                condition=models.Q(subservicio__isnull=False)
+            )
+        ]
+
