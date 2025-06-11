@@ -95,7 +95,10 @@ class SubServicioForm(forms.ModelForm):
         return cleaned_data
 
 class HistorialServicioUsuarioForm(forms.Form):
-    fecha = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    fecha = forms.DateField(
+        label='Salida',
+        widget=forms.DateInput(attrs={'type': 'date', 'readonly': 'readonly'})
+    )
     servicios_simples = forms.ModelMultipleChoiceField(
         queryset=Servicio.objects.filter(subservicios__isnull=True),
         required=False,
@@ -113,4 +116,19 @@ class HistorialServicioUsuarioForm(forms.Form):
                 widget=forms.CheckboxSelectMultiple,
                 label=f"Subservicios de {servicio.nombre_servicio}"
             )
+        # Seleccionar automáticamente 'Pernoctación' si existe
+        try:
+            pernoctacion = Servicio.objects.get(nombre_servicio__iexact='Pernoctación')
+            if 'initial' in kwargs:
+                if 'servicios_simples' in kwargs['initial']:
+                    # Si ya hay valores iniciales, agregar 'Pernoctación' si no está
+                    if pernoctacion not in kwargs['initial']['servicios_simples']:
+                        kwargs['initial']['servicios_simples'].append(pernoctacion)
+                else:
+                    kwargs['initial']['servicios_simples'] = [pernoctacion]
+                self.initial['servicios_simples'] = kwargs['initial']['servicios_simples']
+            else:
+                self.initial['servicios_simples'] = [pernoctacion]
+        except Servicio.DoesNotExist:
+            pass
 
