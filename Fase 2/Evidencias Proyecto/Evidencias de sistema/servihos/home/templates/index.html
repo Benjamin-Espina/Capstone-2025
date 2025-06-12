@@ -1,19 +1,19 @@
-{% extends "_templates/basic_template.html" %}
-{% load static %}
+    {% extends "_templates/basic_template.html" %}
+    {% load static %}
 
-{% block blockhead %}
-<link rel="stylesheet" href="{% static 'css/index.css' %}">
-{% endblock %}
+    {% block blockhead %}
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <script src="{% static 'js/index.js' %}"></script>
+    {% endblock %}
+    {% block blocktitle %}ServiHos - Testing{% endblock blocktitle %}
 
-{% block blocktitle %}ServiHos - Inicio{% endblock %}
+    {% block menu %}
+        {% include "_templates/menu_template.html" %}
+    {% endblock %}
 
-{% block menu %}
-    {% include "_templates/menu_template.html" %}
-{% endblock %}
-
-{% block contenido %}
-    <div>
-        <h1>Testing</h1>
-        <p>Hola mundo!</p>
-    </div>
-{% endblock %}
+    {% block contenido %}
+        <section>
+            <h1>Testing</h1>
+            <p>Hola mundo!</p>
+        </section>
+    {% endblock contenido %}

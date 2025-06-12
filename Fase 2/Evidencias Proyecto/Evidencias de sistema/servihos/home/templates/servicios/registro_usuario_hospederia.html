@@ -10,13 +10,13 @@
 {% block contenido %}
 <main>
     <section class="perfil-container">
-        <h1>Registrar Ingreso</h1>
+        <h1>Registrar Horario</h1>
 
         <!-- Registro teórico -->
         <div class="info-grupo">
             <h3>Próximo registro teórico</h3>
             <p><strong>Entrada:</strong> {{ preview_entrada|date:"d/m/Y H:i" }}</p>
-            {# <p><strong>Salida:</strong> {{ preview_salida|date:"d/m/Y H:i" }}</p> #}
+            <p><strong>Salida:</strong> {{ preview_salida|date:"d/m/Y H:i" }}</p>
         </div>
 
         {% if error_msg %}

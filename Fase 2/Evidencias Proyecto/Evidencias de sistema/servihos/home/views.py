@@ -155,22 +155,10 @@ def perfil_usuario(request, rut_usuario):
     # Buscar el último registro de horario si existe
     ultimo_registro = registroHorarioHospederia.objects.filter(usuario=usuario).order_by('-hora_entrada').first()
 
-    # Si no hay registro, usar fechas teóricas
-    if not ultimo_registro:
-        from .models import fun_HorarioEntrada, fun_HorarioSalida
-        import datetime
-        entrada_teorica = fun_HorarioEntrada()
-        salida_teorica = fun_HorarioSalida()
-    else:
-        entrada_teorica = None
-        salida_teorica = None
-
     context = {
         'usuario': usuario,
         'edad': edad,
         'ultimo_registro': ultimo_registro,
-        'entrada_teorica': entrada_teorica,
-        'salida_teorica': salida_teorica,
     }
 
     return render(request, 'servicios/perfil_usuario.html', context)
@@ -319,9 +307,7 @@ def registro_usuario_hospederia(request, rut_usuario):
             messages.success(request, 'Servicios registrados correctamente.')
             return redirect('perfil_usuario', rut_usuario=usuario.rut_usr_hospederia)
     else:
-        # Asignar la fecha inicial como el día siguiente (preview_salida)
-        fecha_salida = preview_salida.date()
-        form = HistorialServicioUsuarioForm(initial={'fecha': fecha_salida})
+        form = HistorialServicioUsuarioForm(initial={'fecha': hoy})
 
     servicios = Servicio.objects.prefetch_related('subservicios').all()
     return render(request, 'servicios/registro_usuario_hospederia.html', {

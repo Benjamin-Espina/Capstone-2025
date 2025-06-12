@@ -9,7 +9,6 @@
 
 {% block blocktitle %}ServiHos - Listar usuarios{% endblock %}
 
-<div class="contenido-app">
 {% block menu %}
     {% include "_templates/menu_template.html" %}
 {% endblock %}
@@ -22,13 +21,10 @@
         <h1>Listar usuarios</h1>
 
         <!-- Barra de búsqueda -->
-        <form method="get" action="" class="barra-busqueda" style="gap: 0;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <input type="text" name="busqueda" placeholder="Buscar por RUT o nombre" value="{{ request.GET.busqueda }}">
-                <button type="submit">🔍</button>
-            </div>
+        <form method="get" action="" class="barra-busqueda">
+            <input type="text" name="busqueda" placeholder="Buscar por RUT o nombre" value="{{ request.GET.busqueda }}">
+            <button type="submit">🔍</button>
         </form>
-
 
         {% if usuarios %}
         <table>
@@ -36,14 +32,14 @@
                 <tr>
                     <th>RUT</th>
                     <th>Pasaporte</th>
-                    <th>Nombre Completo</th>
-                   <!--  <th>Segundo Nombre</th>
+                    <th>Primer Nombre</th>
+                    <th>Segundo Nombre</th>
                     <th>Primer Apellido</th>
-                    <th>Segundo Apellido</th> -->
+                    <th>Segundo Apellido</th>
                     <th>Fecha de Nacimiento</th>
                     <th>Discapacidad</th>
                     <th>Nacionalidad</th>
-                     <!--  <th>Hospedería</th> -->
+                    <th>Hospedería</th>
                     <th>Datos para reportes</th>
                     <th>Acciones</th>
                 </tr>
@@ -52,28 +48,26 @@
                 {% for usuario in usuarios %}
                 <tr>
                     <td>
-                        <a href="{% url 'perfil_usuario' rut_usuario=usuario.rut_usr_hospederia %}" class="rut-button">
+                        <a href="{% url 'perfil_usuario' rut_usuario=usuario.rut_usr_hospederia %}">
                             {{ usuario.rut_usr_hospederia }}
                         </a>
                     </td>
                     <td>{{ usuario.pasaporte_usr_hospederia }}</td>
-                    <td>{{ usuario.primer_nombre_usr_hospederia }} {{ usuario.segundo_nombre_usr_hospederia }} {{ usuario.primer_apellido_usr_hospederia }} {{ usuario.segundo_apellido_usr_hospederia }}</td>
-                    <!-- <td>{{ usuario.segundo_nombre_usr_hospederia }}</td>
-                         <td>{{ usuario.primer_apellido_usr_hospederia }}</td>
-                         <td>{{ usuario.segundo_apellido_usr_hospederia }}</td> -->
+                    <td>{{ usuario.primer_nombre_usr_hospederia }}</td>
+                    <td>{{ usuario.segundo_nombre_usr_hospederia }}</td>
+                    <td>{{ usuario.primer_apellido_usr_hospederia }}</td>
+                    <td>{{ usuario.segundo_apellido_usr_hospederia }}</td>
                     <td>{{ usuario.fecha_nacimiento_usr_hospederia }}</td>
                     <td>{{ usuario.id_tipo_discapacidad }}</td>
                     <td>{{ usuario.nacionalidad_usr_hospederia }}</td>
-                    <!-- <td>{{ usuario.id_hospederia }}</td> -->
+                    <td>{{ usuario.id_hospederia }}</td>
                     <td>{{ usuario.mostrar_en_reportes }}</td>
                     <td>
                         <form method="post" action="{% url 'eliminar_hospedados' usuario.rut_usr_hospederia %}">
                             {% csrf_token %}
-                            <button type="submit" class="eliminar_boton">Eliminar</button>
+                            <button type="submit">Eliminar</button>
                         </form>
-                        <br>
-                        <br>
-                        <a href="{% url 'editar_hospedado' usuario.rut_usr_hospederia %}" class="editar_boton">Editar</a>
+                        <a href="{% url 'editar_hospedado' usuario.rut_usr_hospederia %}">Editar</a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -87,4 +81,3 @@
 </main>
 
 {% endblock contenido %}
-</div>

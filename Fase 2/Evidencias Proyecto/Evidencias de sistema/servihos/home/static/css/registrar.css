@@ -1,214 +1,55 @@
-/* ====== CONTENEDOR PRINCIPAL DE PERFIL ====== */
-.perfil-container {
-    max-width: 800px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #fff;
-    box-sizing: border-box;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-/* ====== GRUPOS DE INFORMACIÓN ====== */
-.info-grupo {
+/* ====== GRUPOS DE CAMPOS EN FORMULARIOS ====== */
+.fields, .form-group {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    margin-bottom: 30px;
+    gap: 4px;
 }
+/* ====== FIN GRUPOS DE CAMPOS EN FORMULARIOS ====== */
 
-/* ====== FORMULARIO ====== */
-form {
-    width: 100%;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-/* ====== INPUTS Y CHECKBOXES ====== */
-input[type="checkbox"] {
-    transform: scale(1.1);
-    margin-right: 8px;
-}
-
-form input,
-form select,
-form textarea {
+/* ====== ESTILOS DE LOS INPUTS DENTRO DE .fields ====== */
+.fields > input {
+    border: 1.5px solid var(--var-primary, #007bff); /* fallback color */
+    border-radius: 3px;
+    max-width: 100%;
     padding: 8px;
-    border: 1.5px solid var(--var-primary, #007bff);
-    border-radius: 4px;
-    width: 100%;
     box-sizing: border-box;
-    font-size: 14px;
 }
+/* ====== FIN ESTILOS DE LOS INPUTS DENTRO DE .fields ====== */
 
-/* ====== BOTÓN DE ENVÍO ====== */
-form button {
-    padding: 10px 20px;
-    border: none;
-    background-color: #007bff;
-    color: #fff;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.2s ease;
-}
-
-form button:disabled {
-    background-color: #999;
-    cursor: not-allowed;
-}
-
-form button:hover:not(:disabled) {
-    background-color: #0056b3;
-}
-
-/* ====== LISTAS DE SUBSERVICIOS ====== */
-ul {
-    list-style: none;
-    padding-left: 0;
-    margin: 0;
-}
-
-/* ====== TABLA DE REGISTROS ====== */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    overflow-x: auto;
-}
-
-table th,
-table td {
-    padding: 10px;
-    border: 1px solid #ccc;
-    text-align: left;
-    vertical-align: top;
-    word-break: break-word;
-}
-
-thead {
-    background-color: #f5f5f5;
-    font-weight: bold;
-}
-
-/* ====== MEDIA QUERY PARA RESPONSIVIDAD ====== */
-@media (max-width: 600px) {
-    .perfil-container {
-        padding: 15px;
-    }
-
-    table,
-    thead,
-    tbody,
-    th,
-    td,
-    tr {
-        display: block;
-    }
-
-    thead {
-        display: none;
-    }
-
-    tr {
-        margin-bottom: 15px;
-        border-bottom: 2px solid #ccc;
-    }
-
-    td {
-        position: relative;
-        padding-left: 50%;
-    }
-
-    td::before {
-        position: absolute;
-        left: 10px;
-        width: 45%;
-        white-space: nowrap;
-        font-weight: bold;
-        content: attr(data-label);
-    }
-}
-
+/* ====== CONTENEDOR PRINCIPAL DE LA VISTA DE REGISTRO ====== */
 .register-main {
     min-height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* 🔼 Posiciona hacia arriba */
-    padding-top: 40px; /* 🔼 Margen superior */
-    padding-bottom: 20px;
+    align-items: center;
+    background-color: #C7E0E2;
+    padding: 20px;
     box-sizing: border-box;
 }
+/* ====== FIN CONTENEDOR PRINCIPAL DE LA VISTA DE REGISTRO ====== */
 
-.form-group.checkbox-row {
-    display: flex;
-    flex-direction: row-reverse; /* 🔁 Invierte el orden: texto -> checkbox */
-    align-items: center;
-    justify-content: flex-start;
-    gap: 10px;
-    white-space: nowrap;
-    margin-bottom: 10px;
-}
-
-.form-group.checkbox-row label {
-    margin: 0;
-    font-size: 16px;
-}
-
-.form-group.checkbox-row input[type="checkbox"] {
-    transform: scale(1.2);
-}
-
-.checkbox-row {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    max-width: fit-content; /* Solo ocupa lo necesario */
-    width: auto;
-}
-.checkbox-row input[type="checkbox"] {
-    margin: 0;
-    transform: scale(1.2);
-}
-
-.checkbox-row label {
-    margin: 0;
-    font-size: 16px;
-}
-
-.enlace-volver {
-    display: inline-block;
-    margin-top: 15px;
-    padding: 8px 16px;
-    text-decoration: none;
-    color: #2C3E50;
-    border: 1px solid #2C3E50;
+/* ====== CONTENEDOR DEL FORMULARIO DE REGISTRO ====== */
+.register-section {
+    background: white;
+    padding: 2rem;
     border-radius: 10px;
-    background-color: #E0F4F7;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-}
-
-.enlace-volver:hover {
-    background-color: #c7e9ee;
-    color: #000;
-}
-
-.guardar-cambios {
-    background-color: transparent !important;
-    border: 2px solid #2C3E50;
-    color: #2C3E50;
-    padding: 10px 20px;
-    font-weight: bold;
-    border-radius: 2rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
     width: 100%;
-    transition: background-color 0.3s ease;
+    box-sizing: border-box;
 }
+/* ====== FIN CONTENEDOR DEL FORMULARIO DE REGISTRO ====== */
 
-.guardar-cambios:hover {
-    background-color: #C8FACC !important; /* Verde pastel */
-    color: #2C3E50 !important;
+/* ====== MEDIA QUERY PARA PANTALLAS PEQUEÑAS ====== */
+@media (max-width: 480px) {
+    .register-section {
+        padding: 1.2rem;
+    }
+
+    .fields > input {
+        font-size: 16px;
+    }
 }
-
+html, body {
+    height: 100%;
+}
