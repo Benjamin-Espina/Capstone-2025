@@ -20,8 +20,7 @@
             </div>
 
             <div class="datos-derecha">
-                <p><strong>Fecha de registro:</strong> (pendiente o futura implementación)</p>
-
+                <p><strong>Fecha de registro:</strong> {{ usuario.fecha_registro|date:"d/m/Y" }}</p>
                 <p><strong>Fecha de ingreso:</strong>
                     {% if ultimo_registro %}
                         {{ ultimo_registro.hora_entrada|date:"d/m/Y H:i" }}
@@ -38,7 +37,7 @@
                     {% endif %}
                 </p>
 
-                <a href="{% url 'registro_usuario_hospederia' usuario.rut_usr_hospederia %}">Editar</a>
+                <a href="{% url 'registro_usuario_hospederia' usuario.rut_usr_hospederia %}">Registrar Ingreso</a>
             </div>
         </div>
 

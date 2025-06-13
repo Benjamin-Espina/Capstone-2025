@@ -1,44 +1,47 @@
 {% extends "_templates/basic_template.html" %}
 {% load static %}
 
-{% block blockhead %}
-<link rel="stylesheet" href="{% static 'css/inic_sesion.css' %}">
-{% endblock %}
+{% block blockhead %}<link rel="stylesheet" href="{% static 'css/inic_sesion.css' %}">{% endblock %}
+{% block blocktitle %}ServiHos - Registrar encargado{% endblock blocktitle %}
 
-{% block blocktitle %}ServiHos - Iniciar sesión{% endblock %}
 
 {% block contenido %}
 <main class="login-main">
     <section class="login-section">
-        <h1 style="text-align: center; margin-bottom: 20px;">Iniciar sesión</h1>
+        <h1>Iniciar sesión</h1>
+            {% if form.errors %}
+                    <div class="error">
+                        <strong>Por favor, corrige los siguientes errores:</strong>
+                        <ul>
+                            {% for error in form.non_field_errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <li>{{ field.label }}: {{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+            {% endif %}
 
-        {% if form.errors %}
-        <div class="error" style="color: red; margin-bottom: 1rem;">
-            <strong>Por favor, corrige los siguientes errores:</strong>
-            <ul>
-                {% for error in form.non_field_errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-                {% for field in form %}
-                    {% for error in field.errors %}
-                        <li>{{ field.label }}: {{ error }}</li>
-                    {% endfor %}
-                {% endfor %}
-            </ul>
-        </div>
-        {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ form.username.label_tag }}
+                    {{ form.username }}
+                </div>
+                <div class="form-group">
+                    {{ form.password.label_tag }}
+                    {{ form.password }}
+                </div>
+                <br>
+                <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+            </form>
 
-       <form method="post" class="fields">
-    {% csrf_token %}
-    
-    <label for="{{ form.username.id_for_label }}">Usuario</label>
-    {{ form.username }}
-
-    <label for="{{ form.password.id_for_label }}">Contraseña</label>
-    {{ form.password }}
-
-    <button type="submit" class="login-button">Ingresar</button>
-</form>
     </section>
+
 </main>
+
+
 {% endblock contenido %}
