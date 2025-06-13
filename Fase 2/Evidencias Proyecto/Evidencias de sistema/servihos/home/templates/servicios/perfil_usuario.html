@@ -7,6 +7,10 @@
 
 {% block blocktitle %}ServiHos - Perfil del Usuario{% endblock %}
 
+{% block menu %}
+    {% include "_templates/menu_template.html" %}
+{% endblock %}
+
 {% block contenido %}
 <main>
     <section class="perfil-container">
@@ -37,8 +41,9 @@
                         Sin registros
                     {% endif %}
                 </p>
+                
+                <a href="{% url 'registro_usuario_hospederia' usuario.rut_usr_hospederia %}" class="boton-editar">Registrar Ingreso</a>
 
-                <a href="{% url 'registro_usuario_hospederia' usuario.rut_usr_hospederia %}">Editar</a>
             </div>
         </div>
 

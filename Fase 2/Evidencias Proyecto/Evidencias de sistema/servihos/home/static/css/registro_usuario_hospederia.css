@@ -84,3 +84,15 @@ input[type="datetime-local"] {
 .btn-registrar:hover {
     background-color: #88c3d5;
 }
+
+.subservicio-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 180px; /* Ajusta el ancho según tu diseño */
+    margin-bottom: 8px;
+}
+
+.subservicio-item span {
+    margin-right: 10px;
+}

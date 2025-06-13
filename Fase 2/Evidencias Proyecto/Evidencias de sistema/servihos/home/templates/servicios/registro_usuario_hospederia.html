@@ -7,6 +7,14 @@
 
 {% block blocktitle %}ServiHos - Registrar entrada/salida{% endblock %}
 
+{% block menu %}
+<section style="height: fit-content; min-height: unset;">
+    <div class="botones">
+        <a class="card" href="{% url 'perfil_usuario' rut_usuario=usuario.rut_usr_hospederia %}">Volver</a>
+    </div>
+</section>
+{% endblock %}
+
 {% block contenido %}
 <main>
     <section class="perfil-container">
@@ -14,7 +22,7 @@
 
         <!-- Próximo Registro -->
         <div class="info-grupo">
-            <h3>Próximo registro teórico</h3>
+            <h3>Próximo registro disponible</h3>
             <p><strong>Entrada:</strong> {{ preview_entrada|date:"d/m/Y H:i" }}</p>
             <p><strong>Salida:</strong> {{ preview_salida|date:"d/m/Y H:i" }}</p>
         </div>
@@ -35,8 +43,10 @@
                         {% for sub in servicio.subservicios.all %}
                             <li>
                                 <label>
+                                    <div class="checkbox-icon">
                                     <input type="checkbox" name="subservicios" value="{{ sub.id }}">
                                     {{ sub.nombre_subservicio }}
+                                    </div>
                                 </label>
                             </li>
                         {% endfor %}
