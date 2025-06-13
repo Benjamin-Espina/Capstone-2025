@@ -286,6 +286,12 @@ def registro_usuario_hospederia(request, rut_usuario):
         form = HistorialServicioUsuarioForm(request.POST)
         if form.is_valid():
             fecha = form.cleaned_data['fecha']
+            # Crear registro de entrada/salida
+            registroHorarioHospederia.objects.create(
+                usuario=usuario,
+                hora_entrada=preview_entrada,
+                hora_salida=preview_salida
+            )
             # Servicios simples
             for servicio in form.cleaned_data['servicios_simples']:
                 HistorialServicioUsuario.objects.get_or_create(

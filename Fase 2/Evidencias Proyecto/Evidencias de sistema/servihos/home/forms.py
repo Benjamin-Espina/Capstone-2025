@@ -48,9 +48,23 @@ class subir_CSV_usr_hospederia(forms.Form):
 class UsuarioHospederiaFormEdit(forms.ModelForm):
     class Meta:
         model = usuario_hospederia
-        fields = '__all__'
+        exclude = ['fecha_registro']
         widgets = {
             'fecha_nacimiento_usr_hospederia': forms.DateInput(attrs={'type': 'date'}),
+        }
+        labels = {
+            'rut_usr_hospederia': 'RUT',
+            'pasaporte_usr_hospederia': 'Pasaporte',
+            'primer_nombre_usr_hospederia': 'Primer nombre',
+            'segundo_nombre_usr_hospederia': 'Segundo nombre',
+            'primer_apellido_usr_hospederia': 'Primer apellido',
+            'segundo_apellido_usr_hospederia': 'Segundo apellido',
+            'fecha_nacimiento_usr_hospederia': 'Fecha de nacimiento',
+            'discapacidad_usr_hospederia': 'Discapacidad',
+            'id_tipo_discapacidad': 'Tipo de discapacidad',
+            'nacionalidad_usr_hospederia': 'Nacionalidad',
+            'id_hospederia': 'Hospedería',
+            'mostrar_en_reportes': 'Mostrar en reportes',
         }
 
 
@@ -95,16 +109,33 @@ class SubServicioForm(forms.ModelForm):
         return cleaned_data
 
 class HistorialServicioUsuarioForm(forms.Form):
-    fecha = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    fecha = forms.DateField(label="Salida", widget=forms.DateInput(attrs={'type': 'date'}))
     servicios_simples = forms.ModelMultipleChoiceField(
         queryset=Servicio.objects.filter(subservicios__isnull=True),
         required=False,
         widget=forms.CheckboxSelectMultiple,
-        label="Servicios Simples"
+        label="Selecciona el/los servicios"
     )
     # Un campo por cada servicio con subservicios
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['fecha'].widget.attrs['readonly'] = True
+        # Seleccionar y deshabilitar 'Pernoctación'
+        pernoctacion = Servicio.objects.filter(nombre_servicio__iexact='Pernoctación').first()
+        if pernoctacion:
+            self.initial['servicios_simples'] = [pernoctacion.pk]
+        # Personalizar los widgets para deshabilitar 'Pernoctación'
+        choices = []
+        for servicio in self.fields['servicios_simples'].queryset:
+            if pernoctacion and servicio.pk == pernoctacion.pk:
+                choices.append((servicio.pk, {'label': servicio.nombre_servicio, 'disabled': True}))
+            else:
+                choices.append((servicio.pk, {'label': servicio.nombre_servicio}))
+        # Hack para deshabilitar el checkbox en el template usando attrs
+        self.fields['servicios_simples'].widget.choices = [
+            (pk, d['label']) for pk, d in choices
+        ]
+        self.pernoctacion_id = pernoctacion.pk if pernoctacion else None
         servicios_con_subs = Servicio.objects.filter(subservicios__isnull=False).distinct()
         for servicio in servicios_con_subs:
             self.fields[f'subservicios_{servicio.id}'] = forms.ModelMultipleChoiceField(
