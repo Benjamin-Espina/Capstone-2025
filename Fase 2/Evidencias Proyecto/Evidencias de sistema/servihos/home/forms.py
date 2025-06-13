@@ -116,6 +116,11 @@ class HistorialServicioUsuarioForm(forms.Form):
         widget=forms.CheckboxSelectMultiple,
         label="Selecciona el/los servicios"
     )
+    observacion = forms.CharField(
+        label="Observación de Asistencia Ambulatoria",
+        widget=forms.Textarea(attrs={'rows': 3, 'placeholder': 'Describe lo realizado en Asistencia Ambulatoria...'}),
+        required=False
+    )
     # Un campo por cada servicio con subservicios
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -131,7 +136,6 @@ class HistorialServicioUsuarioForm(forms.Form):
                 choices.append((servicio.pk, {'label': servicio.nombre_servicio, 'disabled': True}))
             else:
                 choices.append((servicio.pk, {'label': servicio.nombre_servicio}))
-        # Hack para deshabilitar el checkbox en el template usando attrs
         self.fields['servicios_simples'].widget.choices = [
             (pk, d['label']) for pk, d in choices
         ]

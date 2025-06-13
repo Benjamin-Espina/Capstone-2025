@@ -41,31 +41,27 @@
             </div>
         </div>
 
-        <div class="seccion-servicios">
-            <div class="servicio-item">
-                <label>Alimentación:</label>
-                <span>Cantidad: 8</span>
-            </div>
-            <div class="servicio-item">
-                <label>Higiene:</label>
-                <span>Cantidad: 8</span>
-            </div>
-            <div class="servicio-item">
-                <label>Ropería:</label>
-                <span>Cantidad: 2</span>
-            </div>
-            <div class="servicio-item">
-                <label>Pernoctación:</label>
-                <span>Cantidad: 10</span>
-            </div>
-            <div class="servicio-item">
-                <label>Asistencia Ambulatoria:</label>
-                <span>Cantidad: 3</span>
-            </div>
-        </div>
 
+        <!-- Conteo total de servicios -->
+        <h3 style="margin-top: 30px;">Conteo total de servicios usados</h3>
+        <table class="tabla-historial">
+            <thead>
+                <tr>
+                    <th>Servicio/Subservicio</th>
+                    <th>Cantidad</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for key, value in conteo_servicios.items %}
+                <tr>
+                    <td>{{ key }}</td>
+                    <td>{{ value }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
         <!-- BOTÓN: Ver historial de ingreso -->
-        <div class="ver-historial">
+        <div class="ver-historial" style="margin-top: 20px;">
             <a class="boton-historial" href="{% url 'historial_registros_usuario' usuario.rut_usr_hospederia %}">
                 Ver historial de ingreso
             </a>

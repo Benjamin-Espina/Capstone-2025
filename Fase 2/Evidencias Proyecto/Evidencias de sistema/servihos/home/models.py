@@ -163,6 +163,7 @@ class HistorialServicioUsuario(models.Model):
     # Solo uno de estos dos debe estar lleno por registro
     servicio = models.ForeignKey('Servicio', on_delete=models.CASCADE, null=True, blank=True)
     subservicio = models.ForeignKey('SubServicio', on_delete=models.CASCADE, null=True, blank=True)
+    observacion = models.TextField(blank=True, null=True)
 
     def clean(self):
         # Asegura que solo uno esté lleno
