@@ -84,3 +84,33 @@ input[type="datetime-local"] {
 .btn-registrar:hover {
     background-color: #88c3d5;
 }
+
+.fields textarea {
+    width: 100%;
+    min-width: 100px;
+    max-width: 100%;
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+.fields-fecha {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.hora-salida {
+    margin-left: 10px;
+    font-weight: bold;
+    color: #555;
+}
+
+.lista-servicios {
+    list-style: none;
+    padding-left: 0;
+}
+
+#observacion-ambulatoria-group {
+    display: none;
+    margin-top: 10px;
+}
