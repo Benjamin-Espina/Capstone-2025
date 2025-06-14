@@ -5,9 +5,13 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.db import transaction, IntegrityError
-from datetime import date
+from datetime import date, timedelta
 from django.db.models import Q, Count
 from django.utils import timezone
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from django.http import HttpResponse
+from django.forms.models import model_to_dict
 
 #Importar modelos
 from .models import (usuario_hospederia, tipo_discapacidad, hospederia, Servicio, SubServicio, 
@@ -34,7 +38,32 @@ def cerrar_sesion(request):
     return redirect('index')
 
 def index(request):
-    return render(request, "index.html")
+    # Total de veces que se han usado servicios (sin subservicios)
+    total_servicios_usados = HistorialServicioUsuario.objects.filter(subservicio=None).count()
+    # Total de veces que se han usado subservicios
+    total_subservicios_usados = HistorialServicioUsuario.objects.filter(servicio=None, subservicio__isnull=False).count()
+    total_usuarios_hospederia = usuario_hospederia.objects.count()
+    hoy = timezone.localdate()
+    usuarios_ingresaron_hoy = registroHorarioHospederia.objects.filter(hora_entrada__date=hoy).values('usuario').distinct().count()
+
+    # Conteo individual de cada servicio y subservicio
+    servicios = Servicio.objects.all()
+    subservicios = SubServicio.objects.select_related('servicio').all()
+    conteo_servicios = {}
+    for servicio in servicios:
+        if not servicio.subservicios.exists():
+            conteo_servicios[servicio.nombre_servicio] = HistorialServicioUsuario.objects.filter(servicio=servicio, subservicio=None).count()
+    for sub in subservicios:
+        key = f"{sub.servicio.nombre_servicio} - {sub.nombre_subservicio}"
+        conteo_servicios[key] = HistorialServicioUsuario.objects.filter(subservicio=sub, servicio=None).count()
+
+    return render(request, "index.html", {
+        'total_servicios': total_servicios_usados,
+        'total_subservicios': total_subservicios_usados,
+        'total_usuarios_hospederia': total_usuarios_hospederia,
+        'usuarios_ingresaron_hoy': usuarios_ingresaron_hoy,
+        'conteo_servicios': conteo_servicios,
+    })
 
 @login_required
 @user_passes_test(es_administrador, login_url='iniciar_sesion')
@@ -79,14 +108,28 @@ def listar_hospedados(request):
             Q(segundo_apellido_usr_hospederia__icontains=busqueda)
         )
 
-    context = {
-        'usuarios': usuarios_hospedados,
+    # Para cada usuario, obtener los servicios y subservicios del último registro
+    usuarios_servicios = []
+    for usuario in usuarios_hospedados:
+        # Buscar la última fecha de registro de servicios
+        ultimo_registro = HistorialServicioUsuario.objects.filter(usuario=usuario).order_by('-fecha').first()
+        if ultimo_registro:
+            fecha_ultima = ultimo_registro.fecha
+            servicios_simples = HistorialServicioUsuario.objects.filter(usuario=usuario, fecha=fecha_ultima, subservicio=None).select_related('servicio')
+            subservicios = HistorialServicioUsuario.objects.filter(usuario=usuario, fecha=fecha_ultima, servicio=None).select_related('subservicio')
+        else:
+            servicios_simples = []
+            subservicios = []
+        usuarios_servicios.append({
+            'usuario': usuario,
+            'servicios_simples': servicios_simples,
+            'subservicios': subservicios,
+        })
+
+    return render(request, 'servicios/listar_hospedados.html', {
+        'usuarios_servicios': usuarios_servicios,
         'busqueda': busqueda,
-    }
-
-
-
-    return render(request, 'servicios/listar_hospedados.html', {'usuarios': usuarios_hospedados})
+    })
 
 def eliminar_hospedados(request, usuario_id):
     if request.method == 'POST':
@@ -288,8 +331,9 @@ from .models import RegistroSubServicio, RegistroServicioSimple, Servicio, SubSe
 def registro_usuario_hospederia(request, rut_usuario):
     usuario = get_object_or_404(usuario_hospederia, rut_usr_hospederia=rut_usuario)
     preview_entrada = fun_HorarioEntrada()
-    preview_salida = fun_HorarioSalida()
+    preview_salida = fun_HorarioSalida(preview_entrada)
     hoy = timezone.localdate()
+    fecha_salida = hoy + timedelta(days=1)
     existe_registro_hoy = registroHorarioHospederia.objects.filter(
         usuario=usuario,
         hora_entrada__date=hoy
@@ -303,14 +347,18 @@ def registro_usuario_hospederia(request, rut_usuario):
             registroHorarioHospederia.objects.create(
                 usuario=usuario,
                 hora_entrada=preview_entrada,
-                hora_salida=preview_salida
+                hora_salida=fun_HorarioSalida(preview_entrada)
             )
             # Servicios simples
-            for servicio in form.cleaned_data['servicios_simples']:
+            servicios_simples = [s.pk if hasattr(s, 'pk') else s for s in form.cleaned_data['servicios_simples']]
+            pernoctacion = Servicio.objects.filter(nombre_servicio__iexact='Pernoctación').first()
+            if pernoctacion and pernoctacion.pk not in servicios_simples:
+                servicios_simples.append(pernoctacion.pk)
+            for servicio_id in servicios_simples:
                 HistorialServicioUsuario.objects.get_or_create(
                     usuario=usuario,
                     fecha=fecha,
-                    servicio=servicio,
+                    servicio_id=servicio_id,
                     subservicio=None
                 )
             # Subservicios
@@ -318,13 +366,14 @@ def registro_usuario_hospederia(request, rut_usuario):
             for field_name in form.fields:
                 if field_name.startswith('subservicios_'):
                     for subservicio in form.cleaned_data[field_name]:
-                        # Solo guardar observación si es Asistencia Ambulatoria
-                        if subservicio.servicio.nombre_servicio == 'Asistencia Ambulatoria':
+                        subservicio_id = subservicio.pk if hasattr(subservicio, 'pk') else subservicio
+                        subservicio_obj = SubServicio.objects.get(pk=subservicio_id)
+                        if subservicio_obj.servicio.nombre_servicio == 'Asistencia Ambulatoria':
                             HistorialServicioUsuario.objects.get_or_create(
                                 usuario=usuario,
                                 fecha=fecha,
                                 servicio=None,
-                                subservicio=subservicio,
+                                subservicio_id=subservicio_id,
                                 defaults={'observacion': observacion}
                             )
                         else:
@@ -332,12 +381,12 @@ def registro_usuario_hospederia(request, rut_usuario):
                                 usuario=usuario,
                                 fecha=fecha,
                                 servicio=None,
-                                subservicio=subservicio
+                                subservicio_id=subservicio_id
                             )
             messages.success(request, 'Servicios registrados correctamente.')
             return redirect('perfil_usuario', rut_usuario=usuario.rut_usr_hospederia)
     else:
-        form = HistorialServicioUsuarioForm(initial={'fecha': hoy})
+        form = HistorialServicioUsuarioForm(initial={'fecha': fecha_salida})
 
     servicios = Servicio.objects.prefetch_related('subservicios').all()
     return render(request, 'servicios/registro_usuario_hospederia.html', {
@@ -671,3 +720,373 @@ def listar_registros_control_horario(request):
         'fecha_hasta': fecha_hasta_str,
     }
     return render(request, 'servicios/listar_registros_control_horario.html', context)
+
+def historial_registros_usuario_pdf(request, rut_usuario):
+    usuario = get_object_or_404(usuario_hospederia, rut_usr_hospederia=rut_usuario)
+    fecha_desde = request.GET.get('fecha_desde', '').strip()
+    fecha_hasta = request.GET.get('fecha_hasta', '').strip()
+    historial_qs = HistorialServicioUsuario.objects.filter(usuario=usuario)
+    if fecha_desde:
+        try:
+            fecha_desde_dt = datetime.strptime(fecha_desde, '%Y-%m-%d').date()
+            historial_qs = historial_qs.filter(fecha__gte=fecha_desde_dt)
+        except ValueError:
+            pass
+    if fecha_hasta:
+        try:
+            fecha_hasta_dt = datetime.strptime(fecha_hasta, '%Y-%m-%d').date()
+            historial_qs = historial_qs.filter(fecha__lte=fecha_hasta_dt)
+        except ValueError:
+            pass
+    historial_qs = historial_qs.order_by('-fecha')
+    fechas = sorted(set(historial_qs.values_list('fecha', flat=True)), reverse=True)
+    servicios = list(Servicio.objects.all())
+    subservicios = list(SubServicio.objects.select_related('servicio').all())
+    historial_con_servicios = []
+    for fecha in fechas:
+        servicios_dict = {}
+        for servicio in servicios:
+            if not servicio.subservicios.exists():
+                count = historial_qs.filter(fecha=fecha, servicio=servicio, subservicio=None).count()
+                servicios_dict[servicio.nombre_servicio] = count
+        for sub in subservicios:
+            count = historial_qs.filter(fecha=fecha, subservicio=sub, servicio=None).count()
+            key = f"{sub.servicio.nombre_servicio} - {sub.nombre_subservicio}"
+            servicios_dict[key] = count
+        historial_con_servicios.append({
+            'fecha': fecha,
+            'servicios': servicios_dict
+        })
+    conteo_servicios = {}
+    for servicio in servicios:
+        if not servicio.subservicios.exists():
+            conteo_servicios[servicio.nombre_servicio] = historial_qs.filter(servicio=servicio, subservicio=None).count()
+    for sub in subservicios:
+        key = f"{sub.servicio.nombre_servicio} - {sub.nombre_subservicio}"
+        conteo_servicios[key] = historial_qs.filter(subservicio=sub, servicio=None).count()
+    context = {
+        'usuario': usuario,
+        'historial_con_servicios': historial_con_servicios,
+        'conteo_servicios': conteo_servicios,
+        'fecha_desde': fecha_desde,
+        'fecha_hasta': fecha_hasta,
+        'pdf_export': True,
+    }
+    template = get_template('servicios/historial_registros_pdf.html')
+    html = template.render(context)
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="historial_{usuario.rut_usr_hospederia}.pdf"'
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse('Error al generar el PDF', status=500)
+    return response
+
+def historial_registros_totales(request, rut_usuario):
+    usuario = get_object_or_404(usuario_hospederia, rut_usr_hospederia=rut_usuario)
+    fecha_desde = request.GET.get('fecha_desde', '').strip()
+    fecha_hasta = request.GET.get('fecha_hasta', '').strip()
+    historial_qs = HistorialServicioUsuario.objects.filter(usuario=usuario)
+    if fecha_desde:
+        try:
+            fecha_desde_dt = datetime.strptime(fecha_desde, '%Y-%m-%d').date()
+            historial_qs = historial_qs.filter(fecha__gte=fecha_desde_dt)
+        except ValueError:
+            pass
+    if fecha_hasta:
+        try:
+            fecha_hasta_dt = datetime.strptime(fecha_hasta, '%Y-%m-%d').date()
+            historial_qs = historial_qs.filter(fecha__lte=fecha_hasta_dt)
+        except ValueError:
+            pass
+    servicios = list(Servicio.objects.all())
+    subservicios = list(SubServicio.objects.select_related('servicio').all())
+    conteo_servicios = {}
+    for servicio in servicios:
+        if not servicio.subservicios.exists():
+            conteo_servicios[servicio.nombre_servicio] = historial_qs.filter(servicio=servicio, subservicio=None).count()
+    for sub in subservicios:
+        key = f"{sub.servicio.nombre_servicio} - {sub.nombre_subservicio}"
+        conteo_servicios[key] = historial_qs.filter(subservicio=sub, servicio=None).count()
+    context = {
+        'usuario': usuario,
+        'conteo_servicios': conteo_servicios,
+        'fecha_desde': fecha_desde,
+        'fecha_hasta': fecha_hasta,
+    }
+    return render(request, 'servicios/historial_registros_totales.html', context)
+
+def historial_registros_totales_pdf(request, rut_usuario):
+    usuario = get_object_or_404(usuario_hospederia, rut_usr_hospederia=rut_usuario)
+    fecha_desde = request.GET.get('fecha_desde', '').strip()
+    fecha_hasta = request.GET.get('fecha_hasta', '').strip()
+    historial_qs = HistorialServicioUsuario.objects.filter(usuario=usuario)
+    if fecha_desde:
+        try:
+            fecha_desde_dt = datetime.strptime(fecha_desde, '%Y-%m-%d').date()
+            historial_qs = historial_qs.filter(fecha__gte=fecha_desde_dt)
+        except ValueError:
+            pass
+    if fecha_hasta:
+        try:
+            fecha_hasta_dt = datetime.strptime(fecha_hasta, '%Y-%m-%d').date()
+            historial_qs = historial_qs.filter(fecha__lte=fecha_hasta_dt)
+        except ValueError:
+            pass
+    servicios = list(Servicio.objects.all())
+    subservicios = list(SubServicio.objects.select_related('servicio').all())
+    conteo_servicios = {}
+    for servicio in servicios:
+        if not servicio.subservicios.exists():
+            conteo_servicios[servicio.nombre_servicio] = historial_qs.filter(servicio=servicio, subservicio=None).count()
+    for sub in subservicios:
+        key = f"{sub.servicio.nombre_servicio} - {sub.nombre_subservicio}"
+        conteo_servicios[key] = historial_qs.filter(subservicio=sub, servicio=None).count()
+    context = {
+        'usuario': usuario,
+        'conteo_servicios': conteo_servicios,
+        'fecha_desde': fecha_desde,
+        'fecha_hasta': fecha_hasta,
+    }
+    template = get_template('servicios/historial_registros_pdf.html')
+    html = template.render(context)
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="conteo_servicios_{usuario.rut_usr_hospederia}.pdf"'
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse('Error al generar el PDF', status=500)
+    return response
+
+def historial_registros_totales_general(request):
+    fecha_desde = request.GET.get('fecha_desde', '').strip()
+    fecha_hasta = request.GET.get('fecha_hasta', '').strip()
+    historial_qs = HistorialServicioUsuario.objects.all()
+    if fecha_desde:
+        try:
+            fecha_desde_dt = datetime.strptime(fecha_desde, '%Y-%m-%d').date()
+            historial_qs = historial_qs.filter(fecha__gte=fecha_desde_dt)
+        except ValueError:
+            pass
+    if fecha_hasta:
+        try:
+            fecha_hasta_dt = datetime.strptime(fecha_hasta, '%Y-%m-%d').date()
+            historial_qs = historial_qs.filter(fecha__lte=fecha_hasta_dt)
+        except ValueError:
+            pass
+    servicios = list(Servicio.objects.all())
+    subservicios = list(SubServicio.objects.select_related('servicio').all())
+    conteo_servicios = {}
+    for servicio in servicios:
+        if not servicio.subservicios.exists():
+            conteo_servicios[servicio.nombre_servicio] = historial_qs.filter(servicio=servicio, subservicio=None).count()
+    for sub in subservicios:
+        key = f"{sub.servicio.nombre_servicio} - {sub.nombre_subservicio}"
+        conteo_servicios[key] = historial_qs.filter(subservicio=sub, servicio=None).count()
+    context = {
+        'conteo_servicios': conteo_servicios,
+        'fecha_desde': fecha_desde,
+        'fecha_hasta': fecha_hasta,
+    }
+    return render(request, 'servicios/historial_registros_totales_general.html', context)
+
+def historial_registros_totales_general_pdf(request):
+    fecha_desde = request.GET.get('fecha_desde', '').strip()
+    fecha_hasta = request.GET.get('fecha_hasta', '').strip()
+    historial_qs = HistorialServicioUsuario.objects.all()
+    if fecha_desde:
+        try:
+            fecha_desde_dt = datetime.strptime(fecha_desde, '%Y-%m-%d').date()
+            historial_qs = historial_qs.filter(fecha__gte=fecha_desde_dt)
+        except ValueError:
+            pass
+    if fecha_hasta:
+        try:
+            fecha_hasta_dt = datetime.strptime(fecha_hasta, '%Y-%m-%d').date()
+            historial_qs = historial_qs.filter(fecha__lte=fecha_hasta_dt)
+        except ValueError:
+            pass
+    servicios = list(Servicio.objects.all())
+    subservicios = list(SubServicio.objects.select_related('servicio').all())
+    conteo_servicios = {}
+    for servicio in servicios:
+        if not servicio.subservicios.exists():
+            conteo_servicios[servicio.nombre_servicio] = historial_qs.filter(servicio=servicio, subservicio=None).count()
+    for sub in subservicios:
+        key = f"{sub.servicio.nombre_servicio} - {sub.nombre_subservicio}"
+        conteo_servicios[key] = historial_qs.filter(subservicio=sub, servicio=None).count()
+    context = {
+        'conteo_servicios': conteo_servicios,
+        'fecha_desde': fecha_desde,
+        'fecha_hasta': fecha_hasta,
+    }
+    template = get_template('servicios/historial_registros_pdf_general.html')
+    html = template.render(context)
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="conteo_servicios_general.pdf"'
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse('Error al generar el PDF', status=500)
+    return response
+
+def actualizar_servicio_dia(request, rut_usuario):
+    usuario = get_object_or_404(usuario_hospederia, rut_usr_hospederia=rut_usuario)
+    hoy = timezone.localdate()
+    fecha_salida = hoy + timedelta(days=1)
+    registro_hoy = registroHorarioHospederia.objects.filter(usuario=usuario, hora_entrada__date=hoy).first()
+    if not registro_hoy:
+        messages.error(request, 'No existe un registro de ingreso para hoy. Primero debe registrar el ingreso.')
+        return redirect('perfil_usuario', rut_usuario=usuario.rut_usr_hospederia)
+
+    # Usar la fecha de salida real (la que se usó al registrar los servicios)
+    fecha_salida_real = registro_hoy.hora_salida.date()
+    servicios_hoy = HistorialServicioUsuario.objects.filter(usuario=usuario, fecha=fecha_salida_real)
+    # IDs de servicios simples
+    servicios_simples_ids = list(servicios_hoy.filter(subservicio=None).values_list('servicio_id', flat=True))
+    # Diccionario de subservicios: {field_name: [ids]}
+    subservicios_initial_dict = {}
+    servicios_con_subs = Servicio.objects.filter(subservicios__isnull=False).distinct()
+    for servicio in servicios_con_subs:
+        field_name = f'subservicios_{servicio.id}'
+        subservicios_ids = list(servicios_hoy.filter(servicio=None, subservicio__servicio=servicio).values_list('subservicio_id', flat=True))
+        print(f"Para {servicio.nombre_servicio} ({field_name}): {subservicios_ids}")
+        subservicios_initial_dict[field_name] = subservicios_ids
+    print("SERVICIOS MARCADOS:", servicios_simples_ids)
+    print("SUBSERVICIOS MARCADOS:", subservicios_initial_dict)
+    if request.method == 'POST':
+        form = HistorialServicioUsuarioForm(request.POST)
+        if form.is_valid():
+            servicios_hoy.delete()
+            fecha = form.cleaned_data['fecha']
+            # Guardar servicios simples
+            servicios_simples = [s.pk if hasattr(s, 'pk') else s for s in form.cleaned_data['servicios_simples']]
+            pernoctacion = Servicio.objects.filter(nombre_servicio__iexact='Pernoctación').first()
+            if pernoctacion and pernoctacion.pk not in servicios_simples:
+                servicios_simples.append(pernoctacion.pk)
+            for servicio_id in servicios_simples:
+                HistorialServicioUsuario.objects.get_or_create(
+                    usuario=usuario,
+                    fecha=fecha,
+                    servicio_id=servicio_id,
+                    subservicio=None
+                )
+            # Guardar subservicios
+            observacion = form.cleaned_data.get('observacion', '')
+            for field_name in form.fields:
+                if field_name.startswith('subservicios_'):
+                    for subservicio in form.cleaned_data[field_name]:
+                        subservicio_id = subservicio.pk if hasattr(subservicio, 'pk') else subservicio
+                        subservicio_obj = SubServicio.objects.get(pk=subservicio_id)
+                        if subservicio_obj.servicio.nombre_servicio == 'Asistencia Ambulatoria':
+                            HistorialServicioUsuario.objects.get_or_create(
+                                usuario=usuario,
+                                fecha=fecha,
+                                servicio=None,
+                                subservicio_id=subservicio_id,
+                                defaults={'observacion': observacion}
+                            )
+                        else:
+                            HistorialServicioUsuario.objects.get_or_create(
+                                usuario=usuario,
+                                fecha=fecha,
+                                servicio=None,
+                                subservicio_id=subservicio_id
+                            )
+            messages.success(request, 'Servicios del día actualizados correctamente.')
+            return redirect('perfil_usuario', rut_usuario=usuario.rut_usr_hospederia)
+    else:
+        form = HistorialServicioUsuarioForm(
+            servicios_simples_initial=servicios_simples_ids,
+            subservicios_initial_dict=subservicios_initial_dict,
+            initial={'fecha': fecha_salida}
+        )
+    servicios = Servicio.objects.prefetch_related('subservicios').all()
+    return render(request, 'servicios/registro_usuario_hospederia.html', {
+        'usuario': usuario,
+        'preview_entrada': registro_hoy.hora_entrada if registro_hoy else None,
+        'preview_salida': registro_hoy.hora_salida if registro_hoy else fecha_salida,
+        'existe_registro_hoy': True,
+        'servicios': servicios,
+        'form': form,
+        'modo_actualizacion': True,
+    })
+
+def actualizar_servicio_dia_aparte(request, rut_usuario):
+    usuario = get_object_or_404(usuario_hospederia, rut_usr_hospederia=rut_usuario)
+    hoy = timezone.localdate()
+    fecha_salida = hoy + timedelta(days=1)
+    registro_hoy = registroHorarioHospederia.objects.filter(usuario=usuario, hora_entrada__date=hoy).first()
+    if not registro_hoy:
+        messages.error(request, 'No existe un registro de ingreso para hoy. Primero debe registrar el ingreso.')
+        return redirect('perfil_usuario', rut_usuario=usuario.rut_usr_hospederia)
+
+    fecha_entrada = registro_hoy.hora_entrada.date()
+    servicios_hoy = HistorialServicioUsuario.objects.filter(usuario=usuario, fecha=fecha_entrada)
+    servicios_simples_objs = Servicio.objects.filter(pk__in=servicios_hoy.filter(subservicio=None).values_list('servicio_id', flat=True))
+    subservicios_ids = servicios_hoy.filter(servicio=None).values_list('subservicio_id', flat=True)
+    observacion = servicios_hoy.filter(subservicio__servicio__nombre_servicio='Asistencia Ambulatoria').first()
+    initial = {
+        'fecha': fecha_salida,
+        'servicios_simples': list(servicios_simples_objs),
+    }
+    if observacion:
+        initial['observacion'] = observacion.observacion
+    servicios_con_subs = Servicio.objects.filter(subservicios__isnull=False).distinct()
+    for servicio in servicios_con_subs:
+        key = f'subservicios_{servicio.id}'
+        subservicios_qs = SubServicio.objects.filter(servicio=servicio)
+        subservicios_objs = subservicios_qs.filter(
+            pk__in=servicios_hoy.filter(subservicio__servicio=servicio).values_list('subservicio_id', flat=True)
+        )
+        initial[key] = list(subservicios_objs)
+
+    if request.method == 'POST':
+        form = HistorialServicioUsuarioForm(request.POST)
+        if form.is_valid():
+            servicios_hoy.delete()
+            fecha = form.cleaned_data['fecha']
+            servicios_simples = list(form.cleaned_data['servicios_simples'])
+            pernoctacion = Servicio.objects.filter(nombre_servicio__iexact='Pernoctación').first()
+            if pernoctacion and pernoctacion not in servicios_simples:
+                servicios_simples.append(pernoctacion)
+            for servicio in servicios_simples:
+                HistorialServicioUsuario.objects.get_or_create(
+                    usuario=usuario,
+                    fecha=fecha,
+                    servicio=servicio,
+                    subservicio=None
+                )
+            observacion = form.cleaned_data.get('observacion', '')
+            for field_name in form.fields:
+                if field_name.startswith('subservicios_'):
+                    for subservicio in form.cleaned_data[field_name]:
+                        subservicio_id = subservicio.pk if hasattr(subservicio, 'pk') else subservicio
+                        subservicio_obj = SubServicio.objects.get(pk=subservicio_id)
+                        if subservicio_obj.servicio.nombre_servicio == 'Asistencia Ambulatoria':
+                            HistorialServicioUsuario.objects.get_or_create(
+                                usuario=usuario,
+                                fecha=fecha,
+                                servicio=None,
+                                subservicio_id=subservicio_id,
+                                defaults={'observacion': observacion}
+                            )
+                        else:
+                            HistorialServicioUsuario.objects.get_or_create(
+                                usuario=usuario,
+                                fecha=fecha,
+                                servicio=None,
+                                subservicio_id=subservicio_id
+                            )
+            messages.success(request, 'Servicios del día actualizados correctamente.')
+            return redirect('perfil_usuario', rut_usuario=usuario.rut_usr_hospederia)
+    else:
+        form = HistorialServicioUsuarioForm(initial=initial)
+
+    servicios = Servicio.objects.prefetch_related('subservicios').all()
+    return render(request, 'servicios/actualizar_servicio_dia.html', {
+        'usuario': usuario,
+        'preview_entrada': registro_hoy.hora_entrada if registro_hoy else None,
+        'preview_salida': registro_hoy.hora_salida if registro_hoy else fecha_salida,
+        'existe_registro_hoy': True,
+        'servicios': servicios,
+        'form': form,
+        'modo_actualizacion': True,
+    })

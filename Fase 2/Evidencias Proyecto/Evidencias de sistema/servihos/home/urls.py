@@ -26,5 +26,12 @@ urlpatterns = [
     path('registro_usuario_hospederia/<str:rut_usuario>/', views.registro_usuario_hospederia, name='registro_usuario_hospederia'),
     path('hospedados/historial_registros/<str:rut_usuario>/', views.historial_registros_usuario, name='historial_registros_usuario'),
     path('historial_registros/<str:rut_usuario>/', views.historial_registros_usuario, name='historial_registros_usuario'),
+    path('historial_registros/<str:rut_usuario>/pdf/', views.historial_registros_usuario_pdf, name='historial_registros_pdf'),
+    path('historial_registros_totales/<str:rut_usuario>/', views.historial_registros_totales, name='historial_registros_totales'),
+    path('historial_registros_totales/<str:rut_usuario>/pdf/', views.historial_registros_totales_pdf, name='historial_registros_totales_pdf'),
+    path('historial_registros_totales_general/', views.historial_registros_totales_general, name='historial_registros_totales_general'),
+    path('historial_registros_totales_general/pdf/', views.historial_registros_totales_general_pdf, name='historial_registros_totales_general_pdf'),
+    path('actualizar_servicio_dia/<str:rut_usuario>/', views.actualizar_servicio_dia, name='actualizar_servicio_dia'),
+    path('actualizar_servicio_dia_aparte/<str:rut_usuario>/', views.actualizar_servicio_dia_aparte, name='actualizar_servicio_dia_aparte'),
 ]
     
