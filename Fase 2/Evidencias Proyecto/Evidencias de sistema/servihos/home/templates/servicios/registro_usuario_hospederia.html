@@ -18,13 +18,11 @@
 {% block contenido %}
 <main>
     <section class="perfil-container">
-        <h1>Registrar Horario</h1>
 
-        <!-- Próximo Registro -->
+        <!-- Registro teórico -->
         <div class="info-grupo">
-            <h3>Próximo registro disponible</h3>
+            <h3>Registrar Ingreso</h3>
             <p><strong>Entrada:</strong> {{ preview_entrada|date:"d/m/Y H:i" }}</p>
-            <p><strong>Salida:</strong> {{ preview_salida|date:"d/m/Y H:i" }}</p>
         </div>
 
         {% if error_msg %}
@@ -34,24 +32,97 @@
         <!-- Formulario -->
         <form method="post">
             {% csrf_token %}
-            <h4>Servicios y Subservicios utilizados:</h4>
-
-            {% for servicio in servicios %}
-                <div>
-                    <strong>{{ servicio.nombre_servicio }}</strong>
-                    <ul>
-                        {% for sub in servicio.subservicios.all %}
-                            <li>
-                                <label>
-                                    <div class="checkbox-icon">
-                                    <input type="checkbox" name="subservicios" value="{{ sub.id }}">
-                                    {{ sub.nombre_subservicio }}
+            {% for field in form %}
+                {% if field.name == 'fecha' %}
+                    <div class="form-group">
+                        <div class="fields fields-fecha">
+                            {{ field.label_tag }}
+                            {{ field }}
+                            <span class="hora-salida">{{ preview_salida|date:"H:i" }}</span>
+                        </div>
+                        <br>
+                        {% if field.errors %}
+                            <div class="error">{{ field.errors }}</div>
+                        {% endif %}
+                    </div>
+                {% elif field.name == 'servicios_simples' %}
+                    <div class="form-group">
+                        <div class="fields">
+                            {{ field.label_tag }}
+                            <ul class="lista-servicios">
+                                {% for checkbox in field %}
+                                    <li>
+                                        {% if 'Pernoctación' in checkbox.choice_label %}
+                                            <label>
+                                                <input type="checkbox" name="{{ field.html_name }}" value="{{ checkbox.data.value }}" checked disabled>
+                                                {{ checkbox.choice_label }}
+                                            </label>
+                                        {% else %}
+                                            {{ checkbox.tag }} {{ checkbox.choice_label }}
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <br>
+                        {% if field.errors %}
+                            <div class="error">{{ field.errors }}</div>
+                        {% endif %}
+                    </div>
+                    {% if 'Asistencia Ambulatoria' in field.label %}
+                        <div class="form-group" id="observacion-ambulatoria-group" style="display:none;">
+                            <div class="fields">
+                                {{ form.observacion.label_tag }}
+                                {{ form.observacion }}
+                            </div>
+                            <br>
+                            {% if form.observacion.errors %}
+                                <div class="error">{{ form.observacion.errors }}</div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% elif 'subservicios_' in field.name %}
+                    {% with field.label|lower as label_lower %}
+                    <div class="form-group">
+                        <div class="fields">
+                            {{ field.label_tag }}
+                            <ul class="lista-servicios">
+                                {% for checkbox in field %}
+                                    <li>{{ checkbox.tag }} {{ checkbox.choice_label }}</li>
+                                {% endfor %}
+                                {% if 'asistencia ambulatoria' in label_lower %}
+                                <li id="observacion-ambulatoria-li" style="display:none;">
+                                    <div class="fields">
+                                        {{ form.observacion.label_tag }}
+                                        {{ form.observacion }}
                                     </div>
-                                </label>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
+                                    {% if form.observacion.errors %}
+                                        <div class="error">{{ form.observacion.errors }}</div>
+                                    {% endif %}
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        <br>
+                        {% if field.errors %}
+                            <div class="error">{{ field.errors }}</div>
+                        {% endif %}
+                    </div>
+                    {% endwith %}
+                {% elif field.name == 'observacion' %}
+                    {# No mostrar aquí, ya se muestra bajo Asistencia Ambulatoria #}
+                {% else %}
+                    <div class="form-group">
+                        <div class="fields">
+                            {{ field.label_tag }}
+                            {{ field }}
+                        </div>
+                        <br>
+                        {% if field.errors %}
+                            <div class="error">{{ field.errors }}</div>
+                        {% endif %}
+                    </div>
+                {% endif %}
             {% endfor %}
 
             <div class="botones">
@@ -62,41 +133,39 @@
             </div>
         </form>
 
-        <!-- Tabla de registros -->
-        <div class="info-grupo">
-            <h2>Registros de horario</h2>
-            <div style="overflow-x: auto;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Fecha de Entrada</th>
-                            <th>Fecha de Salida</th>
-                            <th>Subservicios utilizados</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for registro in registros %}
-                        <tr>
-                            <td data-label="Fecha de Entrada">{{ registro.hora_entrada|date:"d/m/Y H:i" }}</td>
-                            <td data-label="Fecha de Salida">{{ registro.hora_salida|date:"d/m/Y H:i" }}</td>
-                            <td data-label="Subservicios utilizados">
-                                {% for reg_sub in registro.registro_subservicios.all %}
-                                    {{ reg_sub.subservicio.nombre_subservicio }}{% if not forloop.last %}, {% endif %}
-                                {% empty %}
-                                    Ninguno
-                                {% endfor %}
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="3">No hay registros de horario.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function toggleObservacionAmbulatoria() {
+                var mostrar = false;
+                var ambulatoriaLabel = Array.from(document.querySelectorAll('.form-group .fields label')).find(function(label) {
+                    return label.textContent.toLowerCase().includes('asistencia ambulatoria');
+                });
+                if (ambulatoriaLabel) {
+                    var group = ambulatoriaLabel.closest('.fields').parentElement;
+                    group.querySelectorAll('input[type=checkbox]').forEach(function(cb) {
+                        if (cb.checked) {
+                            mostrar = true;
+                        }
+                    });
+                    var obsLi = group.querySelector('#observacion-ambulatoria-li');
+                    if (obsLi) {
+                        obsLi.style.display = mostrar ? '' : 'none';
+                    }
+                }
+            }
 
+            var ambulatoriaLabel = Array.from(document.querySelectorAll('.form-group .fields label')).find(function(label) {
+                return label.textContent.toLowerCase().includes('asistencia ambulatoria');
+            });
+            if (ambulatoriaLabel) {
+                var group = ambulatoriaLabel.closest('.fields').parentElement;
+                group.querySelectorAll('input[type=checkbox]').forEach(function(cb) {
+                    cb.addEventListener('change', toggleObservacionAmbulatoria);
+                });
+            }
+            toggleObservacionAmbulatoria();
+        });
+        </script>
     </section>
 </main>
 {% endblock %}

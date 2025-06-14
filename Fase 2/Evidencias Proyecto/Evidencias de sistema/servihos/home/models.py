@@ -79,7 +79,7 @@ class usuario_hospederia(models.Model):
         validators=[validate_rut, MinLengthValidator(8)],
         blank=False, 
         unique=True)
-    pasaporte_usr_hospederia = models.CharField(max_length=25, blank=False)
+    pasaporte_usr_hospederia = models.CharField(max_length=25, blank=True)
     primer_nombre_usr_hospederia = models.CharField(max_length=25, blank=False)
     segundo_nombre_usr_hospederia = models.CharField(max_length=25, blank=False)
     primer_apellido_usr_hospederia = models.CharField(max_length=25, blank=False)
@@ -90,6 +90,7 @@ class usuario_hospederia(models.Model):
     nacionalidad_usr_hospederia = models.CharField(max_length=25, blank=False)
     id_hospederia = models.ForeignKey(hospederia, on_delete=models.CASCADE, blank=True, null=True)
     mostrar_en_reportes = models.BooleanField(blank=False)
+    fecha_registro = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return self.primer_nombre_usr_hospederia
@@ -162,6 +163,7 @@ class HistorialServicioUsuario(models.Model):
     # Solo uno de estos dos debe estar lleno por registro
     servicio = models.ForeignKey('Servicio', on_delete=models.CASCADE, null=True, blank=True)
     subservicio = models.ForeignKey('SubServicio', on_delete=models.CASCADE, null=True, blank=True)
+    observacion = models.TextField(blank=True, null=True)
 
     def clean(self):
         # Asegura que solo uno esté lleno

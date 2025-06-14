@@ -155,10 +155,23 @@ def perfil_usuario(request, rut_usuario):
     # Buscar el último registro de horario si existe
     ultimo_registro = registroHorarioHospederia.objects.filter(usuario=usuario).order_by('-hora_entrada').first()
 
+    # Conteo total de servicios y subservicios
+    historial_qs = HistorialServicioUsuario.objects.filter(usuario=usuario)
+    servicios = list(Servicio.objects.all())
+    subservicios = list(SubServicio.objects.select_related('servicio').all())
+    conteo_servicios = {}
+    for servicio in servicios:
+        if not servicio.subservicios.exists():
+            conteo_servicios[servicio.nombre_servicio] = historial_qs.filter(servicio=servicio, subservicio=None).count()
+    for sub in subservicios:
+        key = f"{sub.servicio.nombre_servicio} - {sub.nombre_subservicio}"
+        conteo_servicios[key] = historial_qs.filter(subservicio=sub, servicio=None).count()
+
     context = {
         'usuario': usuario,
         'edad': edad,
         'ultimo_registro': ultimo_registro,
+        'conteo_servicios': conteo_servicios,
     }
 
     return render(request, 'servicios/perfil_usuario.html', context)
@@ -286,6 +299,12 @@ def registro_usuario_hospederia(request, rut_usuario):
         form = HistorialServicioUsuarioForm(request.POST)
         if form.is_valid():
             fecha = form.cleaned_data['fecha']
+            # Crear registro de entrada/salida
+            registroHorarioHospederia.objects.create(
+                usuario=usuario,
+                hora_entrada=preview_entrada,
+                hora_salida=preview_salida
+            )
             # Servicios simples
             for servicio in form.cleaned_data['servicios_simples']:
                 HistorialServicioUsuario.objects.get_or_create(
@@ -295,15 +314,26 @@ def registro_usuario_hospederia(request, rut_usuario):
                     subservicio=None
                 )
             # Subservicios
+            observacion = form.cleaned_data.get('observacion', '')
             for field_name in form.fields:
                 if field_name.startswith('subservicios_'):
                     for subservicio in form.cleaned_data[field_name]:
-                        HistorialServicioUsuario.objects.get_or_create(
-                            usuario=usuario,
-                            fecha=fecha,
-                            servicio=None,
-                            subservicio=subservicio
-                        )
+                        # Solo guardar observación si es Asistencia Ambulatoria
+                        if subservicio.servicio.nombre_servicio == 'Asistencia Ambulatoria':
+                            HistorialServicioUsuario.objects.get_or_create(
+                                usuario=usuario,
+                                fecha=fecha,
+                                servicio=None,
+                                subservicio=subservicio,
+                                defaults={'observacion': observacion}
+                            )
+                        else:
+                            HistorialServicioUsuario.objects.get_or_create(
+                                usuario=usuario,
+                                fecha=fecha,
+                                servicio=None,
+                                subservicio=subservicio
+                            )
             messages.success(request, 'Servicios registrados correctamente.')
             return redirect('perfil_usuario', rut_usuario=usuario.rut_usr_hospederia)
     else:
