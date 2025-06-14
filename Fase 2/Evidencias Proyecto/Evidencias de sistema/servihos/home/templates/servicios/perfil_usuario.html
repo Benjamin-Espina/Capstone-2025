@@ -7,6 +7,10 @@
 
 {% block blocktitle %}ServiHos - Perfil del Usuario{% endblock %}
 
+{% block menu %}
+    {% include "_templates/menu_template.html" %}
+{% endblock %}
+
 {% block contenido %}
 <main>
     <section class="perfil-container">
@@ -37,10 +41,9 @@
                     {% endif %}
                 </p>
 
-                <a href="{% url 'registro_usuario_hospederia' usuario.rut_usr_hospederia %}">Registrar Ingreso</a>
+                <a href="{% url 'registro_usuario_hospederia' usuario.rut_usr_hospederia %}" class="boton-editar">Registrar Ingreso</a>
             </div>
         </div>
-
 
         <!-- Conteo total de servicios -->
         <h3 style="margin-top: 30px;">Conteo total de servicios usados</h3>
@@ -60,6 +63,7 @@
                 {% endfor %}
             </tbody>
         </table>
+
         <!-- BOTÓN: Ver historial de ingreso -->
         <div class="ver-historial" style="margin-top: 20px;">
             <a class="boton-historial" href="{% url 'historial_registros_usuario' usuario.rut_usr_hospederia %}">
