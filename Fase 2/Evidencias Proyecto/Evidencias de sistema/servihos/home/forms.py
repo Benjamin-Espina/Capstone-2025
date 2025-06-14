@@ -122,13 +122,20 @@ class HistorialServicioUsuarioForm(forms.Form):
         required=False
     )
     # Un campo por cada servicio con subservicios
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, servicios_simples_initial=None, subservicios_initial_dict=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['fecha'].widget.attrs['readonly'] = True
-        # Seleccionar y deshabilitar 'Pernoctación'
         pernoctacion = Servicio.objects.filter(nombre_servicio__iexact='Pernoctación').first()
-        if pernoctacion:
+        if pernoctacion and not self.initial.get('servicios_simples') and not self.data and servicios_simples_initial is None:
             self.initial['servicios_simples'] = [pernoctacion.pk]
+        # Forzar el initial de los campos ModelMultipleChoiceField como lista de IDs
+        if servicios_simples_initial is not None:
+            self.fields['servicios_simples'].initial = [s.pk if hasattr(s, 'pk') else s for s in servicios_simples_initial]
+        # Para subservicios
+        if subservicios_initial_dict:
+            for field_name, subservicios_objs in subservicios_initial_dict.items():
+                if field_name in self.fields:
+                    self.fields[field_name].initial = [s.pk if hasattr(s, 'pk') else s for s in subservicios_objs]
         # Personalizar los widgets para deshabilitar 'Pernoctación'
         choices = []
         for servicio in self.fields['servicios_simples'].queryset:
@@ -142,10 +149,16 @@ class HistorialServicioUsuarioForm(forms.Form):
         self.pernoctacion_id = pernoctacion.pk if pernoctacion else None
         servicios_con_subs = Servicio.objects.filter(subservicios__isnull=False).distinct()
         for servicio in servicios_con_subs:
-            self.fields[f'subservicios_{servicio.id}'] = forms.ModelMultipleChoiceField(
+            field_name = f'subservicios_{servicio.id}'
+            self.fields[field_name] = forms.ModelMultipleChoiceField(
                 queryset=SubServicio.objects.filter(servicio=servicio),
                 required=False,
                 widget=forms.CheckboxSelectMultiple,
                 label=f"Subservicios de {servicio.nombre_servicio}"
             )
+            if subservicios_initial_dict and field_name in subservicios_initial_dict:
+                self.fields[field_name].initial = [s.pk if hasattr(s, 'pk') else s for s in subservicios_initial_dict[field_name]]
+            # Print para depuración
+            print(f"Queryset para {field_name}: {[s.pk for s in self.fields[field_name].queryset]}")
+            print(f"Initial para {field_name}: {self.fields[field_name].initial}")
 

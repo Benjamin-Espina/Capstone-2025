@@ -1,0 +1,47 @@
+{% extends "_templates/basic_template.html" %}
+{% load static %}
+
+{% block blockhead %}
+<link rel="stylesheet" href="{% static 'css/historial_registros.css' %}">
+{% endblock %}
+
+{% block blocktitle %}Conteo total de servicios{% endblock %}
+
+{% block contenido %}
+<main>
+    <section class="perfil-container">
+        <h2>Conteo total de servicios y subservicios</h2>
+        <p><strong>Usuario:</strong> {{ usuario.primer_nombre_usr_hospederia }} {{ usuario.primer_apellido_usr_hospederia }} (RUT: {{ usuario.rut_usr_hospederia }})</p>
+        <form method="get" class="mb-3" style="margin-bottom: 20px;">
+            <label>Desde: <input type="date" name="fecha_desde" value="{{ fecha_desde }}"></label>
+            <label>Hasta: <input type="date" name="fecha_hasta" value="{{ fecha_hasta }}"></label>
+            <button type="submit">Filtrar</button>
+            <button type="submit" formaction="{% url 'historial_registros_totales_pdf' usuario.rut_usr_hospederia %}" formtarget="_blank">Exportar PDF</button>
+        </form>
+        {% if fecha_desde or fecha_hasta %}
+            <p><strong>Filtro:</strong>
+                {% if fecha_desde %}Desde {{ fecha_desde }}{% endif %}
+                {% if fecha_hasta %} Hasta {{ fecha_hasta }}{% endif %}
+            </p>
+        {% else %}
+            <p><strong>Mostrando todos los registros disponibles.</strong></p>
+        {% endif %}
+        <table class="tabla-historial">
+            <thead>
+                <tr>
+                    <th>Servicio/Subservicio</th>
+                    <th>Cantidad</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for key, value in conteo_servicios.items %}
+                <tr>
+                    <td>{{ key }}</td>
+                    <td>{{ value }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</main>
+{% endblock %} 
