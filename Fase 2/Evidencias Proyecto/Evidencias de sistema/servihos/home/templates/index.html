@@ -1,19 +1,58 @@
-{% extends "_templates/basic_template.html" %}
-{% load static %}
+    {% extends "_templates/basic_template.html" %}
+    {% load static %}
 
-{% block blockhead %}
-<link rel="stylesheet" href="{% static 'css/index.css' %}">
-{% endblock %}
+    {% block blockhead %}
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <script src="{% static 'js/index.js' %}"></script>
+    {% endblock %}
+    {% block blocktitle %}ServiHos - Testing{% endblock blocktitle %}
 
-{% block blocktitle %}ServiHos - Inicio{% endblock %}
+    {% block menu %}
+        {% include "_templates/menu_template.html" %}
+    {% endblock %}
 
-{% block menu %}
-    {% include "_templates/menu_template.html" %}
-{% endblock %}
+    {% block contenido %}
+        <section>
+            <h1>Panel de Resumen</h1>
+            <div style="display: flex; gap: 2rem; flex-wrap: wrap; margin-bottom: 2rem;">
+                <div style="background: #e0f7fa; padding: 1.5rem 2rem; border-radius: 10px; min-width: 220px; text-align: center; box-shadow: 0 2px 8px #0001;">
+                    <h2 style="margin: 0; font-size: 2.2rem;">{{ total_servicios }}</h2>
+                    <p style="margin: 0; font-size: 1.1rem;">Servicios utilizados (total)</p>
+                </div>
+                <div style="background: #fce4ec; padding: 1.5rem 2rem; border-radius: 10px; min-width: 220px; text-align: center; box-shadow: 0 2px 8px #0001;">
+                    <h2 style="margin: 0; font-size: 2.2rem;">{{ total_subservicios }}</h2>
+                    <p style="margin: 0; font-size: 1.1rem;">Subservicios utilizados (total)</p>
+                </div>
+                <div style="background: #fff9c4; padding: 1.5rem 2rem; border-radius: 10px; min-width: 220px; text-align: center; box-shadow: 0 2px 8px #0001;">
+                    <h2 style="margin: 0; font-size: 2.2rem;">{{ total_usuarios_hospederia }}</h2>
+                    <p style="margin: 0; font-size: 1.1rem;">Usuarios de hospedería</p>
+                </div>
+                <div style="background: #c8e6c9; padding: 1.5rem 2rem; border-radius: 10px; min-width: 220px; text-align: center; box-shadow: 0 2px 8px #0001;">
+                    <h2 style="margin: 0; font-size: 2.2rem;">{{ usuarios_ingresaron_hoy }}</h2>
+                    <p style="margin: 0; font-size: 1.1rem;">Ingresos hoy</p>
+                </div>
+            </div>
 
-{% block contenido %}
-    <div>
-        <h1>Testing</h1>
-        <p>Hola mundo!</p>
-    </div>
-{% endblock %}
+            <h2 style="margin-top: 2rem;">Uso histórico por servicio y subservicio</h2>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; max-width: 700px; margin: 0 auto; border-collapse: collapse; background: #fff; box-shadow: 0 2px 8px #0001;">
+                    <thead>
+                        <tr style="background: #e0e0e0;">
+                            <th style="padding: 10px; text-align: left;">Servicio/Subservicio</th>
+                            <th style="padding: 10px; text-align: right;">Cantidad de usos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for key, value in conteo_servicios.items %}
+                        <tr>
+                            <td style="padding: 10px;">{{ key }}</td>
+                            <td style="padding: 10px; text-align: right;">{{ value }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="2" style="padding: 10px; text-align: center;">No hay registros históricos.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    {% endblock contenido %}
