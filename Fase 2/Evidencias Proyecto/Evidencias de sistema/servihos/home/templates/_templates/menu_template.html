@@ -25,6 +25,7 @@
             <a class="card" href="{% url 'lista_encargados' %}">Listar usuarios </a>
             <a class="card" href="{% url 'listar_servicios' %}">Servicios</a>
             <a class="card" href="{% url 'listar_subservicios' %}" class="menu-button">Subservicios</a>
+            <a class="card" href="{% url 'historial_registros_totales_general' %}">Reportes</a>
             <a class="card" href="{% url 'subir_usuarios_hospederia' %}">Subir usuarios hospederas (CSV) </a>
 
             {% elif user.is_authenticated and user.is_superuser %}
@@ -33,12 +34,14 @@
             <a class="card" href="{% url 'lista_encargados' %}">Listar usuarios </a>
             <a class="card" href="{% url 'listar_servicios' %}">Servicios</a>
             <a class="card" href="{% url 'listar_subservicios' %}" class="menu-button">Subservicios</a>
+            <a class="card" href="{% url 'historial_registros_totales_general' %}">Reportes</a>
             <a class="card" href="{% url 'subir_usuarios_hospederia' %}">Subir usuarios hospederas (CSV) </a>
 
             {% elif user.is_authenticated and user.tipo|lower == 'encargado' %}
 
             <a class="card" href="{% url 'listar_hospedados' %}">Listar usuarios en hospedería </a>
             <a class="card" href="{% url 'registrar_hospedado' %}">Registrar usuario en hospedería </a>
+            <a class="card" href="{% url 'historial_registros_totales_general' %}">Reportes</a>
             
             {% endif %}
             <!-- Fin Menú sesión iniciada -->
