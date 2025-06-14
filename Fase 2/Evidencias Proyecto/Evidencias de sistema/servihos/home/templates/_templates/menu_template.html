@@ -12,8 +12,8 @@
     {% endif %}
     <!-- Fin iniciar sesión -->
     <!-- Segmento del menu que se oculta -->
-
-    <section id="menu-botones">
+    <section>
+    <!-- ...resto del menú... -->
         {% if user.is_authenticated %}
             <h1 class="username"><span style="text-transform: capitalize;"> {{ request.user.get_full_name }}</span>!</h1>
         {% endif %}
@@ -50,6 +50,5 @@
         </div>
     </section>
     <!-- Fin del segmento que se oculta -->
-
 </section>
 {% endblock %}
