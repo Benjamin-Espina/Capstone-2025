@@ -1,12 +1,16 @@
 .crear-servicio-container {
-    max-width: 400px;
     margin: 60px auto;
-    padding: 30px 20px;
+    padding: 40px 30px;
     background-color: #f7fafd;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.06);
-    text-align: center;
     box-sizing: border-box;
+
+    display: flex;
+    flex-flow: column;
+    height: fit-content;
+    align-items: center;
+    max-width: 50rem !important;
 }
 
 .crear-servicio-container h2 {
@@ -33,7 +37,7 @@
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 1em;
-    width: 100%;
+    width: 19rem;
     box-sizing: border-box;
 }
 
@@ -51,7 +55,7 @@ button[type="submit"] {
     font-size: 1em;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    width: 100%;
+    width: fit-content;
     box-sizing: border-box;
 }
 

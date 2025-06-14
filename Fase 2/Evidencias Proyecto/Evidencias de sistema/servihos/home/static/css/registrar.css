@@ -34,7 +34,7 @@
     padding: 2rem;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
+    min-width: fit-content;
     width: 100%;
     box-sizing: border-box;
 }
@@ -52,4 +52,15 @@
 }
 html, body {
     height: 100%;
+}
+
+.formulario_registro_hospederia, form{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.field_checkbox{
+    flex-direction: row !important;
+    flex-wrap: nowrap;
 }
