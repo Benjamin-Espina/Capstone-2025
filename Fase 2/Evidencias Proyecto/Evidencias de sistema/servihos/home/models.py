@@ -131,9 +131,11 @@ def fun_HorarioEntrada():
     ahora = datetime.datetime.now()
     return ahora.replace(hour=18, minute=0, second=0)
 
-def fun_HorarioSalida():
-    manana = datetime.date.today() + datetime.timedelta(days=1)
-    return datetime.datetime.combine(manana, datetime.time(hour=8, minute=30, second=0))
+def fun_HorarioSalida(hora_entrada=None):
+    if hora_entrada is None:
+        hora_entrada = fun_HorarioEntrada()
+    fecha_salida = hora_entrada.date() + datetime.timedelta(days=1)
+    return datetime.datetime.combine(fecha_salida, datetime.time(hour=8, minute=30, second=0))
 
 
 class registroHorarioHospederia(models.Model):

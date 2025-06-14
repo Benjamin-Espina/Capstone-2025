@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Conteo total de servicios PDF</title>
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 13px; }
+        h2, h3 { color: #333; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #888; padding: 6px 10px; text-align: left; }
+        th { background: #f0f0f0; }
+    </style>
+</head>
+<body>
+    <h2>Conteo total de servicios y subservicios</h2>
+    <p><strong>Usuario:</strong> {{ usuario.primer_nombre_usr_hospederia }} {{ usuario.primer_apellido_usr_hospederia }} (RUT: {{ usuario.rut_usr_hospederia }})</p>
+    {% if fecha_desde or fecha_hasta %}
+        <p><strong>Filtro:</strong>
+            {% if fecha_desde %}Desde {{ fecha_desde }}{% endif %}
+            {% if fecha_hasta %} Hasta {{ fecha_hasta }}{% endif %}
+        </p>
+    {% else %}
+        <p><strong>Mostrando todos los registros disponibles.</strong></p>
+    {% endif %}
+    <table>
+        <thead>
+            <tr>
+                <th>Servicio/Subservicio</th>
+                <th>Cantidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for key, value in conteo_servicios.items %}
+            <tr>
+                <td>{{ key }}</td>
+                <td>{{ value }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html> 

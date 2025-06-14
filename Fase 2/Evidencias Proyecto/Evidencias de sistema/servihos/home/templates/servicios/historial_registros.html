@@ -17,6 +17,7 @@
             <label>Desde: <input type="date" name="fecha_desde" value="{{ fecha_desde }}"></label>
             <label>Hasta: <input type="date" name="fecha_hasta" value="{{ fecha_hasta }}"></label>
             <button type="submit">Filtrar</button>
+            <button type="submit" formaction="{% url 'historial_registros_pdf' usuario.rut_usr_hospederia %}" formtarget="_blank">Exportar PDF</button>
         </form>
 
         <!-- Tabla de historial por fecha -->

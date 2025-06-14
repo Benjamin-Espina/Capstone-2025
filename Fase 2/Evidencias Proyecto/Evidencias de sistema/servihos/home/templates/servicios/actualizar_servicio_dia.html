@@ -5,24 +5,20 @@
 <link rel="stylesheet" href="{% static 'css/registro_usuario_hospederia.css' %}">
 {% endblock %}
 
-{% block blocktitle %}ServiHos - Registrar entrada/salida{% endblock %}
+{% block blocktitle %}ServiHos - Actualizar servicios del día{% endblock %}
 
 {% block contenido %}
 <main>
+    <h1>hola</h1>
     <section class="perfil-container">
-
-        <!-- Registro teórico -->
         <div class="info-grupo">
-            <h3>{% if modo_actualizacion %}Actualización de servicios del día{% else %}Registrar Ingreso{% endif %}</h3>
+            <h3>Actualización de servicios del día</h3>
             <p><strong>Entrada:</strong> {{ preview_entrada|date:"d/m/Y H:i" }}</p>
-          {#  <p><strong>Salida:</strong> {{ preview_salida|date:"d/m/Y H:i" }}</p> #}
+            <p><strong>Salida:</strong> {{ preview_salida|date:"d/m/Y H:i" }}</p>
         </div>
-
         {% if error_msg %}
         <div class="alert alert-danger">{{ error_msg }}</div>
         {% endif %}
-
-        <!-- Formulario -->
         <form method="post">
             {% csrf_token %}
             {% for field in form %}
@@ -119,46 +115,9 @@
             {% endfor %}
             <div class="botones">
                 <button type="reset" class="btn-limpiar">Limpiar campos</button>
-                <button type="submit" class="btn-registrar" {% if not modo_actualizacion and existe_registro_hoy %}disabled{% endif %}>
-                    {% if modo_actualizacion %}Actualizar servicios del día{% else %}Completar Ingreso{% endif %}
-                </button>
+                <button type="submit" class="btn-registrar">Actualizar servicios del día</button>
             </div>
         </form>
-        <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Mostrar/ocultar observación de Asistencia Ambulatoria
-            function toggleObservacionAmbulatoria() {
-                var mostrar = false;
-                // Buscar solo los checkboxes del grupo de Asistencia Ambulatoria
-                var ambulatoriaLabel = Array.from(document.querySelectorAll('.form-group .fields label')).find(function(label) {
-                    return label.textContent.toLowerCase().includes('asistencia ambulatoria');
-                });
-                if (ambulatoriaLabel) {
-                    var group = ambulatoriaLabel.closest('.fields').parentElement;
-                    group.querySelectorAll('input[type=checkbox]').forEach(function(cb) {
-                        if (cb.checked) {
-                            mostrar = true;
-                        }
-                    });
-                    var obsLi = group.querySelector('#observacion-ambulatoria-li');
-                    if (obsLi) {
-                        obsLi.style.display = mostrar ? '' : 'none';
-                    }
-                }
-            }
-            // Escuchar cambios solo en los checkboxes del grupo de Asistencia Ambulatoria
-            var ambulatoriaLabel = Array.from(document.querySelectorAll('.form-group .fields label')).find(function(label) {
-                return label.textContent.toLowerCase().includes('asistencia ambulatoria');
-            });
-            if (ambulatoriaLabel) {
-                var group = ambulatoriaLabel.closest('.fields').parentElement;
-                group.querySelectorAll('input[type=checkbox]').forEach(function(cb) {
-                    cb.addEventListener('change', toggleObservacionAmbulatoria);
-                });
-            }
-            toggleObservacionAmbulatoria();
-        });
-        </script>
     </section>
 </main>
-{% endblock %}
+{% endblock %} 
