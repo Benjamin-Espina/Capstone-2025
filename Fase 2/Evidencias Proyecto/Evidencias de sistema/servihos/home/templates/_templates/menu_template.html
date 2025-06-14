@@ -11,24 +11,15 @@
     </div>
     {% endif %}
     <!-- Fin iniciar sesión -->
-
     <!-- Segmento del menu que se oculta -->
-    <!-- Menu Icon -->
-    {% if user.is_authenticated %}
-    <div class="container" onclick="myFunction(this)">
-        <div class="bar1"></div>
-        <div class="bar2"></div>
-        <div class="bar3"></div>
-    </div>
-    {% endif %}
-    <!-- fin Menu Icon -->
 
     <section id="menu-botones">
-        <h1>Testing menu</h1>
-
+        {% if user.is_authenticated %}
+            <h1 class="username"><span style="text-transform: capitalize;"> {{ request.user.get_full_name }}</span>!</h1>
+        {% endif %}
         <div class="botones">
             <!-- Menú sesión iniciada -->
-            {% if user.is_authenticated and user.tipo == 'administrador' %}
+            {% if user.is_authenticated and user.tipo|lower == 'administrador' %}
 
             <a class="card" href="{% url 'registrar_encargado' %}">Registrar encargado </a>
             <a class="card" href="{% url 'lista_encargados' %}">Listar usuarios </a>
@@ -36,7 +27,15 @@
             <a class="card" href="{% url 'listar_subservicios' %}" class="menu-button">Subservicios</a>
             <a class="card" href="{% url 'subir_usuarios_hospederia' %}">Subir usuarios hospederas (CSV) </a>
 
-            {% elif user.tipo == 'encargado' %}
+            {% elif user.is_authenticated and user.is_superuser %}
+
+            <a class="card" href="{% url 'registrar_encargado' %}">Registrar encargado </a>
+            <a class="card" href="{% url 'lista_encargados' %}">Listar usuarios </a>
+            <a class="card" href="{% url 'listar_servicios' %}">Servicios</a>
+            <a class="card" href="{% url 'listar_subservicios' %}" class="menu-button">Subservicios</a>
+            <a class="card" href="{% url 'subir_usuarios_hospederia' %}">Subir usuarios hospederas (CSV) </a>
+
+            {% elif user.is_authenticated and user.tipo|lower == 'encargado' %}
 
             <a class="card" href="{% url 'listar_hospedados' %}">Listar usuarios en hospedería </a>
             <a class="card" href="{% url 'registrar_hospedado' %}">Registrar usuario en hospedería </a>
@@ -46,9 +45,7 @@
         </div>
         <div class="user-info">
             {% if user.is_authenticated %}
-            <p class="username">Cuenta: <span style="text-transform: capitalize;"> {{ request.user.get_full_name }}</span>!</p>
-                    <p>Tipo: {{ request.user.tipo }} </p>
-                    <a class="button" href="{% url 'cerrar_sesion' %}">Cerrar sesión</a>
+                <a class="button" href="{% url 'cerrar_sesion' %}">Cerrar sesión</a>
             {% endif %}
         </div>
     </section>
