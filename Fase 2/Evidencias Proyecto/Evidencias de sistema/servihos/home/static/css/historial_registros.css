@@ -19,10 +19,55 @@ table {
 
 th, td {
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #333 !important; /* ✅ Este es el borde interno */
     text-align: center;
 }
 
 th {
-    background-color: #e0e0e0;
+    background-color: #c9e2e7; /* mismo color que la otra tabla */
+    font-weight: bold;
+    text-align: center;
+}
+
+
+.perfil-container {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 900px;
+    margin: 10px auto 20px auto; /* ⬅ margen superior reducido */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: -230px;
+}
+
+form button {
+    padding: 5px 14px;
+    background-color: transparent; /* celeste claro */
+    border: 2px solid #90bfcf;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form button:hover {
+    background-color: #a0ccd8; /* más oscuro al pasar el mouse */
+}
+
+.btn-volver {
+    display: inline-block;
+    padding: 10px 30px;
+    background-color: #b2dfec;
+    color: #222;
+    border: 2px solid #4bb3c1;
+    border-radius: 25px;
+    font-size: 1.1em;
+    text-decoration: none;
+    text-align: center;
+    margin-top: 20px;
+    transition: background 0.2s, color 0.2s;
+}
+.btn-volver:hover {
+    background-color: #4bb3c1;
+    color: #fff;
 }
