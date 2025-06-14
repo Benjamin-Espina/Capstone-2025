@@ -116,3 +116,11 @@
     }
 }
 
+.botones.izquierda {
+    align-items: flex-start;
+}
+
+.card.izquierda {
+    margin-left: -300px;
+    width: auto;
+}
