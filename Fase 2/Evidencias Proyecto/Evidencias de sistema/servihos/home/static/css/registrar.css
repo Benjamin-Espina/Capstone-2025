@@ -18,13 +18,14 @@
 
 /* ====== CONTENEDOR PRINCIPAL DE LA VISTA DE REGISTRO ====== */
 .register-main {
-    min-height: 100vh;
+    min-height: fit-content;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: #C7E0E2;
     padding: 20px;
     box-sizing: border-box;
+    height: fit-content;
 }
 /* ====== FIN CONTENEDOR PRINCIPAL DE LA VISTA DE REGISTRO ====== */
 
@@ -63,4 +64,33 @@ html, body {
 .field_checkbox{
     flex-direction: row !important;
     flex-wrap: nowrap;
+}
+
+.button-register {
+    background-color: transparent;
+    padding: 10px 20px;
+    border: solid 2px #5a96a0;
+    border-radius: 6px;
+    margin: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #2C3E50;
+}
+.button-register:hover {
+    background-color: #88c3d5;
+}
+
+button.btn-subir-archivo {
+    background-color: transparent;
+    padding: 10px 20px;
+    border: solid 2px #5a96a0;
+    border-radius: 6px;
+    margin: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #2C3E50;
+}
+
+.btn-subir-archivo:hover {
+    background-color: #88c3d5;
 }

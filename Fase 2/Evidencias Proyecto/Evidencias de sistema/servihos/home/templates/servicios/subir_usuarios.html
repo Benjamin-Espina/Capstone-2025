@@ -33,7 +33,7 @@
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }} {# O renderiza los campos manualmente para más control #}
-        <button type="submit" class="btn btn-primary">Subir Archivo</button>
+        <button type="submit" class="btn-subir-archivo">Subir Archivo</button>
     </form>
 
     <div class="mt-4">
