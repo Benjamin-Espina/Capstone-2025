@@ -37,7 +37,6 @@ th {
     max-width: 900px;
     margin: 10px auto 20px auto; /* ⬅ margen superior reducido */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-top: -230px;
 }
 
 form button {
