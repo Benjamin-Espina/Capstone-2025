@@ -59,7 +59,10 @@
                     <td>
                         <form method="post" action="{% url 'eliminar_hospedados' us.usuario.rut_usr_hospederia %}">
                             {% csrf_token %}
-                            <button type="submit" class="eliminar_boton">Eliminar</button>
+                            <button type="submit" class="eliminar_boton"
+                            onclick="return confirm('¿Estás seguro que deseas eliminar este servicio?');">
+                            Eliminar
+                            </button>
                         </form>
                         <br>
                         <br>
