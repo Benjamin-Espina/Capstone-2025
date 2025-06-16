@@ -4,6 +4,14 @@
 {% block blockhead %}<link rel="stylesheet" href="{% static 'css/registrar.css' %}">{% endblock %}
 {% block blocktitle %}ServiHos - Registrar encargado{% endblock blocktitle %}
 
+{% block menu %}
+<section style="height: fit-content; min-height: unset;">
+    <div class="botones izquierda">
+        <a class="card izquierda" href="{% url 'index' %}">Volver</a>
+    </div>
+</section>
+{% endblock %}
+
 {% block contenido %}
 
 <main>
@@ -25,7 +33,7 @@
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }} {# O renderiza los campos manualmente para más control #}
-        <button type="submit" class="btn btn-primary">Subir Archivo</button>
+        <button type="submit" class="btn-subir-archivo">Subir Archivo</button>
     </form>
 
     <div class="mt-4">

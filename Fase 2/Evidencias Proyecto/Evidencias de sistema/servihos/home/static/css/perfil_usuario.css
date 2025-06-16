@@ -6,13 +6,16 @@ body {
 }
 
 .perfil-container {
-    background-color: #ffffff;
+    background-color: white;
     padding: 30px;
     border-radius: 10px;
-    max-width: 900px;
+    min-width: 50rem !important;
     margin: 10px auto 20px auto; /* ⬅ margen superior reducido */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-top: -230px;
+    position: inherit !important;
+    z-index: inherit !important;
+    height: fit-content !important;
+    
 }
 
 
