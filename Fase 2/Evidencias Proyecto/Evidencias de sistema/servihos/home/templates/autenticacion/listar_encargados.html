@@ -38,7 +38,10 @@
                         <td>
                             <form method="post" action="{% url 'eliminar_ecargados' usuario.id %}">
                                 {% csrf_token %}
-                                <button type="submit">Eliminar</button>
+                                <button type="submit"
+                                onclick="return confirm('¿Estás seguro que deseas eliminar este servicio?');">
+                                Eliminar
+                                </button>
                             </form>
                         </td>
                     </tr>
