@@ -207,6 +207,8 @@ main {
   opacity: 1;
   pointer-events: auto;
   max-height: none;
+  justify-content: flex-start;
+  align-items: flex-start;
 }
 
 /* ====== FIN MENÚ DESPLEGABLE VISIBLE ====== */

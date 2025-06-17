@@ -1,7 +1,13 @@
 CREATE TABLE `servicio` (
   `id_servicio` int PRIMARY KEY,
   `nombre_servicio` varchar(100),
-  `descripcion_servicio` varchar(500)
+  `observacion` varchar(500)
+);
+
+CREATE TABLE `subservicio` (
+  `id_subservicio` int PRIMARY KEY,
+  `id_servicio` int,
+  `nombre_subservicio` varchar(100)
 );
 
 CREATE TABLE `tipo_discapacidad` (
@@ -61,17 +67,6 @@ CREATE TABLE `cargo` (
   `descripcion_cargo` varchar(200)
 );
 
-CREATE TABLE `trabajador_servicio` (
-  `id_trabajador_servicio` int PRIMARY KEY,
-  `rut_trabajador` int,
-  `primer_nombre_trabajador` varchar(20),
-  `primer_apellido_trabajador` varchar(20),
-  `segundo_apellido_trabajador` varchar(20),
-  `id_cargo` int,
-  `id_hospederia` int,
-  `id_servicio` int
-);
-
 CREATE TABLE `registros` (
   `id_registro` int PRIMARY KEY,
   `hora_ingreso` timestamp,
@@ -94,17 +89,13 @@ CREATE TABLE `registro_servicio` (
   PRIMARY KEY (`id_registro`, `id_servicio`)
 );
 
+ALTER TABLE `subservicio` ADD FOREIGN KEY (`id_servicio`) REFERENCES `servicio` (`id_servicio`);
+
 ALTER TABLE `usuario_hospederia` ADD FOREIGN KEY (`id_tipo_discapacidad`) REFERENCES `tipo_discapacidad` (`id_discapacidad`);
 
 ALTER TABLE `usuario_hospederia` ADD FOREIGN KEY (`id_hospederia`) REFERENCES `hospederia` (`id_hospederia`);
 
 ALTER TABLE `hospederia` ADD FOREIGN KEY (`id_comuna`) REFERENCES `comuna` (`id_comuna`);
-
-ALTER TABLE `trabajador_servicio` ADD FOREIGN KEY (`id_hospederia`) REFERENCES `hospederia` (`id_hospederia`);
-
-ALTER TABLE `trabajador_servicio` ADD FOREIGN KEY (`id_servicio`) REFERENCES `servicio` (`id_servicio`);
-
-ALTER TABLE `trabajador_servicio` ADD FOREIGN KEY (`id_cargo`) REFERENCES `cargo` (`id_cargo`);
 
 ALTER TABLE `usuario_encargado` ADD FOREIGN KEY (`id_hospederia`) REFERENCES `hospederia` (`id_hospederia`);
 

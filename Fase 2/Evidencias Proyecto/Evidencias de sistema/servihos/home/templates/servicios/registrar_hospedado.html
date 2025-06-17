@@ -15,20 +15,18 @@
 
 <main class="register-main">
     <section class="register-section">
-        <h1>Testing menu</h1>
         <p><strong>Fecha de registro:</strong> <span id="fecha-actual"></span></p>
 
-        <form method="post">
+        <form class="formulario_registro_hospederia" method="post">
             {% csrf_token %}
             {# Renderizar manualmente los campos para controlar la visibilidad #}
             {% for field in form %}
                 {% if field.name == 'discapacidad_usr_hospederia' %}
                     <div class="form-group">
-                        <div class="fields">
+                        <div class="field_checkbox fields">
                             {{ field.label_tag }}
                             {{ field }}
                         </div>
-                        <br>
                         {% if field.errors %}
                             <div class="error">{{ field.errors }}</div>
                         {% endif %}
@@ -39,11 +37,24 @@
                             {{ field.label_tag }}
                             {{ field }}
                         </div>
-                        <br>
                         {% if field.errors %}
                             <div class="error">{{ field.errors }}</div>
                         {% endif %}
                     </div>
+
+                 {% elif field.name == 'mostrar_en_reportes' %}
+                    {# Campo "mostrar_en_reportes" renderizado manualmente #}
+                    <div class="form-group">
+                        <div class="field_checkbox fields">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            
+                        </div>
+                        {% if field.errors %}
+                            <div class="error">{{ field.errors }}</div>
+                        {% endif %}
+                    </div>
+
                 {% else %}
                     <div class="form-group">
                         <div class="fields">
@@ -56,8 +67,11 @@
                         {% endif %}
                     </div>
                 {% endif %}
+
+                
+
             {% endfor %}
-            <button class="button" type="submit" class="btn btn-primary">Registrar</button>
+            <button class="button-register" type="submit" class="btn btn-primary">Registrar</button>
         </form>
         <script>
         document.addEventListener('DOMContentLoaded', function() {

@@ -18,15 +18,23 @@ table {
 }
 
 th, td {
-    padding: 10px;
+    padding: 12px 15px;
+    text-align: left;
     border: 1px solid #333 !important; /* ✅ Este es el borde interno */
-    text-align: center;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 th {
     background-color: #c9e2e7; /* mismo color que la otra tabla */
     font-weight: bold;
     text-align: center;
+}
+
+thead {
+    background-color: #C7E0E2;
+    border-bottom: 1px solid #333;
 }
 
 
@@ -37,7 +45,6 @@ th {
     max-width: 900px;
     margin: 10px auto 20px auto; /* ⬅ margen superior reducido */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-top: -230px;
 }
 
 form button {
