@@ -98,6 +98,7 @@ class usuario_hospederia(models.Model):
 
 class Servicio(models.Model):
     nombre_servicio = models.CharField(max_length=100, unique=True)
+    activo = models.BooleanField(default=True)  # Campo para habilitar/deshabilitar
 
     def __str__(self):
         return self.nombre_servicio
@@ -105,6 +106,7 @@ class Servicio(models.Model):
 class SubServicio(models.Model):
     servicio = models.ForeignKey(Servicio, on_delete=models.CASCADE, related_name='subservicios')
     nombre_subservicio = models.CharField(max_length=100)
+    activo = models.BooleanField(default=True)  # Campo para habilitar/deshabilitar
 
     def __str__(self):
         return f"{self.nombre_subservicio} ({self.servicio.nombre_servicio})"

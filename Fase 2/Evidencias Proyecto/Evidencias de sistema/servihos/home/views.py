@@ -233,11 +233,26 @@ def listar_servicios(request):
     servicios = Servicio.objects.all()
     return render(request, 'servicios/listar_servicios.html', {'servicios': servicios})
 
+def inhabilitar_servicio(request, servicio_id):
+    servicio = get_object_or_404(Servicio, id=servicio_id)
+    servicio.activo = False
+    servicio.save()
+    messages.success(request, f"Servicio '{servicio.nombre_servicio}' inhabilitado correctamente.")
+    return redirect('listar_servicios')
+
+def habilitar_servicio(request, servicio_id):
+    servicio = get_object_or_404(Servicio, id=servicio_id)
+    servicio.activo = True
+    servicio.save()
+    messages.success(request, f"Servicio '{servicio.nombre_servicio}' habilitado correctamente.")
+    return redirect('listar_servicios')
+
 def eliminar_servicio(request, servicio_id):
     servicio = get_object_or_404(Servicio, id=servicio_id)
     if request.method == 'POST':
-        servicio.delete()
-        messages.success(request, 'Servicio eliminado correctamente.')
+        servicio.activo = False
+        servicio.save()
+        messages.success(request, f"Servicio '{servicio.nombre_servicio}' inhabilitado correctamente.")
         return redirect('listar_servicios')
     return redirect('listar_servicios')
 
@@ -255,11 +270,26 @@ def listar_subservicios(request):
     subservicios = SubServicio.objects.select_related('servicio').all()
     return render(request, 'servicios/listar_subservicios.html', {'subservicios': subservicios})
 
+def inhabilitar_subservicio(request, subservicio_id):
+    sub = get_object_or_404(SubServicio, id=subservicio_id)
+    sub.activo = False
+    sub.save()
+    messages.success(request, f"Subservicio '{sub.nombre_subservicio}' inhabilitado correctamente.")
+    return redirect('listar_subservicios')
+
+def habilitar_subservicio(request, subservicio_id):
+    sub = get_object_or_404(SubServicio, id=subservicio_id)
+    sub.activo = True
+    sub.save()
+    messages.success(request, f"Subservicio '{sub.nombre_subservicio}' habilitado correctamente.")
+    return redirect('listar_subservicios')
+
 def eliminar_subservicio(request, subservicio_id):
     sub = get_object_or_404(SubServicio, id=subservicio_id)
     if request.method == 'POST':
-        sub.delete()
-        messages.success(request, f"Subservicio '{sub.nombre_subservicio}' eliminado correctamente.")
+        sub.activo = False
+        sub.save()
+        messages.success(request, f"Subservicio '{sub.nombre_subservicio}' inhabilitado correctamente.")
     return redirect('listar_subservicios')
 
 #Mostral el historial de registros de un usuario
