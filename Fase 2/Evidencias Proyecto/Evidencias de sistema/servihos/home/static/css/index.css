@@ -27,3 +27,80 @@
   transform: rotate(45deg) translate(-5px, -6px);
 }
 
+.tabla-historico-index {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto 2rem auto;
+    border-collapse: collapse;
+    background: #fff;
+    box-shadow: 0 2px 8px #0001;
+    font-size: 1rem;
+}
+
+.tabla-historico-index th, .tabla-historico-index td {
+    border: 1px solid #888;
+    padding: 10px 14px;
+    text-align: left;
+}
+
+.tabla-historico-index th {
+    background-color: #c6e2ee;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.tabla-historico-index tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.panel-resumen {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.resumen-card {
+    background: #e0f7fa;
+    padding: 1.5rem 2rem;
+    border-radius: 10px;
+    min-width: 220px;
+    text-align: center;
+    box-shadow: 0 2px 8px #0001;
+}
+.resumen-card.subservicios { background: #fce4ec; }
+.resumen-card.usuarios { background: #fff9c4; }
+.resumen-card.ingresos { background: #c8e6c9; }
+
+.resumen-card h2 {
+    margin: 0;
+    font-size: 2.2rem;
+}
+.resumen-card p {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.titulo-historico {
+    margin-top: 2rem;
+}
+
+.tabla-historico-index-container {
+    overflow-x: auto;
+}
+
+.tabla-historico-index th {
+    padding: 10px;
+    text-align: center;
+}
+.tabla-historico-index td {
+    padding: 10px;
+}
+.tabla-historico-index td.cantidad {
+    text-align: center;
+}
+.tabla-historico-index td.centrado {
+    text-align: center;
+}
+

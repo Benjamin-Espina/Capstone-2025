@@ -37,6 +37,9 @@ thead {
     border-bottom: 1px solid #333;
 }
 
+td.cantidad {
+    text-align: center;
+}
 
 .perfil-container {
     background-color: #ffffff;

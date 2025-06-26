@@ -45,6 +45,7 @@ def index(request):
     total_usuarios_hospederia = usuario_hospederia.objects.count()
     hoy = timezone.localdate()
     usuarios_ingresaron_hoy = registroHorarioHospederia.objects.filter(hora_entrada__date=hoy).values('usuario').distinct().count()
+    usuarios_ingresaron_hoy = min(usuarios_ingresaron_hoy, 20)
 
     # Conteo individual de cada servicio y subservicio
     servicios = Servicio.objects.all()
@@ -68,6 +69,8 @@ def index(request):
 @login_required
 @user_passes_test(es_administrador, login_url='iniciar_sesion')
 def registrar_encargado(request):
+    if hasattr(request.user, 'tipo') and request.user.tipo == 'encargado':
+        return redirect('index')
     if request.method == 'POST':
         form = customUserCreationForm(request.POST)
         if form.is_valid():
@@ -80,6 +83,8 @@ def registrar_encargado(request):
     return render(request, 'autenticacion/registrar_encargado.html', {'form': form})
 
 def lista_encargados(request):
+    if hasattr(request.user, 'tipo') and request.user.tipo == 'encargado':
+        return redirect('index')
     usuarios = obtener_usuarios.objects.filter(tipo='encargado')
     return render(request, 'autenticacion/listar_encargados.html', {'usuarios': usuarios})
 
@@ -96,6 +101,8 @@ def eliminar_ecargados(request, usuario_id):
     
 
 def listar_hospedados(request):
+    if request.user.is_superuser or (hasattr(request.user, 'tipo') and request.user.tipo == 'administrador'):
+        return redirect('index')
     busqueda = request.GET.get("busqueda", "").strip()
     usuarios_hospedados = usuario_hospederia.objects.all()
 
@@ -143,6 +150,8 @@ def eliminar_hospedados(request, usuario_id):
     
 
 def editar_hospedado(request, usuario_id):
+    if request.user.is_superuser or (hasattr(request.user, 'tipo') and request.user.tipo == 'administrador'):
+        return redirect('index')
     usuario = get_object_or_404(usuario_hospederia, rut_usr_hospederia=usuario_id)
 
     if request.method == 'POST':
@@ -156,7 +165,9 @@ def editar_hospedado(request, usuario_id):
 
     return render(request, 'servicios/editar_hospedados.html', {'form': form, 'usuario': usuario})
 
-def registrar_hospedado(request):  
+def registrar_hospedado(request):
+    if request.user.is_superuser or (hasattr(request.user, 'tipo') and request.user.tipo == 'administrador'):
+        return redirect('index')
     if request.method == 'POST':
         form = UsuarioHospederiaFormEdit(request.POST)
         if form.is_valid():
@@ -192,6 +203,8 @@ def calcular_edad(fecha_nacimiento):
     return hoy.year - fecha_nacimiento.year - ((hoy.month, hoy.day) < (fecha_nacimiento.month, fecha_nacimiento.day))
 
 def perfil_usuario(request, rut_usuario):
+    if request.user.is_superuser or (hasattr(request.user, 'tipo') and request.user.tipo == 'administrador'):
+        return redirect('index')
     usuario = get_object_or_404(usuario_hospederia, rut_usr_hospederia=rut_usuario)
     edad = calcular_edad(usuario.fecha_nacimiento_usr_hospederia)
 
@@ -220,6 +233,8 @@ def perfil_usuario(request, rut_usuario):
     return render(request, 'servicios/perfil_usuario.html', context)
 
 def crear_servicio(request):
+    if hasattr(request.user, 'tipo') and request.user.tipo == 'encargado':
+        return redirect('index')
     if request.method == 'POST':
         form = ServicioForm(request.POST)
         if form.is_valid():
@@ -230,6 +245,8 @@ def crear_servicio(request):
     return render(request, 'servicios/crear_servicio.html', {'form': form})
 
 def listar_servicios(request):
+    if hasattr(request.user, 'tipo') and request.user.tipo == 'encargado':
+        return redirect('index')
     servicios = Servicio.objects.all()
     return render(request, 'servicios/listar_servicios.html', {'servicios': servicios})
 
@@ -257,6 +274,8 @@ def eliminar_servicio(request, servicio_id):
     return redirect('listar_servicios')
 
 def crear_subservicio(request):
+    if hasattr(request.user, 'tipo') and request.user.tipo == 'encargado':
+        return redirect('index')
     if request.method == 'POST':
         form = SubServicioForm(request.POST)
         if form.is_valid():
@@ -267,6 +286,8 @@ def crear_subservicio(request):
     return render(request, 'servicios/crear_subservicio.html', {'form': form})
 
 def listar_subservicios(request):
+    if hasattr(request.user, 'tipo') and request.user.tipo == 'encargado':
+        return redirect('index')
     subservicios = SubServicio.objects.select_related('servicio').all()
     return render(request, 'servicios/listar_subservicios.html', {'subservicios': subservicios})
 
@@ -294,6 +315,8 @@ def eliminar_subservicio(request, subservicio_id):
 
 #Mostral el historial de registros de un usuario
 def historial_registros_usuario(request, rut_usuario):
+    if request.user.is_superuser or (hasattr(request.user, 'tipo') and request.user.tipo == 'administrador'):
+        return redirect('index')
     usuario = get_object_or_404(usuario_hospederia, rut_usr_hospederia=rut_usuario)
 
     # Filtro por fecha
@@ -359,6 +382,8 @@ def historial_registros_usuario(request, rut_usuario):
 from .models import RegistroSubServicio, RegistroServicioSimple, Servicio, SubServicio, HistorialServicioUsuario
 
 def registro_usuario_hospederia(request, rut_usuario):
+    if request.user.is_superuser or (hasattr(request.user, 'tipo') and request.user.tipo == 'administrador'):
+        return redirect('index')
     usuario = get_object_or_404(usuario_hospederia, rut_usr_hospederia=rut_usuario)
     preview_entrada = fun_HorarioEntrada()
     preview_salida = fun_HorarioSalida(preview_entrada)
@@ -433,6 +458,8 @@ def registro_usuario_hospederia(request, rut_usuario):
 @login_required
 @user_passes_test(es_administrador, login_url='iniciar_sesion')
 def subir_usuarios_hospederia(request):
+    if hasattr(request.user, 'tipo') and request.user.tipo == 'encargado':
+        return redirect('index')
     if request.method == 'POST':
         form = subir_CSV_usr_hospederia(request.POST, request.FILES)
         if form.is_valid():
@@ -752,6 +779,8 @@ def listar_registros_control_horario(request):
     return render(request, 'servicios/listar_registros_control_horario.html', context)
 
 def historial_registros_usuario_pdf(request, rut_usuario):
+    if request.user.is_superuser or (hasattr(request.user, 'tipo') and request.user.tipo == 'administrador'):
+        return redirect('index')
     usuario = get_object_or_404(usuario_hospederia, rut_usr_hospederia=rut_usuario)
     fecha_desde = request.GET.get('fecha_desde', '').strip()
     fecha_hasta = request.GET.get('fecha_hasta', '').strip()
@@ -958,6 +987,8 @@ def historial_registros_totales_general_pdf(request):
     return response
 
 def actualizar_servicio_dia(request, rut_usuario):
+    if request.user.is_superuser or (hasattr(request.user, 'tipo') and request.user.tipo == 'administrador'):
+        return redirect('index')
     usuario = get_object_or_404(usuario_hospederia, rut_usr_hospederia=rut_usuario)
     hoy = timezone.localdate()
     fecha_salida = hoy + timedelta(days=1)

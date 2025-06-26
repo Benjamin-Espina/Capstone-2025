@@ -57,13 +57,7 @@
                     <!-- <td>{{ us.usuario.id_hospederia }}</td> -->
                     <td>{{ us.usuario.mostrar_en_reportes }}</td>
                     <td>
-                        <form method="post" action="{% url 'eliminar_hospedados' us.usuario.rut_usr_hospederia %}">
-                            {% csrf_token %}
-                            <button type="submit" class="eliminar_boton"
-                            onclick="return confirm('¿Estás seguro que deseas eliminar este servicio?');">
-                            Eliminar
-                            </button>
-                        </form>
+                        <a href="{% url 'eliminar_hospedados' us.usuario.rut_usr_hospederia %}" class="eliminar_boton" onclick="return confirm('¿Estás seguro que deseas eliminar este servicio?');">Eliminar</a>
                         <br>
                         <br>
                         <a href="{% url 'editar_hospedado' us.usuario.rut_usr_hospederia %}" class="editar_boton">Editar</a>

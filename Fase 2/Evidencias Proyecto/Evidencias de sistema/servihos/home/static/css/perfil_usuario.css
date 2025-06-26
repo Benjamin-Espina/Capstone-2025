@@ -101,10 +101,18 @@ body {
 
 .tabla-historial th, .tabla-historial td {
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #888;
     text-align: center;
 }
 
 .tabla-historial th {
-    background-color: #e0e0e0;
+    background-color: #c6e2ee;
+}
+
+.tabla-historial tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.tabla-historial td:first-child {
+    text-align: left;
 }
