@@ -24,6 +24,7 @@ body {
     flex-flow: column;
     gap: 1rem;
     flex-wrap: nowrap;
+    padding-top: 80px; /* Ajusta este valor según la altura real del header */
 }
 /* ====== FIN ESTILO GENERAL DEL CUERPO ====== */
 
@@ -60,7 +61,55 @@ header {
     align-items: center;
     padding: 15px 20px;
     filter: drop-shadow(0 0 0.5rem var(--var-secondary));
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    flex-wrap: wrap; /* Permite que los elementos bajen si no hay espacio */
+    box-sizing: border-box;
 }
+
+.header-center {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    word-break: break-word;
+}
+
+@media (max-width: 700px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px 8px;
+    }
+    .logo {
+        justify-content: flex-start;
+        width: 100%;
+    }
+    .header-center {
+        justify-content: flex-start;
+        width: 100%;
+        font-size: 1rem;
+        padding-top: 5px;
+    }
+    .rol {
+        font-size: 1rem;
+        word-break: break-word;
+    }
+}
+
+@media (max-width: 400px) {
+    .header-center {
+        font-size: 0.9rem;
+    }
+    .rol {
+        font-size: 0.9rem;
+    }
+}
+
 /* Ajuste adicional del footer */
 footer {
     display: flex;
@@ -147,10 +196,8 @@ main {
 /* ====== FIN TARJETAS DE CONTENIDO ====== */
 
 /* ====== DISEÑO GENERAL DE PÁGINA ====== */
-.layout {
-  display: flex;
-  flex-direction: row;
-  min-height: 100vh;
+.layout, .contenido-principal {
+    padding-top: 80px; /* Para que todo el contenido baje debajo del header fijo */
 }
 /* ====== FIN DISEÑO GENERAL DE PÁGINA ====== */
 
@@ -163,6 +210,7 @@ main {
     width: 180px;
     background-color: #e0f0f0;
     padding: 1rem;
+    /* margin-top: 80px; Eliminado para evitar doble espacio */
 }
 /* ====== FIN BARRA LATERAL ====== */
 

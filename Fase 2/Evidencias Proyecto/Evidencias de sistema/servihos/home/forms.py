@@ -111,7 +111,7 @@ class SubServicioForm(forms.ModelForm):
 class HistorialServicioUsuarioForm(forms.Form):
     fecha = forms.DateField(label="Salida", widget=forms.DateInput(attrs={'type': 'date'}))
     servicios_simples = forms.ModelMultipleChoiceField(
-        queryset=Servicio.objects.filter(subservicios__isnull=True),
+        queryset=Servicio.objects.filter(subservicios__isnull=True, activo=True),
         required=False,
         widget=forms.CheckboxSelectMultiple,
         label="Selecciona el/los servicios"
@@ -147,11 +147,11 @@ class HistorialServicioUsuarioForm(forms.Form):
             (pk, d['label']) for pk, d in choices
         ]
         self.pernoctacion_id = pernoctacion.pk if pernoctacion else None
-        servicios_con_subs = Servicio.objects.filter(subservicios__isnull=False).distinct()
+        servicios_con_subs = Servicio.objects.filter(subservicios__isnull=False, activo=True).distinct()
         for servicio in servicios_con_subs:
             field_name = f'subservicios_{servicio.id}'
             self.fields[field_name] = forms.ModelMultipleChoiceField(
-                queryset=SubServicio.objects.filter(servicio=servicio),
+                queryset=SubServicio.objects.filter(servicio=servicio, activo=True),
                 required=False,
                 widget=forms.CheckboxSelectMultiple,
                 label=f"Subservicios de {servicio.nombre_servicio}"
