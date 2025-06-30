@@ -24,6 +24,7 @@
                     <th>ID</th>
                     <th>Subservicio</th>
                     <th>Servicio</th>
+                    <th>Estado</th>
                     <th>Acción</th>
                 </tr>
             </thead>
@@ -33,14 +34,29 @@
                     <td data-label="ID">{{ sub.id }}</td>
                     <td data-label="Subservicio">{{ sub.nombre_subservicio }}</td>
                     <td data-label="Servicio">{{ sub.servicio.nombre_servicio }}</td>
+                    <td data-label="Estado">
+                        {% if sub.activo %}
+                            Activo
+                        {% else %}
+                            Inactivo
+                        {% endif %}
+                    </td>
                     <td data-label="Acción">
-                        <form method="post" action="{% url 'eliminar_subservicio' sub.id %}" style="display:inline;">
+                        {% if sub.activo %}
+                        <form method="post" action="{% url 'inhabilitar_subservicio' sub.id %}" style="display:inline;">
                             {% csrf_token %}
-                            <button type="submit"
-                                onclick="return confirm('¿Estás seguro que deseas eliminar este subservicio?');">
-                                Eliminar
+                            <button type="submit" onclick="return confirm('¿Estás seguro que deseas inhabilitar este subservicio?');">
+                                Inhabilitar
                             </button>
                         </form>
+                        {% else %}
+                        <form method="post" action="{% url 'habilitar_subservicio' sub.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" onclick="return confirm('¿Estás seguro que deseas habilitar este subservicio?');">
+                                Habilitar
+                            </button>
+                        </form>
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}

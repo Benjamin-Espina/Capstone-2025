@@ -23,6 +23,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Servicio</th>
+                    <th>Estado</th>
                     <th>Acción</th>
                 </tr>
             </thead>
@@ -31,14 +32,29 @@
                 <tr>
                     <td data-label="ID">{{ servicio.id }}</td>
                     <td data-label="Servicio">{{ servicio.nombre_servicio }}</td>
+                    <td data-label="Estado">
+                        {% if servicio.activo %}
+                            Activo
+                        {% else %}
+                            Inactivo
+                        {% endif %}
+                    </td>
                     <td data-label="Acción">
-                        <form method="post" action="{% url 'eliminar_servicio' servicio.id %}" style="display:inline;">
+                        {% if servicio.activo %}
+                        <form method="post" action="{% url 'inhabilitar_servicio' servicio.id %}" style="display:inline;">
                             {% csrf_token %}
-                            <button type="submit"
-                                onclick="return confirm('¿Estás seguro que deseas eliminar este servicio?');">
-                                Eliminar
+                            <button type="submit" onclick="return confirm('¿Estás seguro que deseas inhabilitar este servicio?');">
+                                Inhabilitar
                             </button>
                         </form>
+                        {% else %}
+                        <form method="post" action="{% url 'habilitar_servicio' servicio.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" onclick="return confirm('¿Estás seguro que deseas habilitar este servicio?');">
+                                Habilitar
+                            </button>
+                        </form>
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}

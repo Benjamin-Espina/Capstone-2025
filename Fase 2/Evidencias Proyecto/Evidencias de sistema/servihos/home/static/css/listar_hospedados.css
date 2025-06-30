@@ -96,8 +96,6 @@ thead {
     border-bottom: 1px solid #333;
 }
 
-
-
 tbody tr:nth-child(even) {
     background-color: #f9f9f9;
 }
@@ -202,16 +200,25 @@ td .rut-button {
 
 .eliminar_boton,
 .editar_boton {
-    width: 100%;              /* ocupa todo el ancho del <td> sin desbordarse */
-    max-width: 130px;         /* evita que sea demasiado ancho */
-    padding: 6px 10px;
-    font-size: 14px;
-    font-weight: bold;
-    border-radius: 20px;
-    text-align: center;
-    cursor: pointer;
-    display: inline-block;
-    box-sizing: border-box;   /* incluye padding en el ancho total */
+    width: 100%;
+    max-width: 130px;
+    min-height: 40px;
+    padding: 8px 10px !important;
+    font-size: 15px !important;
+    font-family: inherit !important;
+    font-weight: bold !important;
+    border-radius: 20px !important;
+    text-align: center !important;
+    cursor: pointer !important;
+    display: inline-block !important;
+    box-sizing: border-box !important;
+    border-width: 2px !important;
+    border-style: solid !important;
+    line-height: 1.2 !important;
+    background: transparent !important;
+    outline: none !important;
+    vertical-align: middle !important;
+    margin: 0 auto 8px auto !important;
 }
 
 .rut {
