@@ -827,8 +827,8 @@ def historial_registros_usuario_pdf(request, rut_usuario):
         'usuario': usuario,
         'historial_con_servicios': historial_con_servicios,
         'conteo_servicios': conteo_servicios,
-        'fecha_desde': fecha_desde,
-        'fecha_hasta': fecha_hasta,
+        'fecha_desde': datetime.strptime(fecha_desde, '%Y-%m-%d').strftime('%d-%m-%Y') if fecha_desde else '',
+        'fecha_hasta': datetime.strptime(fecha_hasta, '%Y-%m-%d').strftime('%d-%m-%Y') if fecha_hasta else '',
         'pdf_export': True,
     }
     template = get_template('servicios/historial_registros_pdf.html')
@@ -974,8 +974,8 @@ def historial_registros_totales_general_pdf(request):
         conteo_servicios[key] = historial_qs.filter(subservicio=sub, servicio=None).count()
     context = {
         'conteo_servicios': conteo_servicios,
-        'fecha_desde': fecha_desde,
-        'fecha_hasta': fecha_hasta,
+        'fecha_desde': datetime.strptime(fecha_desde, '%Y-%m-%d').strftime('%d-%m-%Y') if fecha_desde else '',
+        'fecha_hasta': datetime.strptime(fecha_hasta, '%Y-%m-%d').strftime('%d-%m-%Y') if fecha_hasta else '',
     }
     template = get_template('servicios/historial_registros_pdf_general.html')
     html = template.render(context)
