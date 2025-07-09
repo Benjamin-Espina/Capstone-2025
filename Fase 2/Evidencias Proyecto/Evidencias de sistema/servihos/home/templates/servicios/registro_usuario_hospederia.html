@@ -93,6 +93,7 @@
                                     <li>{{ checkbox.tag }} {{ checkbox.choice_label }}</li>
                                 {% endfor %}
                                 {% if 'asistencia ambulatoria' in label_lower %}
+                                <!--
                                 <li id="observacion-ambulatoria-li" style="display:none;">
                                     <div class="fields">
                                         {{ form.observacion.label_tag }}
@@ -102,6 +103,7 @@
                                         <div class="error">{{ form.observacion.errors }}</div>
                                     {% endif %}
                                 </li>
+                                -->
                                 {% endif %}
                             </ul>
                         </div>
@@ -136,6 +138,7 @@
         </form>
 
         <script>
+        /*
         document.addEventListener('DOMContentLoaded', function() {
             function toggleObservacionAmbulatoria() {
                 var mostrar = false;
@@ -167,6 +170,7 @@
             }
             toggleObservacionAmbulatoria();
         });
+        */
         </script>
     </section>
 </main>
