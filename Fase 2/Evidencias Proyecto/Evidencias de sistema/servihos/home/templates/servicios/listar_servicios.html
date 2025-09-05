@@ -40,7 +40,9 @@
                         {% endif %}
                     </td>
                     <td data-label="Acción">
-                        {% if servicio.activo %}
+                        {% if servicio.nombre_servicio == 'Pernoctación' %}
+                            Obligatorio
+                        {% elif servicio.activo %}
                         <form method="post" action="{% url 'inhabilitar_servicio' servicio.id %}" style="display:inline;">
                             {% csrf_token %}
                             <button type="submit" onclick="return confirm('¿Estás seguro que deseas inhabilitar este servicio?');">
